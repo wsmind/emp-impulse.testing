@@ -57,6 +57,7 @@ class test_examples(build.Component):
 	
 	def appendArtifacts(self, env):
 		env.Program("bin/test/auto.examples-mouse", "build/test/examples/auto.mouse.cpp")
+		env.Program("bin/test/examples-cheese", "build/test/examples/cheese.cpp")
 
 walker.declareComponent(test_examples())
 

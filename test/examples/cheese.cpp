@@ -23,80 +23,50 @@
 /**
  * \file
  * 
- * This file demonstrates the use of the PEEL library for the writing of
- * automated unit tests. Being automated means that we will be able to
- * execute them at every push on the central repository, reporting errors
- * as early as possible in the production process.
+ * This is a simple, non-automated test example. For non-automated tests, the
+ * use of PEEL is not mandatory. Nevertheless, feel free to use it if you need
+ * boolean assertions or if you plan to transform your test may evolve to
+ * an automated one.
  * 
- * To be recognized as such, every automated test must be prefixed by "auto.".
- * Using that notation, the build server will run it and filter the output
- * for strings "[OK]" and "[FAILED]", counting and reporting them in the end.
- * Printing things not containing one of these strings is therefore not a
- * problem, and will show up verbatim in the log.
- * 
- * To see the results of the last pushes, go to http://build.emp.fr.nf
- * 
- * If you need something more flexible than simple boolean assertions to test
- * your code, you can write non-automated tests, where the use of PEEL is
- * not mandatory. See cheese.cpp for an example of this.
+ * Non-automated tests allow you to try some features that could not be
+ * easily fit into a boolean expression, such as texture drawing or sound
+ * playback.
  */
 
-#include <peel.hpp> // test library
-
-#include <cmath> // for example calculations
+#include <iostream>
 
 /**
- * \class Mouse
+ * \class Cheese
  * \brief Fake class (would be included in a real test, not written here)
  */
-class Mouse
+class Cheese
 {
 	public:
-		Mouse()
+		Cheese()
 		{
-			this->age = 42;
+			std::cout << "A new cheese was created" << std::endl;
 		}
 		
-		void becomeOlder(int years)
+		/**
+		 * \brief This method cannot be checked easily with a boolean expression
+		 */
+		void displayHoles()
 		{
-			this->age += years;
+			std::cout << " ______ " << std::endl;
+			std::cout << "/  o   \\" << std::endl;
+			std::cout << "\\   o   |" << std::endl;
+			std::cout << " | o   /" << std::endl;
+			std::cout << "/   oo |" << std::endl;
+			std::cout << "\\_o____|" << std::endl;
 		}
-		
-		void drinkMagicLiquid()
-		{
-			this->age = 12;
-		}
-		
-		int getAge() const
-		{
-			return this->age;
-		}
-		
-		float getSize()
-		{
-			// yup, the size of a mouse is the square root of its age
-			return sqrt((float)this->age);
-		}
-		
-	private:
-		int age;
 };
 
 int main()
 {
-	Mouse mouse;
+	Cheese cheese;
 	
-	// initial age
-	CHECK(mouse.getAge() == 42);
+	std::cout << "Please inspect the cheese holes..." << std::endl;
+	cheese.displayHoles();
 	
-	// drink liquid
-	mouse.drinkMagicLiquid();
-	CHECK(mouse.getAge() == 12);
-	
-	// become old again
-	mouse.becomeOlder(100);
-	CHECK(mouse.getAge() == 112);
-	
-	// measure mouse size
-	CHECK(FLOAT_EQUAL(mouse.getSize(), sqrt(112.0f)));
+	return 0;
 }
