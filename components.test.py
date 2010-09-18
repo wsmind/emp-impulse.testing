@@ -49,3 +49,14 @@ class peel_example(build.Component):
 
 walker.declareComponent(peel_example())
 
+class test_examples(build.Component):
+	"""Simple automated and non-automated test examples"""
+	
+	def __init__(self):
+		build.Component.__init__(self, "test-examples", ["peel"])
+	
+	def appendArtifacts(self, env):
+		env.Program("bin/test/auto.examples-mouse", "build/test/examples/auto.mouse.cpp")
+
+walker.declareComponent(test_examples())
+
