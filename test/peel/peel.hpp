@@ -52,9 +52,10 @@
 			std::cerr << "[FAILED] " << #expression << " (" << __FILE__ << ":" << __LINE__ << ")" << std::endl; \
 	}
 
-//! Accepted float error for comparisons
+//! Tolerated float error for comparisons
 #define FLOAT_EPSILON 0.001f
 
+//! Test float equality with a small tolerated error
 #define FLOAT_EQUAL(f1, f2) \
 	(fabs(f1 - f2) < FLOAT_EPSILON)
 
