@@ -23,5 +23,21 @@
 #ifndef __PEEL_HPP__
 #define __PEEL_HPP__
 
+#include <iostream>
+#include <cmath>
+
+#define CHECK(expression) \
+	{ \
+		if (expression) \
+			std::cout << "[OK] " << #expression << std::endl; \
+		else \
+			std::cerr << "[FAILED] " << #expression << " (" << __FILE__ << ":" << __LINE__ << ")" << std::endl; \
+	}
+
+#define FLOAT_EPSILON 0.001f
+
+#define FLOAT_EQUAL(f1, f2) \
+	(fabs(f1 - f2) < FLOAT_EPSILON)
+
 #endif // __PEEL_HPP__
 
