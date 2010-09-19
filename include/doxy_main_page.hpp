@@ -44,7 +44,7 @@
  * The following (generated) diagram gives an overview of Impulse components and how
  * they interact together.
  *
- * \image html build/dependencies.png
+ * \image html dependencies.png
  *
  * \section License
  *

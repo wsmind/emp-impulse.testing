@@ -127,4 +127,4 @@ for script in baseEnvironment.Glob("components.*.py"):
 
 walker.makeEnvironments(baseEnvironment)
 if not baseEnvironment["DISABLE_GRAPH"]:
-	walker.makeDependencyGraph("build/dependencies.png")
+	walker.makeDependencyGraph("dependencies.png")
