@@ -37,7 +37,7 @@
  *
  * You can use the buttons above to navigate through the Impulse documentation.
  *
- * <a href="http://code.google.com/p/emp-impule/">Project home page on Google Code</a>
+ * <a href="http://code.google.com/p/emp-impulse/">Project home page on Google Code</a>
  *
  * \section DependencyGraph Component dependency graph
  *
@@ -49,6 +49,7 @@
  * \section License License
  *
  * Copyright (C) 2010 ElectroMagnetic Potatoes (EMP)
+ * 
  * See the AUTHORS file for more information.
  *
  * This program is free software: you can redistribute it and/or modify
