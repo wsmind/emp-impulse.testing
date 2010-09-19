@@ -10,4 +10,5 @@ else:
 	os.environ["LD_LIBRARY_PATH"] = "lib"
 
 process = subprocess.Popen(sys.argv[1:])
-process.wait()
+sys.exit(process.wait())
+
