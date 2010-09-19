@@ -99,4 +99,6 @@ int main()
 	
 	// measure mouse size
 	CHECK(FLOAT_EQUAL(mouse.getSize(), sqrt(112.0f)));
+	
+	return 0;
 }
