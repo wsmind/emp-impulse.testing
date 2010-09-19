@@ -38,7 +38,7 @@ summary["total"] = 0
 summary["crashes"] = 0
 
 for testBinary in glob.glob(files):
-	process = subprocess.Popen([testBinary], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+	process = subprocess.Popen(["python", "run-local-binary.py", testBinary], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 	killer = KillerThread(process, 5)
 	killer.start()
 	out = process.communicate()[0]
@@ -46,6 +46,7 @@ for testBinary in glob.glob(files):
 	# output analysis
 	test = {}
 	test["returncode"] = process.returncode
+	test["output"] = out
 	test["pass"] = 0
 	test["fail"] = 0
 	test["total"] = 0
@@ -58,13 +59,17 @@ for testBinary in glob.glob(files):
 			test["fail"] = test["fail"] + 1
 			test["total"] = test["total"] + 1
 	
+	# data for this test
 	tests[testBinary] = test
+	
+	# aggregation
 	summary["pass"] = summary["pass"] + test["pass"]
 	summary["fail"] = summary["fail"] + test["fail"]
 	summary["total"] = summary["total"] + test["total"]
 	if process.returncode != 0:
 		summary["crashes"] = summary["crashes"] + 1
 
+# JSON output
 jsOutput = {}
 jsOutput["tests"] = tests
 jsOutput["summary"] = summary
