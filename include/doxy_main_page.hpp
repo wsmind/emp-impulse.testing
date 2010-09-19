@@ -33,20 +33,20 @@
 /**
  * \mainpage Impulse reference documentation
  *
- * \section Navigation
+ * \section Navigation Navigation
  *
  * You can use the buttons above to navigate through the Impulse documentation.
  *
  * <a href="http://code.google.com/p/emp-impule/">Project home page on Google Code</a>
  *
- * \section Component dependency graph
+ * \section DependencyGraph Component dependency graph
  *
  * The following (generated) diagram gives an overview of Impulse components and how
  * they interact together.
  *
  * \image html dependencies.png
  *
- * \section License
+ * \section License License
  *
  * Copyright (C) 2010 ElectroMagnetic Potatoes (EMP)
  * See the AUTHORS file for more information.
