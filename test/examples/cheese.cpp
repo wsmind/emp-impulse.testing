@@ -25,11 +25,10 @@
  * 
  * This is a simple, non-automated test example. For non-automated tests, the
  * use of PEEL is not mandatory. Nevertheless, feel free to use it if you need
- * boolean assertions or if you plan to transform your test may evolve to
- * an automated one.
+ * boolean assertions or if you think your test may evolve to an automated one.
  * 
  * Non-automated tests allow you to try some features that could not be
- * easily fit into a boolean expression, such as texture drawing or sound
+ * easily fit into boolean assertions, such as texture drawing or sound
  * playback.
  */
 
@@ -70,3 +69,4 @@ int main()
 	
 	return 0;
 }
+

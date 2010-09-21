@@ -1,10 +1,17 @@
 import os
+import sys
 import subprocess
 import threading
 import glob
 import time
 import re
 import json
+
+# Allow human (not JSON) output
+human = False
+if len(sys.argv) > 1:
+	if sys.argv[1] == "-h":
+		human = True
 
 # Process killer with timeout
 class KillerThread(threading.Thread):
@@ -67,8 +74,25 @@ for testBinary in glob.glob(files):
 	if process.returncode != 0:
 		summary["crashes"] = summary["crashes"] + 1
 
-# JSON output
-jsOutput = {}
-jsOutput["tests"] = tests
-jsOutput["summary"] = summary
-print json.dumps(jsOutput)
+if human:
+	# Human output
+	for name in tests:
+		test = tests[name]
+		print
+		print "== %s (%d/%d) ==" % (name, test["pass"], test["total"])
+		if int(test["returncode"]) != 0:
+			print "--> CRASHED <--"
+		print test["output"]
+	
+	print "== SUMMARY =="
+	print "Passed:", summary["pass"]
+	print "Failed:", summary["fail"]
+	print "Total:", summary["total"]
+	print "Crashes:", summary["crashes"]
+else:
+	# JSON output
+	jsOutput = {}
+	jsOutput["tests"] = tests
+	jsOutput["summary"] = summary
+	print json.dumps(jsOutput)
+

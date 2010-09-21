@@ -34,7 +34,7 @@
  * Printing things not containing one of these strings is therefore not a
  * problem, and will show up verbatim in the log.
  * 
- * To see the results of the last pushes, go to http://build.emp.fr.nf
+ * To see the results of the last builds, go to http://build.emp.fr.nf
  * 
  * If you need something more flexible than simple boolean assertions to test
  * your code, you can write non-automated tests, where the use of PEEL is
