@@ -32,25 +32,26 @@
 #ifndef __TYPES_HPP__
 #define __TYPES_HPP__
 
-// TODO (low-priority): specialize this for specific platforms (or play with C99
-//                      fixed-size types such as uint32_t, etc.)
+#include <stdint.h>
 
 // signed integer types
-typedef signed char             i8;
-typedef signed short int        i16;
-typedef signed long int         i32;
-typedef signed long long int    i64;
+typedef int8_t      i8;
+typedef int16_t     i16;
+typedef int32_t     i32;
+typedef int64_t     i64;
+typedef intptr_t    iptr;
 
 // unsigned integer types
-typedef unsigned char           u8;
-typedef unsigned short int      u16;
-typedef unsigned long int       u32;
-typedef unsigned long long int  u64;
+typedef uint8_t     u8;
+typedef uint16_t    u16;
+typedef uint32_t    u32;
+typedef uint64_t    u64;
+typedef uintptr_t   uptr;
 
 // floating-point types
-typedef float                   f32;
-typedef double                  f64;
-typedef long double             f80;
+typedef float       f32;
+typedef double      f64;
+typedef long double f80;
 
 // forward declaration helpers
 
