@@ -47,6 +47,9 @@ class impulse_math(build.Component):
 	
 	def appendArtifacts(self, env):
 		env.SharedLibrary("lib/impulse-math", env.Glob("build/src/math/*.cpp"))
+	
+	def appendUsage(self, env):
+		env.AppendUnique(LIBS = ["impulse-math"])
 
 walker.declareComponent(impulse_math())
 
