@@ -27,48 +27,26 @@ import build
 # dependency walker
 Import("walker")
 
-class peel(build.Component):
-	"""Problem Elusive Examination Library (PEEL, lightweight test library)"""
+class impulse_common(build.Component):
+	"""Virtual component with basic Impulse environment"""
 	
 	def __init__(self):
-		build.Component.__init__(self, "peel")
+		build.Component.__init__(self, "impulse-common")
 	
 	def appendUsage(self, env):
-		env.AppendUnique(CPPPATH = ["build/test/peel"])
+		env.AppendUnique(CPPPATH = ["build/include"])
+		env.AppendUnique(LIBPATH = ["lib"])
 
-walker.declareComponent(peel())
+walker.declareComponent(impulse_common())
 
-class peel_example(build.Component):
-	"""PEEL example"""
+class impulse_math(build.Component):
+	"""Math package"""
 	
 	def __init__(self):
-		build.Component.__init__(self, "peel-example", ["peel"])
+		build.Component.__init__(self, "impulse-math", ["impulse-common"])
 	
 	def appendArtifacts(self, env):
-		env.Program("bin/test/peel-example", "build/test/peel/example.cpp")
+		env.SharedLibrary("lib/impulse-math", env.Glob("build/src/math/*.cpp"))
 
-walker.declareComponent(peel_example())
-
-class test_examples(build.Component):
-	"""Simple automated and non-automated test examples"""
-	
-	def __init__(self):
-		build.Component.__init__(self, "test-examples", ["peel"])
-	
-	def appendArtifacts(self, env):
-		env.Program("bin/test/auto-examples-mouse", "build/test/examples/auto-mouse.cpp")
-		env.Program("bin/test/examples-cheese", "build/test/examples/cheese.cpp")
-
-walker.declareComponent(test_examples())
-
-class test_math(build.Component):
-	"""Tests for the math package"""
-	
-	def __init__(self):
-		build.Component.__init__(self, "test-math", ["peel", "impulse-math"])
-	
-	def appendArtifacts(self, env):
-		env.Program("bin/test/auto-math-vec2", "build/test/math/auto-vec2.cpp")
-
-walker.declareComponent(test_math())
+walker.declareComponent(impulse_math())
 
