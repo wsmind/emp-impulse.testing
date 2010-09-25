@@ -85,7 +85,7 @@ class sfml(build.Component):
 			PrepackageExternalDll("sfml-graphics.dll", env)
 			PrepackageExternalDll("sfml-audio.dll", env)
 			PrepackageExternalDll("libsndfile-1.dll", env)
-			PrepackageExternalDll("openal32.dll.dll", env)
+			PrepackageExternalDll("openal32.dll", env)
 	
 	def appendUsage(self, env):
 		env.AppendUnique(LIBS = ["sfml-system", "sfml-window", "sfml-graphics", "sfml-audio"])
