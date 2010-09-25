@@ -61,6 +61,17 @@ class test_examples(build.Component):
 
 walker.declareComponent(test_examples())
 
+class test_sfml(build.Component):
+	"""Tests of SFML environment setup"""
+	
+	def __init__(self):
+		build.Component.__init__(self, "test-sfml", ["sfml"])
+	
+	def appendArtifacts(self, env):
+		env.Program("bin/test/sfml-basic", "build/test/sfml/basic.cpp")
+
+walker.declareComponent(test_sfml())
+
 class test_math(build.Component):
 	"""Tests for the math package"""
 	
