@@ -41,6 +41,7 @@ buildVariables = Variables("localconfig.py")
 buildVariables.Add(BoolVariable("DEBUG", "If true, build in debug configuration", False))
 buildVariables.Add(BoolVariable("FORCE_MINGW", "When both MinGW and VC++ are installed, force the use of the MinGW compiler instead of the default (windows only)", False))
 buildVariables.Add(BoolVariable("DISABLE_GRAPH", "Disable dependency graph generation", False))
+buildVariables.Add(PathVariable("DEPENDENCY_PACK_HOME", "Impulse dependency pack location (windows-only)", None))
 
 ##############################################################################
 # Variable value extraction (nasty, should be updated when the API evolves)  #

@@ -27,30 +27,33 @@ import build
 # dependency walker
 Import("walker")
 
-class impulse_common(build.Component):
-	"""Virtual component with basic Impulse environment"""
+class impulse_dependency_pack(build.Component):
+	"""Virtual component pointing to the downloaded dependency pack"""
 	
 	def __init__(self):
-		build.Component.__init__(self, "impulse-common", ["boost-integer"])
+		build.Component.__init__(self, "impulse-dependency-pack")
 	
 	def appendUsage(self, env):
-		env.AppendUnique(CPPPATH = ["build/include"])
-		env.AppendUnique(LIBPATH = ["lib"])
+		if env["OSNAME"] == "nt":
+			if "DEPENDENCY_PACK_HOME" not in env:
+				print "You must specify a dependency pack location under windows !"
+				env.Exit(1)
+			
+			if env["CC"] == "gcc":
+				compiler = "mingw"
+			else:
+				compiler = "vc2008"
+			
+			env.AppendUnique(CPPPATH = ["$DEPENDENCY_PACK_HOME/include"])
+			env.AppendUnique(LIBPATH = ["$DEPENDENCY_PACK_HOME/lib/" + compiler])
 
-walker.declareComponent(impulse_common())
+walker.declareComponent(impulse_dependency_pack())
 
-class impulse_math(build.Component):
-	"""Math package"""
+class boost_integer(build.Component):
+	"""boost::integer"""
 	
 	def __init__(self):
-		build.Component.__init__(self, "impulse-math", ["impulse-common"])
-	
-	def appendArtifacts(self, env):
-		env.AppendUnique(CPPDEFINES = ["BUILDING_IMPULSE_MATH"])
-		env.SharedLibrary("lib/impulse-math", env.Glob("build/src/math/*.cpp"))
-	
-	def appendUsage(self, env):
-		env.AppendUnique(LIBS = ["impulse-math"])
+		build.Component.__init__(self, "boost-integer", ["impulse-dependency-pack"])
 
-walker.declareComponent(impulse_math())
+walker.declareComponent(boost_integer())
 

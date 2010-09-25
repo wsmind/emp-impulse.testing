@@ -38,7 +38,7 @@ namespace math {
  * Along with other math classes, this class shows as public its coordinate
  * members, to let the user directly access those data.
  */
-class IMPULSE_MATH_EXPORT Vec3
+class Vec3
 {
 	public:
 		//! \brief The x coordinate of the vector (in cartesian space)

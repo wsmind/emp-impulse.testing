@@ -46,7 +46,7 @@
 #endif
 
 // dll exports
-#ifdef PE_COMPILER_MSVC
+#ifdef IMPULSE_COMPILER_MSVC
 #	define IMPULSE_API_IMPORT __declspec(dllimport)
 #	define IMPULSE_API_EXPORT __declspec(dllexport)
 #else

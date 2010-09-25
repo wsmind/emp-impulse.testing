@@ -32,21 +32,19 @@
 #ifndef __TYPES_HPP__
 #define __TYPES_HPP__
 
-#include <stdint.h>
+#include <boost/cstdint.hpp>
 
 // signed integer types
-typedef int8_t      i8;
-typedef int16_t     i16;
-typedef int32_t     i32;
-typedef int64_t     i64;
-typedef intptr_t    iptr;
+typedef boost::int8_t      i8;
+typedef boost::int16_t     i16;
+typedef boost::int32_t     i32;
+typedef boost::int64_t     i64;
 
 // unsigned integer types
-typedef uint8_t     u8;
-typedef uint16_t    u16;
-typedef uint32_t    u32;
-typedef uint64_t    u64;
-typedef uintptr_t   uptr;
+typedef boost::uint8_t     u8;
+typedef boost::uint16_t    u16;
+typedef boost::uint32_t    u32;
+typedef boost::uint64_t    u64;
 
 // floating-point types
 typedef float       f32;
