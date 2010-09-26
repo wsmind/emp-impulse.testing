@@ -84,3 +84,14 @@ class test_math(build.Component):
 
 walker.declareComponent(test_math())
 
+class test_engine(build.Component):
+	"""Test for the engine package"""
+	
+	def __init__(self):
+		build.Component.__init__(self, "test-engine", ["peel", "impulse-engine"])
+	
+	def appendArtifacts(self, env):
+		env.Program("bin/test/shape", "build/test/engine/shape.cpp")
+
+walker.declareComponent(test_engine())
+
