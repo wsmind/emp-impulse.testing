@@ -88,7 +88,10 @@ class sfml(build.Component):
 			PrepackageExternalDll("openal32.dll", env)
 	
 	def appendUsage(self, env):
-		env.AppendUnique(LIBS = ["sfml-system", "sfml-window", "sfml-graphics", "sfml-audio"])
+		if env["SYSPLATFORM"] == "darwin":
+			env.AppendUnique(FRAMEWORKS = ['OpenGL', 'sfml-window', 'sfml-system', 'sfml-graphics'])
+		else:
+			env.AppendUnique(LIBS = ["sfml-system", "sfml-window", "sfml-graphics", "sfml-audio"])
 
 walker.declareComponent(sfml())
 

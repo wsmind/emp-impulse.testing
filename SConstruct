@@ -21,6 +21,7 @@
 ################################################################################
 
 import os
+import sys
 import build
 
 ################################################################
@@ -69,6 +70,7 @@ baseEnvironment = Environment(tools = baseTools, variables = buildVariables)
 # additional variables
 baseEnvironment["OSNAME"] = os.name
 baseEnvironment["SYSPATH"] = os.environ["PATH"].split(os.pathsep)
+baseEnvironment["SYSPLATFORM"] = sys.platform
 
 if baseEnvironment["CC"] == "cl":
 	baseEnvironment.AppendUnique(CPPFLAGS = ["/EHsc"])
