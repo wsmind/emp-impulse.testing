@@ -69,6 +69,13 @@ class boost_integer(build.Component):
 	
 	def __init__(self):
 		build.Component.__init__(self, "boost-integer", ["impulse-dependency-pack"])
+	
+	def appendUsage(self, env):
+		if env["SYSPLATFORM"] == "darwin":
+			if "BOOST_INCLUDE_PATH" not in env:
+				print "You must specify BOOST_INCLUDE_PATH on the mac platform !"
+				env.Exit(1)
+			env.AppendUnique(CPPPATH = ["$BOOST_INCLUDE_PATH"])
 
 walker.declareComponent(boost_integer())
 
