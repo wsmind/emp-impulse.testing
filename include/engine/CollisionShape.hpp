@@ -35,15 +35,22 @@ class CollisionShape
 	public:
 		CollisionShape(std::vector<math::Vec2> points);
 		~CollisionShape();
+		
 		void setPosition(math::Vec2 newPosition);
 		void setRotation(float newRotation);
 		void setScale(math::Vec2 newScale);
+		
+		math::Vec2 getPosition() const;
+		f32 getRotation() const;
+		math::Vec2 getScale() const;
+		
 		u32 detectCollision(CollisionShape *polygon, Contact *contact);
 		bool isInside(math::Vec2 point, math::Vec2 *normal, float *distance);
 		
 	private:
 		std::vector<math::Vec2> points;
-		math::Vec2 shapeOrigin;
+		
+		math::Vec2 position;
 		float rotation;
 		math::Vec2 scale;
 };

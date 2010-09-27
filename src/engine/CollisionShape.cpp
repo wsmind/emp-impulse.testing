@@ -31,9 +31,10 @@ namespace engine {
 CollisionShape::CollisionShape(std::vector<Vec2> points)
 {
 	this->points = points;
-	this->shapeOrigin = Vec2(0.0f, 0.0f);
-	this->scale = Vec2(0.0f, 0.0f);
+	
+	this->position = Vec2(0.0f, 0.0f);
 	this->rotation = 0.0f;
+	this->scale = Vec2(1.0f, 1.0f);
 }
 
 CollisionShape::~CollisionShape()
@@ -42,7 +43,12 @@ CollisionShape::~CollisionShape()
 
 void CollisionShape::setPosition(Vec2 newPosition)
 {
-	this->shapeOrigin = newPosition;
+	this->position = newPosition;
+}
+
+void CollisionShape::setRotation(float newRotation)
+{
+	this->rotation = newRotation;
 }
 
 void CollisionShape::setScale(Vec2 newScale)
@@ -50,9 +56,19 @@ void CollisionShape::setScale(Vec2 newScale)
 	this->scale = newScale;
 }
 
-void CollisionShape::setRotation(float newRotation)
+math::Vec2 CollisionShape::getPosition() const
 {
-	this->rotation = newRotation;
+	return this->position;
+}
+
+f32 CollisionShape::getRotation() const
+{
+	return this->rotation;
+}
+
+math::Vec2 CollisionShape::getScale() const
+{
+	return this->scale;
 }
 
 u32 CollisionShape::detectCollision(CollisionShape *polygon, Contact *contact)
