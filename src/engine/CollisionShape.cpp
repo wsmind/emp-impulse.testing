@@ -55,43 +55,55 @@ void CollisionShape::setRotation(float newRotation)
 	this->rotation = newRotation;
 }
 
-bool CollisionShape::detectCollision(CollisionShape *polygon, Contact *contact)
+u32 CollisionShape::detectCollision(CollisionShape *polygon, Contact *contact)
 {
-	bool found = false;
+	Vec2 maxNormal;
+	Vec2 maxPoint;
+	float maxDistance = -1.0f;
+	int intersectionCount = 0;
+	
+	// for each point of polygon
 	Vec2 normal;
 	float distance;
 	Vec2 point;
-	
-	// for each point of polygon
 	for ( unsigned int i = 0 ; i < polygon->points.size(); i++)
 	{
 		point = polygon->points[i];
-		found = this->isInside(point, &normal, &distance);
-		if (found)
-			break;
-	}
-	
-	if (!found)
-	{
-		for ( unsigned int i = 0 ; i < this->points.size(); i++)
+		if (this->isInside(point, &normal, &distance))
 		{
-			point = this->points[i];
-			found = polygon->isInside(point, &normal, &distance);
-			normal = -normal;
-			if (found)
-				break;
+			intersectionCount++;
+			if (distance > maxDistance)
+			{
+				maxNormal = normal;
+				maxPoint = point;
+				maxDistance = distance;
+			}
 		}
 	}
 	
-	if (found)
+	for ( unsigned int i = 0 ; i < this->points.size(); i++)
 	{
-		contact->contactPoint = point;
-		contact->normal = normal;
-		contact->interpenetration = distance;
-		return true;
+		point = this->points[i];
+		if(polygon->isInside(point, &normal, &distance))
+		{
+			intersectionCount++;
+			if (distance > maxDistance)
+			{
+				maxNormal = -normal;
+				maxPoint = point;
+				maxDistance = distance;
+			}
+		}
 	}
 	
-	return false;
+	if (intersectionCount > 0)
+	{
+		contact->contactPoint = maxPoint;
+		contact->normal = maxNormal;
+		contact->interpenetration = maxDistance;
+	}
+	
+	return intersectionCount;
 }
 
 bool CollisionShape::isInside(Vec2 point, Vec2 *normal, float *distance)

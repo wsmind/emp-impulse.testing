@@ -26,14 +26,10 @@
 #include <common.hpp>
 #include <math/Vec2.hpp>
 
-IMPULSE_FORWARD_DECLARE1(engine, CollisionShape);
-
 namespace engine {
 
 struct Contact
 {
-	CollisionShape *polygon1;
-	CollisionShape *polygon2;
 	math::Vec2 contactPoint;
 	math::Vec2 normal;
 	float interpenetration;
