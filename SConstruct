@@ -21,6 +21,7 @@
 ################################################################################
 
 import os
+import sys
 import build
 
 ################################################################
@@ -42,6 +43,7 @@ buildVariables.Add(BoolVariable("DEBUG", "If true, build in debug configuration"
 buildVariables.Add(BoolVariable("FORCE_MINGW", "When both MinGW and VC++ are installed, force the use of the MinGW compiler instead of the default (windows only)", False))
 buildVariables.Add(BoolVariable("DISABLE_GRAPH", "Disable dependency graph generation", False))
 buildVariables.Add(PathVariable("DEPENDENCY_PACK_HOME", "Impulse dependency pack location (windows-only)", None))
+buildVariables.Add(PathVariable("BOOST_INCLUDE_PATH", "Boost include location (macosx-only)", None))
 
 ##############################################################################
 # Variable value extraction (nasty, should be updated when the API evolves)  #
@@ -69,6 +71,7 @@ baseEnvironment = Environment(tools = baseTools, variables = buildVariables)
 # additional variables
 baseEnvironment["OSNAME"] = os.name
 baseEnvironment["SYSPATH"] = os.environ["PATH"].split(os.pathsep)
+baseEnvironment["SYSPLATFORM"] = sys.platform
 
 if baseEnvironment["CC"] == "cl":
 	baseEnvironment.AppendUnique(CPPFLAGS = ["/EHsc"])
