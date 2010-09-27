@@ -69,6 +69,13 @@ class boost_integer(build.Component):
 	
 	def __init__(self):
 		build.Component.__init__(self, "boost-integer", ["impulse-dependency-pack"])
+	
+	def appendUsage(self, env):
+		if env["SYSPLATFORM"] == "darwin":
+			if "BOOST_INCLUDE_PATH" not in env:
+				print "You must specify BOOST_INCLUDE_PATH on the mac platform !"
+				env.Exit(1)
+			env.AppendUnique(CPPPATH = ["$BOOST_INCLUDE_PATH"])
 
 walker.declareComponent(boost_integer())
 
@@ -88,7 +95,10 @@ class sfml(build.Component):
 			PrepackageExternalDll("openal32.dll", env)
 	
 	def appendUsage(self, env):
-		env.AppendUnique(LIBS = ["sfml-system", "sfml-window", "sfml-graphics", "sfml-audio"])
+		if env["SYSPLATFORM"] == "darwin":
+			env.AppendUnique(FRAMEWORKS = ['OpenGL', 'sfml-window', 'sfml-system', 'sfml-graphics'])
+		else:
+			env.AppendUnique(LIBS = ["sfml-system", "sfml-window", "sfml-graphics", "sfml-audio"])
 
 walker.declareComponent(sfml())
 
