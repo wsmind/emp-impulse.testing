@@ -22,6 +22,7 @@
 
 #include <engine/CollisionShape.hpp>
 #include <cmath>
+#include <iostream>
 
 using namespace math;
 
@@ -56,15 +57,47 @@ void CollisionShape::setRotation(float newRotation)
 
 bool CollisionShape::detectCollision(CollisionShape *polygon, Contact *contact)
 {
+	bool found = false;
+	Vec2 normal;
+	float distance;
+	Vec2 point;
+	
 	// for each point of polygon
-	return true;
+	for ( unsigned int i = 0 ; i < polygon->points.size(); i++)
+	{
+		point = polygon->points[i];
+		found = this->isInside(point, &normal, &distance);
+		if (found)
+			break;
+	}
+	
+	if (!found)
+	{
+		for ( unsigned int i = 0 ; i < this->points.size(); i++)
+		{
+			point = this->points[i];
+			found = polygon->isInside(point, &normal, &distance);
+			normal = -normal;
+			if (found)
+				break;
+		}
+	}
+	
+	if (found)
+	{
+		contact->contactPoint = point;
+		contact->normal = normal;
+		contact->interpenetration = distance;
+		return true;
+	}
+	
+	return false;
 }
 
-bool CollisionShape::isInside(Vec2 point, Vec2 *edgeStart, Vec2 *edgeEnd, float *distance)
+bool CollisionShape::isInside(Vec2 point, Vec2 *normal, float *distance)
 {
-	//*edgeStart = Vec2(0.0f, 0.0f);
-	//*edgeEnd = Vec2(0.0f, 0.0f);
-	//*distance = INFINITY;
+	*normal = Vec2(0.0f, 0.0f);
+	*distance = INFINITY;
 	
 	for(unsigned int i = 0; i < this->points.size(); i++)
 	{
@@ -75,8 +108,19 @@ bool CollisionShape::isInside(Vec2 point, Vec2 *edgeStart, Vec2 *edgeEnd, float 
 		Vec2 relPoint = point - start;
 		
 		if (edge.area(relPoint) < 0.0f)
-		{
 			return false;
+		
+		// Compute the normal
+		Vec2 n = Vec2(edge.y, -edge.x).normalize();
+		//std::cout << "n: " << n << std::endl;
+		
+		// compute distance between the point and the edge
+		float d = fabs(relPoint.dot(n));
+		//std::cout << "d: " << d << std::endl;
+		if (d < *distance)
+		{
+			*distance = d;
+			*normal = n;
 		}
 	}
 	return true;

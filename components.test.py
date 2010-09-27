@@ -91,7 +91,7 @@ class test_engine(build.Component):
 		build.Component.__init__(self, "test-engine", ["peel", "impulse-engine"])
 	
 	def appendArtifacts(self, env):
-		env.Program("bin/test/shape", "build/test/engine/shape.cpp")
+		env.Program("bin/test/engine-shape", "build/test/engine/shape.cpp")
 
 walker.declareComponent(test_engine())
 

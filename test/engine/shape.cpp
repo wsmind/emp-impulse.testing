@@ -28,21 +28,45 @@ using namespace engine;
 
 int main()
 {
-	std::vector<math::Vec2> points;
-	points.push_back(math::Vec2(1.0f, 1.0f));
-	points.push_back(math::Vec2(-3.0f, 4.2f));
-	points.push_back(math::Vec2(-4.0, -10.0f));
-	CollisionShape shape(points);
+	std::cout << "Plop" << std::endl;
+	
+	std::vector<math::Vec2> points1;
+	points1.push_back(math::Vec2(1.0f, 1.0f));
+	points1.push_back(math::Vec2(-3.0f, 4.2f));
+	points1.push_back(math::Vec2(-4.0, -10.0f));
+	CollisionShape shape1(points1);
 	
 	math::Vec2 outsider = math::Vec2(12.0f, 12.0f);
 	math::Vec2 insider = math::Vec2(0.5f, 0.5f);
 	math::Vec2 borderer = math::Vec2(1.0f, 1.0f);
 	
-	CHECK(shape.isInside(outsider, NULL, NULL, NULL) == false);
-	CHECK(shape.isInside(insider, NULL, NULL, NULL) == true);
-	CHECK(shape.isInside(borderer, NULL, NULL, NULL) == true);
+	/*CHECK(shape1.isInside(outsider, NULL, NULL) == false);
+	CHECK(shape1.isInside(insider, NULL, NULL) == true);
+	CHECK(shape1.isInside(borderer, NULL, NULL) == true);*/
 	
-	std::cout << "Plop" << std::endl;
+	std::vector<math::Vec2> points2;
+	points2.push_back(math::Vec2(1.0f, -1.0f));
+	points2.push_back(math::Vec2(3.0f, 1.0f));
+	points2.push_back(math::Vec2(-1.0f, 1.0f));
+	points2.push_back(math::Vec2(-1.0f, -1.0f));
+	CollisionShape shape2(points2);
+	
+	math::Vec2 ins[] = {
+		math::Vec2(0.0f, -0.5f),
+		math::Vec2(1.5f, 0.0f),
+		math::Vec2(-0.8f, 0.6f)
+	};
+	for (int i = 0; i < 3; i++)
+	{
+		math::Vec2 normal;
+		float distance;
+		bool result = shape2.isInside(ins[i], &normal, &distance);
+		CHECK(result == true);
+		std::cout << "point: " << ins[i] << std::endl;
+		std::cout << "normal: " << normal << std::endl;
+		std::cout << "distance: " << distance << std::endl;
+	}
+	
 	return 0;
 }
 

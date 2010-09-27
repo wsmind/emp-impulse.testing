@@ -39,7 +39,7 @@ class CollisionShape
 		void setRotation(float newRotation);
 		void setScale(math::Vec2 newScale);
 		bool detectCollision(CollisionShape *polygon, Contact *contact);
-		bool isInside(math::Vec2 point, math::Vec2 *edgeStart, math::Vec2 *edgeEnd, float *distance);
+		bool isInside(math::Vec2 point, math::Vec2 *normal, float *distance);
 		
 	private:
 		std::vector<math::Vec2> points;
