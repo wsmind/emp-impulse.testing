@@ -81,6 +81,7 @@ class test_math(build.Component):
 	def appendArtifacts(self, env):
 		env.Program("bin/test/auto-math-random", "build/test/math/auto-random.cpp")
 		env.Program("bin/test/auto-math-vec2", "build/test/math/auto-vec2.cpp")
+		env.Program("bin/test/auto-math-mat33", "build/test/math/auto-mat33.cpp")
 
 walker.declareComponent(test_math())
 
