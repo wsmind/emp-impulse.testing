@@ -32,20 +32,48 @@ namespace engine {
 class AnimationSequence;
 
 /**
- * \class
+ * \class AnimationData
  * \author Jonathan Giroux
  *
  * \brief The AnimationData class holds animation data.
+ *
+ * Animation data contain a list of AnimationSequence objects.
+ *
+ * The animation data file is created by the animation exporter tool.
+ *
+ * AnimationData object is initialized with load(), and on success, has to be
+ * released with unload(). Do not use an uninitialized object to create
+ * AnimationState objects.
  */
 class AnimationData
 {
 public:
 
+	/**
+	 * \brief Type for the sequence map.
+	 */
 	typedef std::map<std::string, AnimationSequence *> SequenceMap;
+
+	/**
+	 * \brief Sequence map.
+	 *
+	 * The key is the sequence name.
+	 */
 	SequenceMap sequences;
 
+	/**
+	 * \brief Loads an animation data file.
+	 * \param filename file name.
+	 * \return true if loaded, false otherwise.
+	 *
+	 * The animation data file have to be created using the animation exporter
+	 * tool. No validity check is made.
+	 */
 	bool load(const std::string & filename);
 
+	/**
+	 * \brief Unloads
+	 */
 	void unload();
 };
 

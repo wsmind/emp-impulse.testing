@@ -33,8 +33,12 @@ namespace engine {
 /**
  * \author Jonathan Giroux
  *
- * \brief The AnimationRect struct defines a single animation frame
- * sub-rectangle.
+ * \brief The AnimationRect struct defines a single animation frame.
+ *
+ * A frame contains:
+ * \li a rectangle, defining the position of the frame image inside the
+ * animation image.
+ * \li an offset, for the sprite to stay in place.
  */
 struct AnimationRect
 {
@@ -48,7 +52,14 @@ struct AnimationRect
 	 */
 	struct
 	{
+		/**
+		 * \brief X offset.
+		 */
 		i32 x;
+
+		/**
+		 * \brief Y offset.
+		 */
 		i32 y;
 	} offset;
 };
