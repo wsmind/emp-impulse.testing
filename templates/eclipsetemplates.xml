@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><templates><template autoinsert="false" context="org.eclipse.cdt.core.cxxHeader.contenttype_context" deleted="false" description="Header template used within the Impulse project." enabled="true" name="Impulse .hpp">/*******************************************************************************
+ *                                                                             *
+ * This file is part of the EMP Impulse project                                *
+ *                                                                             *
+ * Copyright (C) 2010 ElectroMagnetic Potatoes (EMP)                           *
+ * See the AUTHORS file for more information.                                  *
+ *                                                                             *
+ * This program is free software: you can redistribute it and/or modify        *
+ * it under the terms of the GNU General Public License as published by        *
+ * the Free Software Foundation, either version 3 of the License, or           *
+ * (at your option) any later version.                                         *
+ *                                                                             *
+ * This program is distributed in the hope that it will be useful,             *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of              *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the               *
+ * GNU General Public License for more details.                                *
+ *                                                                             *
+ * You should have received a copy of the GNU General Public License           *
+ * along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.       *
+ *                                                                             *
+ ******************************************************************************/
+
+#ifndef __${include_guard_symbol}_
+#define __${include_guard_symbol}_
+
+#endif // __${include_guard_symbol}_
+</template><template autoinsert="false" context="org.eclipse.cdt.core.cxxHeader.contenttype_context" deleted="false" description="Source (using inline or template) template used within the Impulse project." enabled="true" name="Impulse .hpp inline and template">/*******************************************************************************
+ *                                                                             *
+ * This file is part of the EMP Impulse project                                *
+ *                                                                             *
+ * Copyright (C) 2010 ElectroMagnetic Potatoes (EMP)                           *
+ * See the AUTHORS file for more information.                                  *
+ *                                                                             *
+ * This program is free software: you can redistribute it and/or modify        *
+ * it under the terms of the GNU General Public License as published by        *
+ * the Free Software Foundation, either version 3 of the License, or           *
+ * (at your option) any later version.                                         *
+ *                                                                             *
+ * This program is distributed in the hope that it will be useful,             *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of              *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the               *
+ * GNU General Public License for more details.                                *
+ *                                                                             *
+ * You should have received a copy of the GNU General Public License           *
+ * along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.       *
+ *                                                                             *
+ ******************************************************************************/
+
+</template><template autoinsert="false" context="org.eclipse.cdt.core.cxxSource.contenttype_context" deleted="false" description="Source template used within the Impulse project." enabled="true" name="Impulse .cpp">/*******************************************************************************
+ *                                                                             *
+ * This file is part of the EMP Impulse project                                *
+ *                                                                             *
+ * Copyright (C) 2010 ElectroMagnetic Potatoes (EMP)                           *
+ * See the AUTHORS file for more information.                                  *
+ *                                                                             *
+ * This program is free software: you can redistribute it and/or modify        *
+ * it under the terms of the GNU General Public License as published by        *
+ * the Free Software Foundation, either version 3 of the License, or           *
+ * (at your option) any later version.                                         *
+ *                                                                             *
+ * This program is distributed in the hope that it will be useful,             *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of              *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the               *
+ * GNU General Public License for more details.                                *
+ *                                                                             *
+ * You should have received a copy of the GNU General Public License           *
+ * along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.       *
+ *                                                                             *
+ ******************************************************************************/
+
+#include &lt;${file_base}.hpp&gt;
+
+</template></templates>
