@@ -28,7 +28,6 @@
 
 #include <common.hpp>
 #include <engine/AnimationRect.hpp>
-#include <engine/AnimationSequence.hpp>
 
 namespace engine {
 
@@ -65,8 +64,6 @@ private:
 	AnimationRect rect;
 
 	f32 time;
-
-	void addEvents(const AnimationSequence::EventMap *events, f32 timeBegin, f32 timeEnd);
 };
 
 }
