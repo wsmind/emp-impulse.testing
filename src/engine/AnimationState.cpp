@@ -20,7 +20,6 @@
  *                                                                             *
  ******************************************************************************/
 
-#include <iostream> //TODO
 #include <engine/AnimationSequence.hpp>
 #include <engine/AnimationData.hpp>
 #include <engine/AnimationState.hpp>
@@ -50,12 +49,18 @@ void AnimationState::update(f32 elapsedTime)
 
 	while (this->time > sequence->totalDuration)
 	{
-		this->addEvents(&sequence->events, baseTime, sequence->totalDuration);
+		for (AnimationSequence::EventMap::const_iterator it = sequence->events.lower_bound(baseTime); it != sequence->events.upper_bound(sequence->totalDuration); ++it)
+		{
+			this->events.push(it->second);
+		}
 		this->time -= sequence->totalDuration;
 		baseTime = 0;
 	}
 
-	this->addEvents(&sequence->events, baseTime, this->time);
+	for (AnimationSequence::EventMap::const_iterator it = sequence->events.lower_bound(baseTime); it != sequence->events.lower_bound(this->time); ++it)
+	{
+		this->events.push(it->second);
+	}
 
 	i32 index = this->time / sequence->frameDuration;
 	this->rect = sequence->rects[index];
@@ -77,14 +82,6 @@ bool AnimationState::hasEvent(std::string *event)
 	this->events.pop();
 
 	return true;
-}
-
-void AnimationState::addEvents(const AnimationSequence::EventMap *events, f32 timeBegin, f32 timeEnd)
-{
-	for (AnimationSequence::EventMap::const_iterator it = events->lower_bound(timeBegin); it != events->upper_bound(timeEnd); ++it)
-	{
-		this->events.push(it->second);
-	}
 }
 
 }
