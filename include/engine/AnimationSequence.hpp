@@ -37,20 +37,50 @@ struct AnimationRect;
  *
  * \brief The AnimationSequence class defines a sequence of rectangles and
  * events.
+ *
+ * A sequence is a timeline with frames, where each frame defines a rectangle.
+ * Frames share the same duration.
+ *
+ * A sequence also defines a list of events, each of them associated with a
+ * time. These times do not need to be a multiple of the frame duration. They
+ * have to be in range [0, totalDuration] to be handled.
  */
 struct AnimationSequence
 {
 public:
 
+	/**
+	 * \brief Type for the event list.
+	 */
 	typedef std::multimap<f32, std::string> EventMap;
+
+	/**
+	 * \brief Event list.
+	 */
 	EventMap events;
 
+	/**
+	 * \brief Rectangle array.
+	 */
 	AnimationRect *rects;
 
+	/**
+	 * \brief Rectangle count.
+	 *
+	 * Size of rects.
+	 */
 	u32 rectCount;
 
+	/**
+	 * \brief Frame duration.
+	 */
 	f32 frameDuration;
 
+	/**
+	 * \brief Total duration.
+	 *
+	 * Equal to frameDuration * rectCount.
+	 */
 	f32 totalDuration;
 };
 

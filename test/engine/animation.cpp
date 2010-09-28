@@ -89,7 +89,6 @@ int main()
 
 		// Display window contents on screen
 		window.Display();
-
 	}
 
 	data.unload();
