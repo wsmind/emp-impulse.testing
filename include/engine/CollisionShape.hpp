@@ -26,6 +26,7 @@
 #include <common.hpp>
 #include <vector>
 #include <math/Vec2.hpp>
+#include <math/Mat33.hpp>
 #include <engine/Contact.hpp>
 
 namespace engine {
@@ -48,11 +49,15 @@ class CollisionShape
 		bool isInside(math::Vec2 point, math::Vec2 *normal, float *distance);
 		
 	private:
+		void rebuildTransform();
+		
 		std::vector<math::Vec2> points;
 		
 		math::Vec2 position;
 		float rotation;
 		math::Vec2 scale;
+		
+		math::Mat33 transform;
 };
 
 

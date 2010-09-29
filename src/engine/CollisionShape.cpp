@@ -35,6 +35,8 @@ CollisionShape::CollisionShape(std::vector<Vec2> points)
 	this->position = Vec2(0.0f, 0.0f);
 	this->rotation = 0.0f;
 	this->scale = Vec2(1.0f, 1.0f);
+	
+	this->rebuildTransform();
 }
 
 CollisionShape::~CollisionShape()
@@ -44,16 +46,19 @@ CollisionShape::~CollisionShape()
 void CollisionShape::setPosition(Vec2 newPosition)
 {
 	this->position = newPosition;
+	this->rebuildTransform();
 }
 
 void CollisionShape::setRotation(float newRotation)
 {
 	this->rotation = newRotation;
+	this->rebuildTransform();
 }
 
 void CollisionShape::setScale(Vec2 newScale)
 {
 	this->scale = newScale;
+	this->rebuildTransform();
 }
 
 math::Vec2 CollisionShape::getPosition() const
@@ -78,36 +83,50 @@ u32 CollisionShape::detectCollision(CollisionShape *polygon, Contact *contact)
 	float maxDistance = -1.0f;
 	int intersectionCount = 0;
 	
-	// for each point of polygon
 	Vec2 normal;
 	float distance;
 	Vec2 point;
+	
+	// for each point of polygon
+	Mat33 polygonLocalToThisLocal = this->transform.inverse() * polygon->transform;
+	Mat33 normalMatrixThis = this->transform;
+	normalMatrixThis.v[2] = 0.0f;
+	normalMatrixThis.v[5] = 0.0f;
 	for ( unsigned int i = 0 ; i < polygon->points.size(); i++)
 	{
-		point = polygon->points[i];
+		point = polygonLocalToThisLocal * polygon->points[i];
 		if (this->isInside(point, &normal, &distance))
 		{
 			intersectionCount++;
 			if (distance > maxDistance)
 			{
-				maxNormal = normal;
-				maxPoint = point;
-				maxDistance = distance;
+				maxNormal = normalMatrixThis * normal;
+				float norm = maxNormal.norm();
+				maxPoint = this->transform * point;
+				maxDistance = distance * norm;
+				maxNormal = maxNormal / norm;
 			}
 		}
 	}
 	
+	// for each point of this
+	Mat33 thisLocalToPolygonLocal = polygon->transform.inverse() * this->transform;
+	Mat33 normalMatrixPolygon = polygon->transform;
+	normalMatrixPolygon.v[2] = 0.0f;
+	normalMatrixPolygon.v[5] = 0.0f;
 	for ( unsigned int i = 0 ; i < this->points.size(); i++)
 	{
-		point = this->points[i];
+		point = thisLocalToPolygonLocal * this->points[i];
 		if(polygon->isInside(point, &normal, &distance))
 		{
 			intersectionCount++;
 			if (distance > maxDistance)
 			{
-				maxNormal = -normal;
-				maxPoint = point;
-				maxDistance = distance;
+				maxNormal = normalMatrixPolygon * -normal;
+				float norm = maxNormal.norm();
+				maxPoint = polygon->transform * point;
+				maxDistance = distance * norm;
+				maxNormal = maxNormal / norm;
 			}
 		}
 	}
@@ -117,6 +136,8 @@ u32 CollisionShape::detectCollision(CollisionShape *polygon, Contact *contact)
 		contact->contactPoint = maxPoint;
 		contact->normal = maxNormal;
 		contact->interpenetration = maxDistance;
+		std::cout << "Point: " << maxPoint << std::endl;
+		std::cout << "Normal: " << maxNormal << std::endl;
 	}
 	
 	return intersectionCount;
@@ -152,6 +173,27 @@ bool CollisionShape::isInside(Vec2 point, Vec2 *normal, float *distance)
 		}
 	}
 	return true;
+}
+
+void CollisionShape::rebuildTransform()
+{
+	Mat33 translation;
+	translation.v[2] = this->position.x;
+	translation.v[5] = this->position.y;
+	
+	Mat33 rotation;
+	float rcos = cosf(this->rotation * M_PI / 180.0f);
+	float rsin = sinf(this->rotation * M_PI / 180.0f);
+	rotation.v[0] = rcos;
+	rotation.v[1] = rsin;
+	rotation.v[3] = -rsin;
+	rotation.v[4] = rcos;
+	
+	Mat33 scale;
+	scale.v[0] = this->scale.x;
+	scale.v[4] = this->scale.y;
+	
+	this->transform = translation * rotation * scale;
 }
 
 } //engine namespace
