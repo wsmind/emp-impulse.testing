@@ -47,7 +47,7 @@ static u32 readU32(std::ifstream & file)
 static f32 readF32(std::ifstream & file)
 {
 	u32 val = readU32(file);
-	return *reinterpret_cast<f32*>(&val);
+	return *(f32 *)(void *)&val;
 }
 
 static std::string readString(std::ifstream & file)
