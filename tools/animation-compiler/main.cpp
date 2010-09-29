@@ -1,5 +1,6 @@
 #include <common.hpp>
 #include <cstdlib>
+#include <cstring>
 #include <list>
 #include <map>
 #include <string>
