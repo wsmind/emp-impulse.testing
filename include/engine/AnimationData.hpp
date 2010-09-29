@@ -23,13 +23,13 @@
 #ifndef __ANIMATIONDATA_HPP__
 #define __ANIMATIONDATA_HPP__
 
-#include <map>
-
 #include <common.hpp>
+#include <map>
+#include <string>
+
+IMPULSE_FORWARD_DECLARE1(engine, AnimationSequence)
 
 namespace engine {
-
-class AnimationSequence;
 
 /**
  * \class AnimationData
@@ -47,36 +47,41 @@ class AnimationSequence;
  */
 class AnimationData
 {
-public:
+	public:
 
-	/**
-	 * \brief Type for the sequence map.
-	 */
-	typedef std::map<std::string, AnimationSequence *> SequenceMap;
+		/**
+		 * \brief Loads an animation data file.
+		 * \param filename file name.
+		 * \return true if loaded, false otherwise.
+		 *
+		 * The animation data file have to be created using the animation exporter
+		 * tool. No validity check is made.
+		 */
+		bool load(const std::string & filename);
 
-	/**
-	 * \brief Sequence map.
-	 *
-	 * The key is the sequence name.
-	 */
-	SequenceMap sequences;
+		/**
+		 * \brief Gets a sequence from the animation.
+		 * \param name sequence name.
+		 * \return pointer to the sequence, or NULL if there is no such
+		 * sequence.
+		 */
+		const AnimationSequence *getSequence(const std::string & name) const;
+		
+	private:
 
-	/**
-	 * \brief Loads an animation data file.
-	 * \param filename file name.
-	 * \return true if loaded, false otherwise.
-	 *
-	 * The animation data file have to be created using the animation exporter
-	 * tool. No validity check is made.
-	 */
-	bool load(const std::string & filename);
+		/**
+		 * \brief Type for the sequence map.
+		 */
+		typedef std::map<std::string, AnimationSequence *> SequenceMap;
 
-	/**
-	 * \brief Unloads
-	 */
-	void unload();
+		/**
+		 * \brief Sequence map.
+		 *
+		 * The key is the sequence name.
+		 */
+		SequenceMap sequences;
 };
 
-}
+} // engine namespace
 
 #endif // __ANIMATIONDATA_HPP__

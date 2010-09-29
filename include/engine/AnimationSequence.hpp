@@ -23,16 +23,17 @@
 #ifndef __ANIMATIONSEQUENCE_HPP__
 #define __ANIMATIONSEQUENCE_HPP__
 
+#include <common.hpp>
 #include <map>
+#include <queue>
 #include <string>
 
-#include <common.hpp>
+IMPULSE_FORWARD_DECLARE1(engine, AnimationRect)
 
 namespace engine {
 
-struct AnimationRect;
-
 /**
+ * \class AnimationSequence
  * \author Jonathan Giroux
  *
  * \brief The AnimationSequence class defines a sequence of rectangles and
@@ -45,45 +46,88 @@ struct AnimationRect;
  * time. These times do not need to be a multiple of the frame duration. They
  * have to be in range [0, totalDuration] to be handled.
  */
-struct AnimationSequence
+class AnimationSequence
 {
-public:
+	public:
 
-	/**
-	 * \brief Type for the event list.
-	 */
-	typedef std::multimap<f32, std::string> EventMap;
+		/**
+		 * \brief Constructs an animation sequence.
+		 * 
+		 */
+		AnimationSequence(u32 rectCount, f32 frameDuration);
 
-	/**
-	 * \brief Event list.
-	 */
-	EventMap events;
+		/**
+		 * \brief Destructs the animation sequence.
+		 */
+		~AnimationSequence();
+		
+		/**
+		 * \brief Sets a rectangle.
+		 * \param index rectangle index.
+		 * \param rect rectangle.
+		 */
+		void setRect(u32 index, const AnimationRect *rect);
 
-	/**
-	 * \brief Rectangle array.
-	 */
-	AnimationRect *rects;
+		/**
+		 * \brief Gets a rectangle.
+		 * \param index rectangle index.
+		 * \returns rectangle.
+		 */
+		const AnimationRect *getRect(u32 index) const;
+		
+		/**
+		 * \brief Adds an event to the sequence.
+		 * \param time occurence time.
+		 * \param event event.
+		 */
+		void addEvent(f32 time, const std::string & event);
 
-	/**
-	 * \brief Rectangle count.
-	 *
-	 * Size of rects.
-	 */
-	u32 rectCount;
+		/**
+		 * \brief Updates animation state.
+		 * \param elapsedTime elapsed time since last call.
+		 * \param[in,out] time playing time.
+		 * \param[out] rectIndex rectangle index.
+		 * \param events event queue.
+		 */
+		void update(f32 elapsedTime, f32 *time, u32 *rectIndex, std::queue<std::string> *events) const;
+		
+	private:
 
-	/**
-	 * \brief Frame duration.
-	 */
-	f32 frameDuration;
+		/**
+		 * \brief Type for the event list.
+		 */
+		typedef std::multimap<f32, std::string> EventMap;
 
-	/**
-	 * \brief Total duration.
-	 *
-	 * Equal to frameDuration * rectCount.
-	 */
-	f32 totalDuration;
+		/**
+		 * \brief Event list.
+		 */
+		EventMap events;
+
+		/**
+		 * \brief Rectangle array.
+		 */
+		AnimationRect *rects;
+
+		/**
+		 * \brief Rectangle count.
+		 *
+		 * Size of rects.
+		 */
+		u32 rectCount;
+
+		/**
+		 * \brief Frame duration.
+		 */
+		f32 frameDuration;
+
+		/**
+		 * \brief Total duration.
+		 *
+		 * Equal to frameDuration * rectCount.
+		 */
+		f32 totalDuration;
 };
 
-}
+} // engine namespace
 
 #endif // __ANIMATIONSEQUENCE_HPP__
