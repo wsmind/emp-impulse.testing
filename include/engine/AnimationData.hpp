@@ -50,11 +50,6 @@ class AnimationData
 	public:
 
 		/**
-		 * \brief Destructs the animation data.
-		 */
-		~AnimationData();
-		
-		/**
 		 * \brief Loads an animation data file.
 		 * \param filename file name.
 		 * \return true if loaded, false otherwise.
@@ -85,7 +80,6 @@ class AnimationData
 		 * The key is the sequence name.
 		 */
 		SequenceMap sequences;
-
 };
 
 } // engine namespace

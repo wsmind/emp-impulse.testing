@@ -25,6 +25,7 @@
 
 #include <common.hpp>
 #include <map>
+#include <queue>
 #include <string>
 
 IMPULSE_FORWARD_DECLARE1(engine, AnimationRect)
@@ -32,6 +33,7 @@ IMPULSE_FORWARD_DECLARE1(engine, AnimationRect)
 namespace engine {
 
 /**
+ * \class AnimationSequence
  * \author Jonathan Giroux
  *
  * \brief The AnimationSequence class defines a sequence of rectangles and
@@ -44,10 +46,53 @@ namespace engine {
  * time. These times do not need to be a multiple of the frame duration. They
  * have to be in range [0, totalDuration] to be handled.
  */
-struct AnimationSequence
+class AnimationSequence
 {
 	public:
+
+		/**
+		 * \brief Constructs an animation sequence.
+		 * 
+		 */
+		AnimationSequence(u32 rectCount, f32 frameDuration);
+
+		/**
+		 * \brief Destructs the animation sequence.
+		 */
+		~AnimationSequence();
 		
+		/**
+		 * \brief Sets a rectangle.
+		 * \param index rectangle index.
+		 * \param rect rectangle.
+		 */
+		void setRect(u32 index, const AnimationRect *rect);
+
+		/**
+		 * \brief Gets a rectangle.
+		 * \param index rectangle index.
+		 * \returns rectangle.
+		 */
+		const AnimationRect *getRect(u32 index) const;
+		
+		/**
+		 * \brief Adds an event to the sequence.
+		 * \param time occurence time.
+		 * \param event event.
+		 */
+		void addEvent(f32 time, const std::string & event);
+
+		/**
+		 * \brief Updates animation state.
+		 * \param elapsedTime elapsed time since last call.
+		 * \param[in,out] time playing time.
+		 * \param[out] rectIndex rectangle index.
+		 * \param events event queue.
+		 */
+		void update(f32 elapsedTime, f32 *time, u32 *rectIndex, std::queue<std::string> *events) const;
+		
+	private:
+
 		/**
 		 * \brief Type for the event list.
 		 */

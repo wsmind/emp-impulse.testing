@@ -141,12 +141,12 @@ class AnimationState
 		/**
 		 * \brief Current sequence.
 		 */
-		std::string currentSequence;
+		const AnimationSequence *currentSequence;
 
 		/**
 		 * \brief Current rectangle;
 		 */
-		AnimationRect rect;
+		u32 rectIndex;
 
 		/**
 		 * \brief Current animation time.

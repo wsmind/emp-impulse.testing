@@ -32,43 +32,28 @@ AnimationState::AnimationState(AnimationData *data) : data(data)
 
 void AnimationState::setCurrentSequence(std::string sequence)
 {
-	this->currentSequence = sequence;
+	this->currentSequence = data->getSequence(sequence);
 	this->time = 0;
 }
 
 void AnimationState::update(f32 elapsedTime)
 {
-	const AnimationSequence *sequence = data->getSequence(this->currentSequence);
-	if (sequence == NULL)
+	if (this->currentSequence == NULL)
 	{
 		return;
 	}
 
-	f32 baseTime = this->time;
-	this->time += elapsedTime;
-	
-	while (this->time > sequence->totalDuration)
-	{
-		for (AnimationSequence::EventMap::const_iterator it = sequence->events.lower_bound(baseTime); it != sequence->events.upper_bound(sequence->totalDuration); ++it)
-		{
-			this->events.push(it->second);
-		}
-		this->time -= sequence->totalDuration;
-		baseTime = 0;
-	}
-
-	for (AnimationSequence::EventMap::const_iterator it = sequence->events.lower_bound(baseTime); it != sequence->events.lower_bound(this->time); ++it)
-	{
-		this->events.push(it->second);
-	}
-
-	i32 index = this->time / sequence->frameDuration;
-	this->rect = sequence->rects[index];
+	this->currentSequence->update(elapsedTime, &this->time, &this->rectIndex, &this->events);
 }
 
 const AnimationRect *AnimationState::getRect() const
 {
-	return &this->rect;
+	if (this->currentSequence == NULL)
+	{
+		return NULL;
+	}
+	
+	return this->currentSequence->getRect(this->rectIndex);
 }
 
 bool AnimationState::hasEvent(std::string *event)

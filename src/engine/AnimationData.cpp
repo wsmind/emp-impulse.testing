@@ -29,14 +29,6 @@
 
 namespace engine {
 
-AnimationData::~AnimationData()
-{
-	for (SequenceMap::iterator it = this->sequences.begin(); it != this->sequences.end(); ++it)
-	{
-		delete it->second->rects;
-	}
-}
-
 bool AnimationData::load(const std::string & filename)
 {
 	DataFile file;
@@ -52,17 +44,13 @@ bool AnimationData::load(const std::string & filename)
 	{
 		std::string name = file.readString();
 
-		AnimationSequence *sequence = new AnimationSequence;
+		f32 frameDuration = file.readF32();
 
-		sequence->frameDuration = file.readF32();
+		u32 rectCount = file.readU32();
 
-		sequence->rectCount = file.readU32();
+		AnimationSequence *sequence = new AnimationSequence(rectCount, frameDuration);
 
-		sequence->rects = new AnimationRect[sequence->rectCount];
-
-		sequence->totalDuration = sequence->frameDuration * sequence->rectCount;
-
-		for (u32 j = 0; j < sequence->rectCount; ++j)
+		for (u32 j = 0; j < rectCount; ++j)
 		{
 			u32 left = file.readU32();
 			u32 top = file.readU32();
@@ -71,7 +59,8 @@ bool AnimationData::load(const std::string & filename)
 			u32 xOffset = file.readU32();
 			u32 yOffset = file.readU32();
 			
-			sequence->rects[j] = AnimationRect(left, top, right, bottom, xOffset, yOffset);
+			AnimationRect rect(left, top, right, bottom, xOffset, yOffset);
+			sequence->setRect(j, &rect);
 		}
 
 		u32 eventCount = file.readU32();
@@ -80,7 +69,7 @@ bool AnimationData::load(const std::string & filename)
 		{
 			f32 time = file.readF32();
 			std::string event = file.readString();
-			sequence->events.insert(std::pair<f32, std::string>(time, event));
+			sequence->addEvent(time, event);
 		}
 
 		this->sequences[name] = sequence;

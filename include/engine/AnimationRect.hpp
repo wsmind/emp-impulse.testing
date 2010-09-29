@@ -43,20 +43,44 @@ class AnimationRect
 {
 	public:
 		
+		/**
+		 * \brief Constructs an empty animation rectangle.
+		 */
 		AnimationRect();
 		
+		/**
+		 * \brief Constructs an animation rectangle.
+		 */
 		AnimationRect(u32 left, u32 top, u32 right, u32 bottom, u32 xOffset, u32 yOffset);
 		
+		/**
+		 * \brief Gets left coordinate of the rectangle.
+		 */
 		u32 getLeft() const;
-		
+
+		/**
+		 * \brief Gets top coordinate of the rectangle.
+		 */
 		u32 getTop() const;
-		
+
+		/**
+		 * \brief Gets right coordinate of the rectangle.
+		 */
 		u32 getRight() const;
-		
+
+		/**
+		 * \brief Gets bottom coordinate of the rectangle.
+		 */
 		u32 getBottom() const;
-		
+
+		/**
+		 * \brief Gets x coordinate of the offset.
+		 */
 		i32 getXOffset() const;
-		
+
+		/**
+		 * \brief Gets Y coordinate of the offset.
+		 */
 		i32 getYOffset() const;
 		
 	private:
