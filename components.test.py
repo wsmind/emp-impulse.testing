@@ -65,12 +65,23 @@ class test_sfml(build.Component):
 	"""Tests of SFML environment setup"""
 	
 	def __init__(self):
-		build.Component.__init__(self, "test-sfml", ["sfml"])
+		build.Component.__init__(self, "test-sfml", ["peel", "sfml"])
 	
 	def appendArtifacts(self, env):
 		env.Program("bin/test/sfml-basic", "build/test/sfml/basic.cpp")
 
 walker.declareComponent(test_sfml())
+
+class test_lua(build.Component):
+	"""Tests of Lua environment setup"""
+	
+	def __init__(self):
+		build.Component.__init__(self, "test-lua", ["peel", "lua"])
+	
+	def appendArtifacts(self, env):
+		env.Program("bin/test/auto-lua-basic", "build/test/lua/auto-basic.cpp")
+
+walker.declareComponent(test_lua())
 
 class test_math(build.Component):
 	"""Tests for the math package"""
