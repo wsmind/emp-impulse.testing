@@ -23,14 +23,13 @@
 #ifndef __ANIMATIONRECT_HPP__
 #define __ANIMATIONRECT_HPP__
 
-#include <SFML/Graphics/Rect.hpp>
-
 #include <common.hpp>
 #include <math/Vec2.hpp>
 
 namespace engine {
 
 /**
+ * \class AnimationRect
  * \author Jonathan Giroux
  *
  * \brief The AnimationRect struct defines a single animation frame.
@@ -40,30 +39,71 @@ namespace engine {
  * animation image.
  * \li an offset, for the sprite to stay in place.
  */
-struct AnimationRect
+class AnimationRect
 {
-	/**
-	 * \brief Rectangle of the frame inside the animation image.
-	 */
-	sf::Rect<int> rect;
+	public:
+		
+		/**
+		 * \brief Constructs an empty animation rectangle.
+		 */
+		AnimationRect();
+		
+		/**
+		 * \brief Constructs an animation rectangle.
+		 */
+		AnimationRect(u32 left, u32 top, u32 right, u32 bottom, u32 xOffset, u32 yOffset);
+		
+		/**
+		 * \brief Gets left coordinate of the rectangle.
+		 */
+		u32 getLeft() const;
 
-	/**
-	 * \brief Offset of the image relative to the sprite position.
-	 */
-	struct
-	{
+		/**
+		 * \brief Gets top coordinate of the rectangle.
+		 */
+		u32 getTop() const;
+
+		/**
+		 * \brief Gets right coordinate of the rectangle.
+		 */
+		u32 getRight() const;
+
+		/**
+		 * \brief Gets bottom coordinate of the rectangle.
+		 */
+		u32 getBottom() const;
+
+		/**
+		 * \brief Gets x coordinate of the offset.
+		 */
+		i32 getXOffset() const;
+
+		/**
+		 * \brief Gets Y coordinate of the offset.
+		 */
+		i32 getYOffset() const;
+		
+	private:
+		
+		u32 left;
+		
+		u32 top;
+		
+		u32 right;
+		
+		u32 bottom;
+
 		/**
 		 * \brief X offset.
 		 */
-		i32 x;
+		i32 xOffset;
 
 		/**
 		 * \brief Y offset.
 		 */
-		i32 y;
-	} offset;
+		i32 yOffset;
 };
 
-}
+} // engine namespace
 
 #endif // __ANIMATIONRECT_HPP__
