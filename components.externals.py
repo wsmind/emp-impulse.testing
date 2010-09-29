@@ -105,6 +105,6 @@ class lua(build.Component):
 			env.AppendUnique(LINKFLAGS = ["/NODEFAULTLIB:LIBCMT"])
 		
 		if env["OSNAME"] == "posix":
-			end.AppendUnique(CPPPATH = ["/usr/includ/lua5.1"])
+			env.AppendUnique(CPPPATH = ["/usr/includ/lua5.1"])
 
 walker.declareComponent(lua())
