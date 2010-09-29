@@ -20,6 +20,7 @@
  *                                                                             *
  ******************************************************************************/
 
+#include <common.hpp>
 #include <cstdlib>
 #include <iostream>
 #include <SFML/Graphics.hpp>
@@ -48,7 +49,7 @@ int main()
 
 	engine::AnimationState state(&data);
 
-	state.setSequence("bounce");
+	state.setCurrentSequence("bounce");
 
 	sf::RenderWindow window(sf::VideoMode(800, 600, 32), "Animation system");
 	window.SetFramerateLimit(60);
@@ -82,16 +83,15 @@ int main()
 		// Clear the screen (fill it with black color)
 		window.Clear(sf::Color(255, 255, 255));
 
-		sprite.SetSubRect(state.getRect()->rect);
-		sprite.SetPosition(x - state.getRect()->offset.x, y - state.getRect()->offset.y);
+		const engine::AnimationRect *rect = state.getRect();
+		sprite.SetSubRect(sf::IntRect(rect->getLeft(), rect->getTop(), rect->getRight(), rect->getBottom()));
+		sprite.SetPosition(x - rect->getXOffset(), y - rect->getYOffset());
 
 		window.Draw(sprite);
 
 		// Display window contents on screen
 		window.Display();
 	}
-
-	data.unload();
 
 	return EXIT_SUCCESS;
 }

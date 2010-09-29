@@ -23,14 +23,13 @@
 #ifndef __ANIMATIONRECT_HPP__
 #define __ANIMATIONRECT_HPP__
 
-#include <SFML/Graphics/Rect.hpp>
-
 #include <common.hpp>
 #include <math/Vec2.hpp>
 
 namespace engine {
 
 /**
+ * \class AnimationRect
  * \author Jonathan Giroux
  *
  * \brief The AnimationRect struct defines a single animation frame.
@@ -40,30 +39,47 @@ namespace engine {
  * animation image.
  * \li an offset, for the sprite to stay in place.
  */
-struct AnimationRect
+class AnimationRect
 {
-	/**
-	 * \brief Rectangle of the frame inside the animation image.
-	 */
-	sf::Rect<int> rect;
+	public:
+		
+		AnimationRect();
+		
+		AnimationRect(u32 left, u32 top, u32 right, u32 bottom, u32 xOffset, u32 yOffset);
+		
+		u32 getLeft() const;
+		
+		u32 getTop() const;
+		
+		u32 getRight() const;
+		
+		u32 getBottom() const;
+		
+		i32 getXOffset() const;
+		
+		i32 getYOffset() const;
+		
+	private:
+		
+		u32 left;
+		
+		u32 top;
+		
+		u32 right;
+		
+		u32 bottom;
 
-	/**
-	 * \brief Offset of the image relative to the sprite position.
-	 */
-	struct
-	{
 		/**
 		 * \brief X offset.
 		 */
-		i32 x;
+		i32 xOffset;
 
 		/**
 		 * \brief Y offset.
 		 */
-		i32 y;
-	} offset;
+		i32 yOffset;
 };
 
-}
+} // engine namespace
 
 #endif // __ANIMATIONRECT_HPP__
