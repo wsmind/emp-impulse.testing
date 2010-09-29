@@ -23,14 +23,13 @@
 #ifndef __ANIMATIONSEQUENCE_HPP__
 #define __ANIMATIONSEQUENCE_HPP__
 
+#include <common.hpp>
 #include <map>
 #include <string>
 
-#include <common.hpp>
+IMPULSE_FORWARD_DECLARE1(engine, AnimationRect)
 
 namespace engine {
-
-struct AnimationRect;
 
 /**
  * \author Jonathan Giroux
@@ -47,43 +46,43 @@ struct AnimationRect;
  */
 struct AnimationSequence
 {
-public:
+	public:
+		
+		/**
+		 * \brief Type for the event list.
+		 */
+		typedef std::multimap<f32, std::string> EventMap;
 
-	/**
-	 * \brief Type for the event list.
-	 */
-	typedef std::multimap<f32, std::string> EventMap;
+		/**
+		 * \brief Event list.
+		 */
+		EventMap events;
 
-	/**
-	 * \brief Event list.
-	 */
-	EventMap events;
+		/**
+		 * \brief Rectangle array.
+		 */
+		AnimationRect *rects;
 
-	/**
-	 * \brief Rectangle array.
-	 */
-	AnimationRect *rects;
+		/**
+		 * \brief Rectangle count.
+		 *
+		 * Size of rects.
+		 */
+		u32 rectCount;
 
-	/**
-	 * \brief Rectangle count.
-	 *
-	 * Size of rects.
-	 */
-	u32 rectCount;
+		/**
+		 * \brief Frame duration.
+		 */
+		f32 frameDuration;
 
-	/**
-	 * \brief Frame duration.
-	 */
-	f32 frameDuration;
-
-	/**
-	 * \brief Total duration.
-	 *
-	 * Equal to frameDuration * rectCount.
-	 */
-	f32 totalDuration;
+		/**
+		 * \brief Total duration.
+		 *
+		 * Equal to frameDuration * rectCount.
+		 */
+		f32 totalDuration;
 };
 
-}
+} // engine namespace
 
 #endif // __ANIMATIONSEQUENCE_HPP__

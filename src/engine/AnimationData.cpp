@@ -20,72 +20,43 @@
  *                                                                             *
  ******************************************************************************/
 
+#include <engine/AnimationData.hpp>
 #include <iostream>
 #include <fstream>
-
+#include <engine/DataFile.hpp>
 #include <engine/AnimationRect.hpp>
 #include <engine/AnimationSequence.hpp>
-#include <engine/AnimationData.hpp>
-
-static u8 readU8(std::ifstream & file)
-{
-	char c;
-	file.get(c);
-	return (u8)c;
-}
-
-static u32 readU32(std::ifstream & file)
-{
-	u32 val = 0;
-	val |= (u32)((u32)readU8(file) << 24);
-	val |= (u32)((u32)readU8(file) << 16);
-	val |= (u32)((u32)readU8(file) << 8);
-	val |= (u32)((u32)readU8(file) << 0);
-	return val;
-}
-
-static f32 readF32(std::ifstream & file)
-{
-	u32 val = readU32(file);
-	return *(f32 *)(void *)&val;
-}
-
-static std::string readString(std::ifstream & file)
-{
-	char c;
-	i32 len = readU32(file);
-	std::string str;
-	str.reserve(len);
-	for (int i = 0; i < len; ++i)
-	{
-		file.get(c);
-		str.append(1, c);
-	}
-	return str;
-}
 
 namespace engine {
 
+AnimationData::~AnimationData()
+{
+	for (SequenceMap::iterator it = this->sequences.begin(); it != this->sequences.end(); ++it)
+	{
+		delete it->second->rects;
+	}
+}
+
 bool AnimationData::load(const std::string & filename)
 {
-	std::ifstream file(filename.c_str(), std::ios_base::out | std::ios::binary);
+	DataFile file;
 
-	if (!file.is_open())
+	if (!file.load(filename))
 	{
 		return false;
 	}
 
-	u32 sequenceCount = readU32(file);
+	u32 sequenceCount = file.readU32();
 
 	for (u32 i = 0; i < sequenceCount; ++i)
 	{
-		std::string name = readString(file);
+		std::string name = file.readString();
 
 		AnimationSequence *sequence = new AnimationSequence;
 
-		sequence->frameDuration = readF32(file);
+		sequence->frameDuration = file.readF32();
 
-		sequence->rectCount = readU32(file);
+		sequence->rectCount = file.readU32();
 
 		sequence->rects = new AnimationRect[sequence->rectCount];
 
@@ -93,23 +64,22 @@ bool AnimationData::load(const std::string & filename)
 
 		for (u32 j = 0; j < sequence->rectCount; ++j)
 		{
-			AnimationRect *rect = &sequence->rects[j];
-
-			rect->rect.Left = readU32(file);
-			rect->rect.Top = readU32(file);
-			rect->rect.Right = readU32(file);
-			rect->rect.Bottom = readU32(file);
-
-			rect->offset.x = readU32(file);
-			rect->offset.y = readU32(file);
+			u32 left = file.readU32();
+			u32 top = file.readU32();
+			u32 right = file.readU32();
+			u32 bottom = file.readU32();
+			u32 xOffset = file.readU32();
+			u32 yOffset = file.readU32();
+			
+			sequence->rects[j] = AnimationRect(left, top, right, bottom, xOffset, yOffset);
 		}
 
-		u32 eventCount = readU32(file);
+		u32 eventCount = file.readU32();
 
 		for (u32 j = 0; j < eventCount; ++j)
 		{
-			f32 time = readF32(file);
-			std::string event = readString(file);
+			f32 time = file.readF32();
+			std::string event = file.readString();
 			sequence->events.insert(std::pair<f32, std::string>(time, event));
 		}
 
@@ -119,12 +89,16 @@ bool AnimationData::load(const std::string & filename)
 	return true;
 }
 
-void AnimationData::unload()
+const AnimationSequence *AnimationData::getSequence(const std::string & name) const
 {
-	for (SequenceMap::iterator it = this->sequences.begin(); it != this->sequences.end(); ++it)
+	SequenceMap::const_iterator it = this->sequences.find(name);
+	
+	if (it == this->sequences.end())
 	{
-		delete it->second->rects;
+		return NULL;
 	}
+	
+	return it->second;
 }
 
-}
+} // engine namespace

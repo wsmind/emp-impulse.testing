@@ -30,15 +30,15 @@ AnimationState::AnimationState(AnimationData *data) : data(data)
 {
 }
 
-void AnimationState::setSequence(std::string sequence)
+void AnimationState::setCurrentSequence(std::string sequence)
 {
-	this->sequence = sequence;
+	this->currentSequence = sequence;
 	this->time = 0;
 }
 
 void AnimationState::update(f32 elapsedTime)
 {
-	AnimationSequence *sequence = data->sequences[this->sequence];
+	const AnimationSequence *sequence = data->getSequence(this->currentSequence);
 	if (sequence == NULL)
 	{
 		return;
@@ -46,7 +46,7 @@ void AnimationState::update(f32 elapsedTime)
 
 	f32 baseTime = this->time;
 	this->time += elapsedTime;
-
+	
 	while (this->time > sequence->totalDuration)
 	{
 		for (AnimationSequence::EventMap::const_iterator it = sequence->events.lower_bound(baseTime); it != sequence->events.upper_bound(sequence->totalDuration); ++it)
@@ -80,8 +80,8 @@ bool AnimationState::hasEvent(std::string *event)
 
 	*event = this->events.front();
 	this->events.pop();
-
+	
 	return true;
 }
 
-}
+} // engine namespace
