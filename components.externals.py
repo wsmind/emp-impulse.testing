@@ -73,7 +73,7 @@ class boost_integer(build.Component):
 walker.declareComponent(boost_integer())
 
 class sfml(build.Component):
-	"""boost::integer"""
+	"""SFML"""
 	
 	def __init__(self):
 		build.Component.__init__(self, "sfml", ["impulse-dependency-pack"])
@@ -92,3 +92,16 @@ class sfml(build.Component):
 
 walker.declareComponent(sfml())
 
+class lua(build.Component):
+	"""Lua"""
+	
+	def __init__(self):
+		build.Component.__init__(self, "lua", ["impulse-dependency-pack"])
+	
+	def appendUsage(self, env):
+		env.AppendUnique(LIBS = ["lua5.1"])
+		
+		if env["CC"] == "cl":
+			env.AppendUnique(LINKFLAGS = "/NODEFAULTLIB:LIBCMT")
+
+walker.declareComponent(lua())
