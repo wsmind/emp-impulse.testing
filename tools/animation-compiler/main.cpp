@@ -299,7 +299,7 @@ static void writeUInt(std::ofstream & out, unsigned int value)
 
 static void writeFloat(std::ofstream & out, float value)
 {
-	unsigned int val = *reinterpret_cast<unsigned int*>(&value);
+	unsigned int val = *(unsigned int *)(void *)(&value);
 	writeUInt(out, val);
 }
 
