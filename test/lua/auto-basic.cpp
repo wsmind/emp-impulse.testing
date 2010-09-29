@@ -20,15 +20,16 @@
  *                                                                             *
  ******************************************************************************/
 
-#include <SFML/Graphics.hpp>
+#include <lua.hpp>
 #include <peel.hpp>
 
 int main()
 {
-    // Create the main rendering window
-    sf::RenderWindow rendy(sf::VideoMode(800, 600, 32), "SFML Graphics");
+	lua_State *state = lua_open();
 	
-	// And destroy it immediately :p
+	CHECK(state != NULL);
+	
+	lua_close(state);
 	
 	return 0;
 }
