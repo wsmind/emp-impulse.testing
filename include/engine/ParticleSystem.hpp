@@ -48,7 +48,7 @@ namespace engine {
 		/**
 		 * \brief Know if particleSystem is active (try producing particle)
 		 */
-		bool isActive();
+		bool isActive() const;
 		
 		/**
 		 * \brief Active/Inactive particleSystem
@@ -67,8 +67,7 @@ namespace engine {
 		 * \brief Draw the particleSystem in the windows
 		 */
 		void draw(sf::RenderWindow& window) const;
-	p
-	rivate:
+	private:
 		ParticleBin bin;
 	};
 	
