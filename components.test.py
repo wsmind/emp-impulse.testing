@@ -106,6 +106,7 @@ class test_engine(build.Component):
 		env.Program("bin/test/engine-shape", "build/test/engine/shape.cpp")
 		env.Program("bin/test/engine-shapeview", "build/test/engine/shapeview.cpp")
 		env.Program("bin/test/engine-animation", "build/test/engine/animation.cpp")
+		env.Program("bin/test/engine-collisionWorld", "build/test/engine/collisionWorld.cpp")
 
 walker.declareComponent(test_engine())
 
