@@ -20,15 +20,53 @@
  *                                                                             *
  ******************************************************************************/
 
-#include <SFML/Graphics.hpp>
-#include <peel.hpp>
+#include <engine/AnimationSequence.hpp>
+#include <engine/AnimationData.hpp>
+#include <engine/AnimationState.hpp>
 
-int main()
+namespace engine {
+
+AnimationState::AnimationState(AnimationData *data) : data(data)
 {
-    // Create the main rendering window
-    sf::RenderWindow rendy(sf::VideoMode(800, 600, 32), "SFML Graphics");
-	
-	// And destroy it immediately :p
-	
-	return 0;
 }
+
+void AnimationState::setCurrentSequence(std::string sequence)
+{
+	this->currentSequence = data->getSequence(sequence);
+	this->time = 0;
+}
+
+void AnimationState::update(f32 elapsedTime)
+{
+	if (this->currentSequence == NULL)
+	{
+		return;
+	}
+
+	this->currentSequence->update(elapsedTime, &this->time, &this->rectIndex, &this->events);
+}
+
+const AnimationRect *AnimationState::getRect() const
+{
+	if (this->currentSequence == NULL)
+	{
+		return NULL;
+	}
+	
+	return this->currentSequence->getRect(this->rectIndex);
+}
+
+bool AnimationState::hasEvent(std::string *event)
+{
+	if (this->events.empty())
+	{
+		return false;
+	}
+
+	*event = this->events.front();
+	this->events.pop();
+	
+	return true;
+}
+
+} // engine namespace

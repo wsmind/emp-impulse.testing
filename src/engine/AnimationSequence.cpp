@@ -20,15 +20,66 @@
  *                                                                             *
  ******************************************************************************/
 
-#include <SFML/Graphics.hpp>
-#include <peel.hpp>
+#include <engine/AnimationSequence.hpp>
+#include <engine/AnimationRect.hpp>
 
-int main()
+namespace engine {
+
+AnimationSequence::AnimationSequence(u32 rectCount, f32 frameDuration) : rectCount(rectCount), frameDuration(frameDuration)
 {
-    // Create the main rendering window
-    sf::RenderWindow rendy(sf::VideoMode(800, 600, 32), "SFML Graphics");
+	this->rects = new AnimationRect[this->rectCount];
 	
-	// And destroy it immediately :p
-	
-	return 0;
+	this->totalDuration = this->frameDuration * this->rectCount;
 }
+
+AnimationSequence::~AnimationSequence()
+{
+	delete [] this->rects;
+}
+
+void AnimationSequence::setRect(u32 index, const AnimationRect *rect)
+{
+	if (index < this->rectCount)
+	{
+		this->rects[index] = *rect;
+	}
+}
+
+const AnimationRect *AnimationSequence::getRect(u32 index) const
+{
+	if (index < this->rectCount)
+	{
+		return &this->rects[index];
+	}
+	return NULL;
+}
+
+void AnimationSequence::addEvent(f32 time, const std::string & event)
+{
+	this->events.insert(std::pair<f32, std::string>(time, event));
+}
+
+void AnimationSequence::update(f32 elapsedTime, f32 *time, u32 *rectIndex, std::queue<std::string> *events) const
+{
+	f32 baseTime = *time;
+	*time += elapsedTime;
+	
+	while (*time >= this->totalDuration)
+	{
+		for (EventMap::const_iterator it = this->events.lower_bound(baseTime); it != this->events.upper_bound(this->totalDuration); ++it)
+		{
+			events->push(it->second);
+		}
+		*time -= this->totalDuration;
+		baseTime = 0;
+	}
+
+	for (EventMap::const_iterator it = this->events.lower_bound(baseTime); it != this->events.lower_bound(*time); ++it)
+	{
+		events->push(it->second);
+	}
+
+	*rectIndex = *time / this->frameDuration;
+}
+
+} // engine namespace

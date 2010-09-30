@@ -65,12 +65,23 @@ class test_sfml(build.Component):
 	"""Tests of SFML environment setup"""
 	
 	def __init__(self):
-		build.Component.__init__(self, "test-sfml", ["sfml"])
+		build.Component.__init__(self, "test-sfml", ["peel", "sfml"])
 	
 	def appendArtifacts(self, env):
 		env.Program("bin/test/sfml-basic", "build/test/sfml/basic.cpp")
 
 walker.declareComponent(test_sfml())
+
+class test_lua(build.Component):
+	"""Tests of Lua environment setup"""
+	
+	def __init__(self):
+		build.Component.__init__(self, "test-lua", ["peel", "lua"])
+	
+	def appendArtifacts(self, env):
+		env.Program("bin/test/auto-lua-basic", "build/test/lua/auto-basic.cpp")
+
+walker.declareComponent(test_lua())
 
 class test_math(build.Component):
 	"""Tests for the math package"""
@@ -81,16 +92,38 @@ class test_math(build.Component):
 	def appendArtifacts(self, env):
 		env.Program("bin/test/auto-math-random", "build/test/math/auto-random.cpp")
 		env.Program("bin/test/auto-math-vec2", "build/test/math/auto-vec2.cpp")
+		env.Program("bin/test/auto-math-mat33", "build/test/math/auto-mat33.cpp")
 
 walker.declareComponent(test_math())
 
+<<<<<<< local
 class test_particle(build.Component):
 	"""Tests for the particle system"""
+=======
+class test_engine(build.Component):
+	"""Test for the engine package"""
+	
+	def __init__(self):
+		build.Component.__init__(self, "test-engine", ["peel", "impulse-engine"])
+	
+	def appendArtifacts(self, env):
+		env.Program("bin/test/engine-shape", "build/test/engine/shape.cpp")
+		env.Program("bin/test/engine-shapeview", "build/test/engine/shapeview.cpp")
+		env.Program("bin/test/engine-animation", "build/test/engine/animation.cpp")
+		env.Program("bin/test/engine-resources", "build/test/engine/resources.cpp")
+		env.Program("bin/test/engine-collisionWorld", "build/test/engine/collisionWorld.cpp")
+>>>>>>> other
 
+<<<<<<< local
 	def __init__(self):
 		build.Component.__init__(self, "test-particle", ["peel", "sfml", "impulse-math" , "impulse-engine"])
+=======
+walker.declareComponent(test_engine())
+>>>>>>> other
 
+<<<<<<< local
 	def appendArtifacts(self, env):
 		env.Program("bin/test/particle", "build/test/particle/basic.cpp")
 
-walker.declareComponent(test_particle())
+walker.declareComponent(test_particle())=======
+>>>>>>> other

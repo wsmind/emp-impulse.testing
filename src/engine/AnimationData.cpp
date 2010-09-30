@@ -20,15 +20,74 @@
  *                                                                             *
  ******************************************************************************/
 
-#include <SFML/Graphics.hpp>
-#include <peel.hpp>
+#include <engine/AnimationData.hpp>
+#include <iostream>
+#include <fstream>
+#include <engine/DataFile.hpp>
+#include <engine/AnimationRect.hpp>
+#include <engine/AnimationSequence.hpp>
 
-int main()
+namespace engine {
+
+bool AnimationData::load(const std::string & filename)
 {
-    // Create the main rendering window
-    sf::RenderWindow rendy(sf::VideoMode(800, 600, 32), "SFML Graphics");
-	
-	// And destroy it immediately :p
-	
-	return 0;
+	DataFile file;
+
+	if (!file.load(filename))
+	{
+		return false;
+	}
+
+	u32 sequenceCount = file.readU32();
+
+	for (u32 i = 0; i < sequenceCount; ++i)
+	{
+		std::string name = file.readString();
+
+		f32 frameDuration = file.readF32();
+
+		u32 rectCount = file.readU32();
+
+		AnimationSequence *sequence = new AnimationSequence(rectCount, frameDuration);
+
+		for (u32 j = 0; j < rectCount; ++j)
+		{
+			u32 left = file.readU32();
+			u32 top = file.readU32();
+			u32 right = file.readU32();
+			u32 bottom = file.readU32();
+			u32 xOffset = file.readU32();
+			u32 yOffset = file.readU32();
+			
+			AnimationRect rect(left, top, right, bottom, xOffset, yOffset);
+			sequence->setRect(j, &rect);
+		}
+
+		u32 eventCount = file.readU32();
+
+		for (u32 j = 0; j < eventCount; ++j)
+		{
+			f32 time = file.readF32();
+			std::string event = file.readString();
+			sequence->addEvent(time, event);
+		}
+
+		this->sequences[name] = sequence;
+	}
+
+	return true;
 }
+
+const AnimationSequence *AnimationData::getSequence(const std::string & name) const
+{
+	SequenceMap::const_iterator it = this->sequences.find(name);
+	
+	if (it == this->sequences.end())
+	{
+		return NULL;
+	}
+	
+	return it->second;
+}
+
+} // engine namespace

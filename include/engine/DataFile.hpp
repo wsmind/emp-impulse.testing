@@ -20,15 +20,44 @@
  *                                                                             *
  ******************************************************************************/
 
-#include <SFML/Graphics.hpp>
-#include <peel.hpp>
+#ifndef __DATAFILE_HPP__
+#define __DATAFILE_HPP__
 
-int main()
+#include <common.hpp>
+#include <string>
+#include <iostream>
+#include <fstream>
+
+namespace engine {
+
+/**
+ * \class DataFile
+ * \author Jonathan Giroux
+ * 
+ * \brief The DataFile class reads data from a file.
+ * 
+ * This class reads endianness-independant, type-friendly data from a file. 
+ */
+class DataFile
 {
-    // Create the main rendering window
-    sf::RenderWindow rendy(sf::VideoMode(800, 600, 32), "SFML Graphics");
-	
-	// And destroy it immediately :p
-	
-	return 0;
-}
+	public:
+		
+		bool load(const std::string & filename);
+
+		i8 readI8();
+		
+		u8 readU8();
+		
+		u32 readU32();
+		
+		f32 readF32();
+		
+		std::string readString();
+		
+	private:
+		
+		std::ifstream file;
+};
+
+} // engine namespace
+#endif // __DATAFILE_HPP__

@@ -20,15 +20,68 @@
  *                                                                             *
  ******************************************************************************/
 
-#include <SFML/Graphics.hpp>
-#include <peel.hpp>
+#ifndef __ANIMATIONDATA_HPP__
+#define __ANIMATIONDATA_HPP__
 
-int main()
+#include <common.hpp>
+#include <map>
+#include <string>
+
+IMPULSE_FORWARD_DECLARE1(engine, AnimationSequence)
+
+namespace engine {
+
+/**
+ * \class AnimationData
+ * \author Jonathan Giroux
+ *
+ * \brief The AnimationData class holds animation data.
+ *
+ * Animation data contain a list of AnimationSequence objects.
+ *
+ * The animation data file is created by the animation exporter tool.
+ *
+ * AnimationData object is initialized with load(), and on success, has to be
+ * released with unload(). Do not use an uninitialized object to create
+ * AnimationState objects.
+ */
+class AnimationData
 {
-    // Create the main rendering window
-    sf::RenderWindow rendy(sf::VideoMode(800, 600, 32), "SFML Graphics");
-	
-	// And destroy it immediately :p
-	
-	return 0;
-}
+	public:
+
+		/**
+		 * \brief Loads an animation data file.
+		 * \param filename file name.
+		 * \return true if loaded, false otherwise.
+		 *
+		 * The animation data file have to be created using the animation exporter
+		 * tool. No validity check is made.
+		 */
+		bool load(const std::string & filename);
+
+		/**
+		 * \brief Gets a sequence from the animation.
+		 * \param name sequence name.
+		 * \return pointer to the sequence, or NULL if there is no such
+		 * sequence.
+		 */
+		const AnimationSequence *getSequence(const std::string & name) const;
+		
+	private:
+
+		/**
+		 * \brief Type for the sequence map.
+		 */
+		typedef std::map<std::string, AnimationSequence *> SequenceMap;
+
+		/**
+		 * \brief Sequence map.
+		 *
+		 * The key is the sequence name.
+		 */
+		SequenceMap sequences;
+};
+
+} // engine namespace
+
+#endif // __ANIMATIONDATA_HPP__
