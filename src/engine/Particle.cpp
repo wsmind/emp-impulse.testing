@@ -34,6 +34,9 @@ namespace engine {
 		this->speed.x=0.f;
 		this->speed.y=0.f;
 		
+		this->rotation=0.f;
+		this->rotationSpeed=0.f;
+		
 		this->age=0.f;
 		
 		this->alpha.x=0.f;
@@ -50,17 +53,15 @@ namespace engine {
 		this->speed.x=0.f;
 		this->speed.y=0.f;
 		
+		this->rotation=0.f;
+		this->rotationSpeed=0.f;
+		
 		this->age=0.f;
 		
 		this->alpha.x=0.f;
 		this->alpha.y=0.f;
 		this->alpha.z=0.f;
 		this->alpha.w=0.f;
-	}
-	
-	Particle::Particle(f32 x, f32 y, f32 r)
-	{
-		
 	}
 	
 	void Particle::draw(sf::RenderWindow& window, sf::Sprite& sprite) const

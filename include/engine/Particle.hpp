@@ -43,10 +43,10 @@ class Particle
 	public:
 		//! \brief x and y coordinate of the particle
 		Vec2 position;
-		//! \brief rotation of the particle (counterclockwise and degre unit)
-		f32 rotation;
 		//! \brief x and y coordinate speed of the particle (unit per sec)
 		Vec2 speed;
+		//! \brief rotation of the particle (counterclockwise and degre unit)
+		f32 rotation;
 		//! \brief orientation speed of the particle (degre per sec)
 		f32 rotationSpeed;
 		//! \brief age of the particle (sec)
@@ -55,7 +55,7 @@ class Particle
 		Vec4 alpha;
 	
 		/**
-		 * \brief Construct a particle (0,0,0)
+		 * \brief Construct a particle (0,0)
 		 */
 		Particle();
 		
@@ -65,14 +65,6 @@ class Particle
 		 * \param y the y coordinate of the new particle
 		 */
 		Particle(f32 x, f32 y);
-	
-		/**
-		 * \brief Construct a particle (x, y, z)
-		 * \param x the x coordinate of the new particle
-		 * \param y the y coordinate of the new particle
-		 * \param z the rotation of the particle (counterclockwise)
-		 */
-		Particle(f32 x, f32 y, f32 r);
 		
 		/**
 		 * \brief Draw the particle in the windows
