@@ -20,15 +20,55 @@
  *                                                                             *
  ******************************************************************************/
 
-#include <SFML/Graphics.hpp>
-#include <peel.hpp>
+#include <engine/DataFile.hpp>
 
-int main()
+namespace engine {
+
+bool DataFile::load(const std::string & filename)
 {
-    // Create the main rendering window
-    sf::RenderWindow rendy(sf::VideoMode(800, 600, 32), "SFML Graphics");
-	
-	// And destroy it immediately :p
-	
-	return 0;
+	this->file.open(filename.c_str(), std::ios_base::out | std::ios::binary);
+	return this->file.good();
 }
+
+i8 DataFile::readI8()
+{
+	char c;
+	this->file.get(c);
+	return (i8)c;
+}
+
+u8 DataFile::readU8()
+{
+	return (u8)this->readI8();
+}
+
+u32 DataFile::readU32()
+{
+	u32 val = 0;
+	val |= (u32)((u32)this->readU8() << 24);
+	val |= (u32)((u32)this->readU8() << 16);
+	val |= (u32)((u32)this->readU8() << 8);
+	val |= (u32)((u32)this->readU8() << 0);
+	return val;
+}
+
+f32 DataFile::readF32()
+{
+	u32 val = this->readU32();
+	return *(f32 *)(void *)&val;
+}
+
+
+std::string DataFile::readString()
+{
+	std::string str;
+	u32 len = this->readU32();
+	str.reserve(len);
+	for (u32 i = 0; i < len; ++i)
+	{
+		str.append(1, this->readU8());
+	}
+	return str;
+}
+
+} // engine namespace

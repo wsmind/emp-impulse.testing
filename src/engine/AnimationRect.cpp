@@ -20,15 +20,46 @@
  *                                                                             *
  ******************************************************************************/
 
-#include <SFML/Graphics.hpp>
-#include <peel.hpp>
+#include <engine/AnimationRect.hpp>
 
-int main()
+namespace engine {
+
+AnimationRect::AnimationRect() : left(0), top(0), right(0), bottom(0), xOffset(0), yOffset(0)
 {
-    // Create the main rendering window
-    sf::RenderWindow rendy(sf::VideoMode(800, 600, 32), "SFML Graphics");
-	
-	// And destroy it immediately :p
-	
-	return 0;
+}
+
+AnimationRect::AnimationRect(u32 left, u32 top, u32 right, u32 bottom, u32 xOffset, u32 yOffset) : left(left), top(top), right(right), bottom(bottom), xOffset(xOffset), yOffset(yOffset)
+{
+}
+
+u32 AnimationRect::getLeft() const
+{
+	return this->left;
+}
+
+u32 AnimationRect::getTop() const
+{
+	return this->top;
+}
+
+u32 AnimationRect::getRight() const
+{
+	return this->right;
+}
+
+u32 AnimationRect::getBottom() const
+{
+	return this->bottom;
+}
+
+i32 AnimationRect::getXOffset() const
+{
+	return this->xOffset;
+}
+
+i32 AnimationRect::getYOffset() const
+{
+	return this->yOffset;
+}
+
 }

@@ -20,15 +20,78 @@
  *                                                                             *
  ******************************************************************************/
 
+#include <common.hpp>
+#include <cstdlib>
+#include <iostream>
 #include <SFML/Graphics.hpp>
-#include <peel.hpp>
+#include <engine/AnimationData.hpp>
+#include <engine/AnimationState.hpp>
 
 int main()
 {
-    // Create the main rendering window
-    sf::RenderWindow rendy(sf::VideoMode(800, 600, 32), "SFML Graphics");
-	
-	// And destroy it immediately :p
-	
-	return 0;
+	sf::Image image;
+
+	if (!image.LoadFromFile("resources/bounce.png"))
+	{
+		std::cerr << "Unable to load animation image." << std::endl;
+		return EXIT_FAILURE;
+	}
+
+	sf::Sprite sprite(image);
+
+	engine::AnimationData data;
+
+	if (!data.load("resources/bounce.data"))
+	{
+		std::cerr << "Unable to load animation data." << std::endl;
+		return EXIT_FAILURE;
+	}
+
+	engine::AnimationState state(&data);
+
+	state.setCurrentSequence("bounce");
+
+	sf::RenderWindow window(sf::VideoMode(800, 600, 32), "Animation system");
+	window.SetFramerateLimit(60);
+
+	int x = 800 / 2;
+	int y = 600 / 2;
+
+	while (window.IsOpened())
+	{
+		float elapsedTime = window.GetFrameTime();
+
+		state.update(elapsedTime);
+
+		std::string e;
+		while (state.hasEvent(&e))
+		{
+			std::cout << "Event '" << e << "' occured." << std::endl;
+		}
+
+		// Process events
+		sf::Event event;
+		while (window.GetEvent(event))
+		{
+			// Close window : exit
+			if (event.Type == sf::Event::Closed)
+			{
+				window.Close();
+			}
+		}
+
+		// Clear the screen (fill it with black color)
+		window.Clear(sf::Color(255, 255, 255));
+
+		const engine::AnimationRect *rect = state.getRect();
+		sprite.SetSubRect(sf::IntRect(rect->getLeft(), rect->getTop(), rect->getRight(), rect->getBottom()));
+		sprite.SetPosition(x - rect->getXOffset(), y - rect->getYOffset());
+
+		window.Draw(sprite);
+
+		// Display window contents on screen
+		window.Display();
+	}
+
+	return EXIT_SUCCESS;
 }
