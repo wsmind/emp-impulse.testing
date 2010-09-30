@@ -35,14 +35,14 @@ int main()
 	points1.push_back(Vec2(0.0f, 0.0f));
 	points1.push_back(Vec2(300.0f, 0.0f));
 	points1.push_back(Vec2(300.0f, 400.0f));
-	points1.push_back(Vec2(0.0f, 100.0f));
+	points1.push_back(Vec2(0.0f, 400.0f));
 	CollisionShape cshape1(points1);
 	sf::Shape shape1;
 	for (unsigned int i = 0; i < points1.size(); i++)
 		shape1.AddPoint(points1[i].x, points1[i].y, sf::Color(255, 0, 0), sf::Color(0, 0, 0));
 	shape1.SetOutlineWidth(1.0f);
 	
-	cshape1.setScale(Vec2(0.5f, 0.8f));
+	cshape1.setScale(Vec2(0.2f, 0.3f));
 	
 	std::vector<Vec2> points2;
 	points2.push_back(Vec2(-100.0f, 0.0f));
@@ -55,6 +55,8 @@ int main()
 	shape2.SetOutlineWidth(1.0f);
 	
 	cshape2.setPosition(Vec2(500.0f, 400.0f));
+
+	sf::Shape line;
 	
 	sf::Clock clock;
 	sf::Clock clock2;
@@ -84,15 +86,18 @@ int main()
 			cshape1.setPosition(Vec2(cshape1.getPosition().x, cshape1.getPosition().y + 200.0f * elapsedTime));
 		
 		Contact contact;
-		if (cshape1.detectCollision(&cshape2, &contact) > 0)
+		if (cshape2.detectCollision(&cshape1, &contact) > 0)
 		{
 			shape1.SetOutlineWidth(5.0f);
 			shape2.SetOutlineWidth(5.0f);
+			line = sf::Shape::Line(contact.contactPoint.x, contact.contactPoint.y, contact.contactPoint.x + contact.normal.x * 100.0f, contact.contactPoint.y + contact.normal.y * 100.0f, 10.0f, sf::Color(255, 255, 255), 1.0f);
+			cshape1.setPosition(cshape1.getPosition() + contact.normal * contact.interpenetration); 
 		}
 		else
 		{
 			shape1.SetOutlineWidth(1.0f);
 			shape2.SetOutlineWidth(1.0f);
+			line = sf::Shape::Line(0.0f, 0.0f, 0.0f, 0.0f, 10.0f, sf::Color(255, 255, 255), 1.0f); 
 		}
 		
 		shape1.SetPosition(cshape1.getPosition().x, cshape1.getPosition().y);
@@ -106,7 +111,8 @@ int main()
 		
 		rendy.Draw(shape1);
 		rendy.Draw(shape2);
-		
+		rendy.Draw(line);
+
 		rendy.Display();
 	}
 	
