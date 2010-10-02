@@ -323,6 +323,9 @@ int main(int argc, char **argv)
 		std::string file(argv[arg]);
 		std::cout << "Processing file '" << file << "'." << std::endl;
 		
+		size_t lastDir = file.find_last_of("/\\");
+		std::string dir = str.substr(0,found) + "/";
+		
 		luaL_dofile(L, argv[arg]);
 		
 		lua_getglobal(L, "rate");
@@ -402,7 +405,7 @@ int main(int argc, char **argv)
 					}
 					else
 					{
-						std::string file(lua_tostring(L, -1));
+						std::string file = dir + lua_tostring(L, -1);
 						if (!loadImage(sequence, file))
 						{
 							std::cout << "Error: unable to load image '" << file << "'." << std::endl;
@@ -415,12 +418,13 @@ int main(int argc, char **argv)
 			}
 			else if (lua_isstring(L, -1))
 			{
-				std::string path(lua_tostring(L, -1));
+				std::string path = dir + lua_tostring(L, -1);
 				lua_pop(L, 1);
 				if (path.find('%') != std::string::npos)
 				{
 					int index;
 					
+					// Retrieve first index
 					lua_getfield(L, -1, "index");
 					index = lua_tonumber(L, -1);
 					lua_pop(L, 1);
