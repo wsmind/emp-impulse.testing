@@ -98,6 +98,25 @@ namespace engine {
 		void setCapacity(u32 particleCount);
 		
 		/**
+		 * \brief particle emitter position (new particle birth position)
+		 * \param position particle emitter position (x and y coordinate)
+		 */
+		void setPosition(Vec2 position);
+		
+		/**
+		 * \brief particle emitter position (new particle birth position)
+		 * \param x x coordinate
+		 * \param y y coordinate
+		 */
+		void setPosition(f32 x, f32 y);
+		
+		/**
+		 * \brief fix the particle spawn rate
+		 * \param rate particle spawn rate (in particle/second)
+		 */
+		void setSpawnRate(f32 rate);
+		
+		/**
 		 * \brief Update the particleSystem
 		 * \param dt delta time before last update call
 		 * \param forces forces to apply on each particle
@@ -107,15 +126,17 @@ namespace engine {
 		/**
 		 * \brief Draw the particleSystem in the windows
 		 */
-		void draw(sf::RenderWindow& window) const;
+		void draw(sf::RenderWindow& window);
 		
 	private:
 		//! \brief particle pool to improve performance
 		boost::object_pool<Particle> particlePool;
 		//! \brief living particles emitted by the particleSystem (dead particle are removed from it and collected by the pool)
-		std::list<Particle> particles;
+		std::list<Particle *> particles;
 		//! \brief true when the particle system is produting particle (active), false otherwise
 		bool actived;
+		//! \brief time elasped after the last particle spawn (in seconds)
+		f32 timeAfterLastSpawning;
 		
 		//! \brief sprite applyed to each particle
 		sf::Sprite particleSprite;

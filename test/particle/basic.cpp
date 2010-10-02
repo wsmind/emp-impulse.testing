@@ -21,7 +21,9 @@
  ******************************************************************************/
 
 #include <SFML/Graphics.hpp>
-#include <engine/Particle.hpp>
+#include <engine/ParticleSystem.hpp>
+
+#include <math/Vec2.hpp>
 
 int main()
 {
@@ -40,12 +42,22 @@ int main()
 	sprite.SetImage(particleImage);
 	
 	//Create a sprite
-	engine::Particle p(100,100);
+	engine::ParticleSystem particleSystem;
+	
+	particleSystem.setParticleSprite(sprite);
+	particleSystem.setPosition(100,100);
+	particleSystem.setSpawnRate(0.001f);
+	particleSystem.setParticleLifeTime(10);
+	particleSystem.setActive(true);
+	
+	math::Vec2 totalForces(0.f,9.8f);
 	
 	// Start game loop
 	while (window.IsOpened())
 	{
 		float elapsedTime = window.GetFrameTime();
+		
+		particleSystem.update(elapsedTime,totalForces);
 		
 		// Process events
 		sf::Event event;
@@ -61,7 +73,7 @@ int main()
 		// Clear the screen (fill it with white color)
 		window.Clear(sf::Color(255, 255, 255));
 		
-		p.draw(window, sprite);
+		particleSystem.draw(window);
 		
 		// Display window contents on screen
 		window.Display();

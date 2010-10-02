@@ -27,6 +27,7 @@
 #include <iostream>
 #include <math/Vec2.hpp>
 #include <math/Vec4.hpp>
+
 #include <SFML/Graphics.hpp>
 
 using namespace math;
