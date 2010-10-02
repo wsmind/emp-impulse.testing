@@ -73,53 +73,89 @@ namespace engine {
 		this->capacity=particleCount;
 	}
 	
-	void ParticleSystem::update(f32 dt, math::Vec2 forces)
-	//1.Remove dead particles
-	//2.Update preexistent particles position, alpha, rotation
-	//3.Add generated particles
+	void ParticleSystem::setPosition(Vec2 position)
 	{
-		std::list<Particle>::iterator it;
+		this->position=position;
+	}
+	
+	void ParticleSystem::setPosition(f32 x, f32 y)
+	{
+		this->position.x=x;
+		this->position.y=y;
+	}
+	
+	void ParticleSystem::setSpawnRate(f32 rate)
+	{
+		this->spawningRate=rate;	
+	}
+	
+	void ParticleSystem::update(f32 dt, math::Vec2 forces)
+	//1.Update particle age
+	//2.Remove dead particles
+	//3.Update preexistent particles speed, position, alpha, rotation, etc
+	//4.Add generated particles
+	{
+		std::list<Particle *>::iterator it;
 		it=particles.begin();
 		
 		//For each particle
 		while(it != particles.end())
 		{
-			//update the age
-			(*it).age+=dt; 
-			//1.Remove dead particles
-			if ( (*it).age > this->particleLifeTime )
+			//1.update particle age
+			(**it).age+=dt;
+			
+			//2.Remove dead particles
+			if ( (**it).age > this->particleLifeTime )
 			{
-				particles.erase(it);	
+				Particle* p=(*it);
+				it=particles.erase(it);
+				this->particlePool.destroy(p);
 				continue;
 			}
 			
-			//2.Update preexistent particles position, alpha, rotation
-			(*it).position+= dt * (*it).speed;
-			(*it).position+= dt * this->particleAcceleration;
-			(*it).position+= dt * forces;
+			//3.Update preexistent particles speed, position, alpha, rotation, etc
+			(**it).speed+= dt * (this->particleAcceleration + forces);
 			
-			(*it).rotation+= dt * (*it).rotationSpeed;
-			(*it).rotation+= dt * this->ParticleRotationAcceleration;
+			(**it).position+= dt * (**it).speed;
 			
-			(*it).alpha.x-= dt * this->particleAlphaDecay.x;
-			(*it).alpha.y-= dt * this->particleAlphaDecay.y;
-			(*it).alpha.z-= dt * this->particleAlphaDecay.z;
-			(*it).alpha.w-= dt * this->particleAlphaDecay.w;
+			(**it).rotationSpeed+= dt * this->ParticleRotationAcceleration;
 			
-			//3.Add generated particles
+			(**it).rotation+= dt * (**it).rotationSpeed;
+			
+			(**it).alpha.x+= dt * this->particleAlphaDecay.x;
+			(**it).alpha.y+= dt * this->particleAlphaDecay.y;
+			(**it).alpha.z+= dt * this->particleAlphaDecay.z;
+			(**it).alpha.w+= dt * this->particleAlphaDecay.w;
 			
 			//Next particle
 			++it;
 		}
+		
+		//4.Add generated particles
+		this->timeAfterLastSpawning+=dt;
+		
+		int particleToSpawnCount=0;
+		while ( this->timeAfterLastSpawning >= this->spawningRate)
+		{
+			this->timeAfterLastSpawning-=this->spawningRate;
+			++particleToSpawnCount;
+		}
+		
+		for(int i=0;i<particleToSpawnCount;++i)
+		{
+			Particle* p=this->particlePool.construct();
+			particles.push_front(p);
+			(*p).position=this->position;
+		}
 
 	}
 	
-	void ParticleSystem::draw(sf::RenderWindow& window) const
+	void ParticleSystem::draw(sf::RenderWindow& window)
 	{
-		std::list<Particle>::iterator it;
+		std::list<Particle *>::iterator it;
 		for (it=particles.begin(); it != particles.end(); ++it) 
 		{
-			(*it).draw(window, this->particleSprite);
+			(**it).draw(window, this->particleSprite);
 		}
 	}
 	
