@@ -419,7 +419,11 @@ int main(int argc, char **argv)
 				lua_pop(L, 1);
 				if (path.find('%') != std::string::npos)
 				{
-					int index = 1;
+					int index;
+					
+					lua_getfield(L, -1, "index");
+					index = lua_tonumber(L, -1);
+					lua_pop(L, 1);
 					
 					for (;;++index)
 					{
