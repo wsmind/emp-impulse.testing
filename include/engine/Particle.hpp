@@ -51,16 +51,22 @@ class Particle
 		f32 rotation;
 		//! \brief orientation speed of the particle (degre per sec)
 		f32 rotationSpeed;
-		//! \brief age of the particle (sec)
-		f32 age;
 		//! \brief alpha of the particle (x,y,z are RBG colour and w alpha)
 		Vec4 alpha;
+		//! \brief age of the particle (sec)
+		f32 age;
 	
 		/**
 		 * \brief Construct a particle (0,0)
 		 */
 		Particle();
 		
+		/**
+		* \brief Construct a particle (position)
+		* \param position x and y coordinate of the new particle
+		*/
+		Particle(Vec2 position);
+	
 		/**
 		 * \brief Construct a particle (x, y)
 		 * \param x the x coordinate of the new particle
