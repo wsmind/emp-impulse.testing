@@ -26,14 +26,20 @@
 
 namespace engine {
 
-AnimationState::AnimationState(AnimationData *data) : data(data)
+AnimationState::AnimationState(AnimationData *data) : data(data), currentSequence(NULL)
 {
 }
 
 void AnimationState::setCurrentSequence(std::string sequence)
 {
+	this->currentSequenceName = sequence;
 	this->currentSequence = data->getSequence(sequence);
 	this->time = 0;
+}
+
+std::string AnimationState::getCurrentSequence()
+{
+	return this->currentSequenceName;
 }
 
 void AnimationState::update(f32 elapsedTime)
