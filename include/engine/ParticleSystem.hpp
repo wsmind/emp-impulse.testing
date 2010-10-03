@@ -46,7 +46,7 @@ namespace engine {
 	{
 	public:		
 		/**
-		 * \brief Construct a particleSystem
+		 * \brief Construct a particleSystem, not active and with unlimied particle spawn
 		 */
 		ParticleSystem();
 		
@@ -80,6 +80,13 @@ namespace engine {
 		void setParticleAcceleration(Vec2 acceleration);
 		
 		/**
+		 * \brief particle acceleration, only affect the position
+		 * \param x x coordinate particle acceleration (in coordinate unit/seconds)
+		 * \param y y coordinate particle acceleration (in coordinate unit/seconds)
+		 */
+		void setParticleAcceleration(f32 x, f32 y);
+		
+		/**
 		 * \brief particle rotation acceleration
 		 * \param rotAcceleration particle rotation acceleration (in counterclockwise degre/seconds)
 		 */
@@ -92,10 +99,19 @@ namespace engine {
 		void setParticleAlphaDecay(Vec4 alphaDecay);
 		
 		/**
-		 * \brief particle count that can will be created by the particle system
-		 * \param particleCount particle count
+		 * \brief particle alpha decay
+		 * \param r red color decay (unit/second)
+		 * \param g green color decay (unit/second)
+		 * \param b blue color decay (unit/second)
+		 * \param a alpha decay (unit/second)
 		 */
-		void setCapacity(u32 particleCount);
+		void setParticleAlphaDecay(f32 r, f32 g, f32 b, f32 a);
+		
+		/**
+		 * \brief particle count that can will be created by the particle system, this method restart the internal particle count
+		 * \param particleCount particle count, -1 for unlimited particle spawn
+		 */
+		void setCapacity(i32 particleCount);
 		
 		/**
 		 * \brief particle emitter position (new particle birth position)
@@ -115,6 +131,56 @@ namespace engine {
 		 * \param rate particle spawn rate (in particle/second)
 		 */
 		void setSpawnRate(f32 rate);
+		
+		/**
+		 * \brief fix the particle initial speed (at birth)
+		 * \param particleSpeed particle initial speed(in coordinate/second)
+		 */
+		void setParticleInitSpeed(Vec2 particleSpeed);	
+		
+		/**
+		 * \brief fix the particle initial speed (at birth)
+		 * \param x x coordinate particle initial speed(in coordinate/second)
+		 * \param y x coordinate particle initial speed(in coordinate/second)
+		 */
+		void setParticleInitSpeed(f32 x, f32 y);	
+		
+		/**
+		 * \brief fix the particle initial rotation (at birth)
+		 * \param rot x coordinate particle initial speed(in counterclockwise degre)
+		 */
+		void setParticleInitRotation(f32 rot);
+		
+		/**
+		 * \brief fix the particle initial acceleration (at birth)
+		 * \param x x coordinate particle initial acceleration(in coordinate/second)
+		 * \param y y coordinate particle initial acceleration(in coordinate/second)
+		 */
+		void setParticleInitAcceleration(f32 x, f32 y);
+		
+		/**
+		 * \brief fix the particle initial acceleration (at birth)
+		 * \param particleAcceleration particle initial acceleration(in coordinate/second)
+		 */
+		void setParticleInitAcceleration(Vec2 particleAcceleration);
+		
+		/**
+		 * \brief fix the particle initial roation speed (at birth)
+		 * \param particleRotationSpeed particle initial rotation speed(in coordinate/second)
+		 */
+		void setParticleInitRotationSpeed(f32 particleRotationSpeed);
+		
+		/**
+		 * \brief fix the particle initial rotation acceleration (at birth)
+		 * \param rotAcceleration particle initial acceleration(in counterclockwise degre/second)
+		 */
+		void setParticleInitRotationAcceleration(f32 rotAcceleration);
+		
+		/**
+		 * \brief get the particle count remaining to spawn
+		 * \return particle count remaining to spawn, or -1 if unlimited particle spawn
+		 */
+		i32 getRemainingParticleCount();
 		
 		/**
 		 * \brief Update the particleSystem
@@ -150,26 +216,29 @@ namespace engine {
 		Vec4 particleAlphaDecay;
 		
 		//! \brief particle count that can will be created by the particle system
-		u32 capacity;
-		//! \brief particle count remaining to created
-		u32 remainingParticleCount;
+		i32 capacity;
+		//! \brief particle count remaining to spawn
+		i32 remainingParticleCount;
 		//! \brief position of the particle emitter
 		Vec2 position;
-		//! \brief rotation of the particle emitter
-		f32 rotation;
 		//! \brief spawning rate (in particle/second)
 		f32 spawningRate;
 
-		//! \brief particle initial alpha (at birth)
-		Vec4 particleInitAlpha;
-		//! \brief particle initial acceleration, only affect the position (in coordinate unit/seconds)
-		Vec2 particleInitAcceleration;
-		//! \brief particle initial rotation acceleration (in counterclockwise degre/seconds)
-		f32 ParticleInitRotationAcceleration;
 		//! \brief x and y coordinate initial speed of the particle (unit per sec)
 		Vec2 particleInitSpeed;
-		//! \brief initial orientation speed of the particle (degre per sec)
-		f32 particleInitialRotationSpeed;
+		//! \brief initial orientation of the particle (in counterclockwise degre)
+		f32 particleInitRotation;
+		//! \brief initial orientation speed of the particle (in counterclockwise degre/second)
+		f32 particleInitRotationSpeed;		
+		//! \brief particle initial alpha (at birth)
+		Vec4 particleInitAlpha;
+		
+		/**
+		 * \brief Generate new particles
+		 * \param count particle count to generate
+		 */
+		void generateParticle(int count);
+
 	};
 	
 } // engine namespace

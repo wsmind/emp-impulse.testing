@@ -25,12 +25,15 @@
 #include <ctime>
 #include <cmath>
 
+#define UNLIMITED_PARTICLE -1
 
 namespace engine {
 	
 	ParticleSystem::ParticleSystem()
 	{
 		this->actived=false;
+		this->capacity=UNLIMITED_PARTICLE;
+		this->remainingParticleCount=UNLIMITED_PARTICLE;
 	}
 
 	bool ParticleSystem::isActive() const
@@ -58,6 +61,12 @@ namespace engine {
 		this->particleAcceleration=acceleration;	
 	}
 	
+	void ParticleSystem::setParticleAcceleration(f32 x, f32 y)
+	{
+		this->particleAcceleration.x=x;	
+		this->particleAcceleration.y=y;	
+	}
+	
 	void ParticleSystem::setParticleRotationAcceleration(f32 rotAcceleration)
 	{
 		this->ParticleRotationAcceleration=rotAcceleration;
@@ -68,9 +77,32 @@ namespace engine {
 		this->particleAlphaDecay=alphaDecay;
 	}
 	
-	void ParticleSystem::setCapacity(u32 particleCount)
+	void ParticleSystem::setParticleAlphaDecay(f32 r, f32 g, f32 b, f32 a)
+	{
+		this->particleAlphaDecay.x=r;
+		this->particleAlphaDecay.y=g;
+		this->particleAlphaDecay.z=b;
+		this->particleAlphaDecay.w=a;
+	}
+	
+	void ParticleSystem::setCapacity(i32 particleCount)
 	{
 		this->capacity=particleCount;
+		
+		//unlimited particle spawn
+		if (particleCount == UNLIMITED_PARTICLE)
+		{
+			this->remainingParticleCount=UNLIMITED_PARTICLE;
+		//limited particle spawn
+		}else {
+			this->remainingParticleCount=particleCount;
+		}
+
+	}
+	
+	i32 ParticleSystem::getRemainingParticleCount()
+	{
+		return this->remainingParticleCount;
 	}
 	
 	void ParticleSystem::setPosition(Vec2 position)
@@ -87,6 +119,27 @@ namespace engine {
 	void ParticleSystem::setSpawnRate(f32 rate)
 	{
 		this->spawningRate=rate;	
+	}
+	
+	void ParticleSystem::setParticleInitSpeed(Vec2 particleSpeed)
+	{
+		this->particleInitSpeed=particleSpeed;	
+	}
+	
+	void ParticleSystem::setParticleInitSpeed(f32 x, f32 y)
+	{
+		this->particleInitSpeed.x=x;
+		this->particleInitSpeed.y=y;	
+	}
+	
+	void ParticleSystem::setParticleInitRotation(f32 rot)
+	{
+		this->particleInitRotation=rot;
+	}
+	
+	void ParticleSystem::setParticleInitRotationSpeed(f32 particleRotationSpeed)
+	{
+		this->particleInitRotationSpeed=particleRotationSpeed;	
 	}
 	
 	void ParticleSystem::update(f32 dt, math::Vec2 forces)
@@ -141,11 +194,19 @@ namespace engine {
 			++particleToSpawnCount;
 		}
 		
-		for(int i=0;i<particleToSpawnCount;++i)
+		if (remainingParticleCount == UNLIMITED_PARTICLE )
 		{
-			Particle* p=this->particlePool.construct();
-			particles.push_front(p);
-			(*p).position=this->position;
+			generateParticle(particleToSpawnCount);
+		}
+		else if (particleToSpawnCount < (this->remainingParticleCount) ) 
+		{
+			generateParticle(particleToSpawnCount);
+			this->remainingParticleCount -= particleToSpawnCount;
+		}
+		else
+		{
+			generateParticle(this->remainingParticleCount);
+			this->remainingParticleCount=0;
 		}
 
 	}
@@ -156,6 +217,23 @@ namespace engine {
 		for (it=particles.begin(); it != particles.end(); ++it) 
 		{
 			(**it).draw(window, this->particleSprite);
+		}
+	}
+	
+	void ParticleSystem::generateParticle(int count)
+	{
+		for(int i=0;i<count;++i)
+		{
+			Particle* p=this->particlePool.construct(this->position);
+			
+			//Initialise the particle
+			(*p).speed=this->particleInitSpeed;
+			(*p).rotation=this->particleInitRotation;
+			(*p).rotationSpeed=this->particleInitRotationSpeed;
+			(*p).alpha=this->particleInitAlpha;
+			
+			//Add to list
+			particles.push_front(p);
 		}
 	}
 	

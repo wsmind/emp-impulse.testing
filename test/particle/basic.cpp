@@ -44,10 +44,14 @@ int main()
 	//Create a sprite
 	engine::ParticleSystem particleSystem;
 	
+	particleSystem.setCapacity(10);
 	particleSystem.setParticleSprite(sprite);
 	particleSystem.setPosition(100,100);
-	particleSystem.setSpawnRate(0.001f);
+	particleSystem.setSpawnRate(1.f);
 	particleSystem.setParticleLifeTime(10);
+	particleSystem.setParticleInitSpeed(30,0);
+	particleSystem.setParticleAcceleration(0,0);
+	particleSystem.setParticleAlphaDecay(0,0,0,-20);
 	particleSystem.setActive(true);
 	
 	math::Vec2 totalForces(0.f,9.8f);
