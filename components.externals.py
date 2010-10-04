@@ -75,9 +75,24 @@ class boost_integer(build.Component):
 			if "FINK_PATH" not in env:
 				print "You must specify FINK_PATH on the mac platform !"
 				env.Exit(1)
-			env.AppendUnique(CPPPATH = ["$FINK_PATH"+"/include"])
+			env.AppendUnique(CPPPATH = ["$FINK_PATH/include"])
 
 walker.declareComponent(boost_integer())
+
+class boost_pool(build.Component):
+	"""boost::pool"""
+	
+	def __init__(self):
+		build.Component.__init__(self, "boost-pool", ["impulse-dependency-pack"])
+	
+	def appendUsage(self, env):
+		if env["SYSPLATFORM"] == "darwin":
+			if "FINK_PATH" not in env:
+				print "You must specify FINK_PATH on the mac platform !"
+				env.Exit(1)
+			env.AppendUnique(CPPPATH = ["$FINK_PATH/include"])
+
+walker.declareComponent(boost_pool())
 
 class sfml(build.Component):
 	"""SFML"""
@@ -116,8 +131,8 @@ class lua(build.Component):
 			env.AppendUnique(LIBS = ["lua5.1"])
 		elif env["SYSPLATFORM"] == "darwin":
 			env.AppendUnique(LIBS = ["lua"])
-			env.AppendUnique(CPPPATH = ["$FINK_PATH"+"/include"])
-			env.AppendUnique(LIBPATH = ["$FINK_PATH"+"/lib"])
+			env.AppendUnique(CPPPATH = ["$FINK_PATH/include"])
+			env.AppendUnique(LIBPATH = ["$FINK_PATH/lib"])
 		else:
 			env.AppendUnique(LIBS = ["lua5.1"])
 			env.AppendUnique(CPPPATH = ["/usr/include/lua5.1"])

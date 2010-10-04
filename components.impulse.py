@@ -58,7 +58,7 @@ class impulse_engine(build.Component):
 	"""Low-level engine"""
 	
 	def __init__(self):
-		build.Component.__init__(self, "impulse-engine", ["impulse-math", "sfml"])
+		build.Component.__init__(self, "impulse-engine", ["impulse-math", "sfml", "boost-pool"])
 	
 	def appendArtifacts(self, env):
 		env.AppendUnique(CPPDEFINES = ["BUILDING_IMPULSE_ENGINE"])
