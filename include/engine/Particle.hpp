@@ -30,8 +30,6 @@
 
 #include <SFML/Graphics.hpp>
 
-using namespace math;
-
 namespace engine {
 
 /**
@@ -44,15 +42,15 @@ class Particle
 {
 	public:
 		//! \brief x and y coordinate of the particle
-		Vec2 position;
+		math::Vec2 position;
 		//! \brief x and y coordinate speed of the particle (unit per sec)
-		Vec2 speed;
+		math::Vec2 speed;
 		//! \brief rotation of the particle (counterclockwise and degre unit)
 		f32 rotation;
 		//! \brief orientation speed of the particle (degre per sec)
 		f32 rotationSpeed;
 		//! \brief alpha of the particle (x,y,z are RBG colour and w alpha)
-		Vec4 alpha;
+		math::Vec4 alpha;
 		//! \brief age of the particle (sec)
 		f32 age;
 	
@@ -65,7 +63,7 @@ class Particle
 		* \brief Construct a particle (position)
 		* \param position x and y coordinate of the new particle
 		*/
-		Particle(Vec2 position);
+		Particle(math::Vec2 position);
 	
 		/**
 		 * \brief Construct a particle (x, y)
@@ -77,12 +75,7 @@ class Particle
 		/**
 		 * \brief Draw the particle in the windows
 		 */
-		void draw(sf::RenderWindow& window, sf::Sprite& sprite) const;
-		
-		/**
-		 * \brief Text output
-		 */
-		friend std::ostream& operator <<(std::ostream& out, const Particle& p);
+		void draw(sf::RenderWindow *window, sf::Sprite *sprite) const;
 };
 
 } // engine namespace
