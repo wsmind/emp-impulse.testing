@@ -104,6 +104,11 @@ i32 ParticleSystem::getRemainingParticleCount()
 	return this->remainingParticleCount;
 }
 	
+i32 ParticleSystem::getFlyingParticleCount()
+{
+	return this->particles.size();
+}
+	
 void ParticleSystem::setPosition(math::Vec2 position)
 {
 	this->position=position;
@@ -113,6 +118,30 @@ void ParticleSystem::setPosition(f32 x, f32 y)
 {
 	this->position.x=x;
 	this->position.y=y;
+}
+	
+void ParticleSystem::moveAllToAPosition(math::Vec2 position)
+{
+	math::Vec2 deplacement;
+	deplacement=(position - this->position);
+	deplacement.x = position.x - this->position.x;
+	deplacement.y = position.y - this->position.y;
+	
+	//Change emitter position
+	this->position=position;
+	
+	//Move each particle
+	std::list<Particle *>::iterator it;
+	for (it=particles.begin(); it != particles.end(); ++it) 
+	{
+		(**it).position+=deplacement;
+	}
+}
+
+void ParticleSystem::moveAllToAPosition(f32 x, f32 y)
+{
+	math::Vec2 position(x,y);
+	moveAllToAPosition(position);
 }
 	
 void ParticleSystem::setSpawnRate(f32 rate)
@@ -141,6 +170,29 @@ void ParticleSystem::setParticleInitRotationSpeed(f32 particleRotationSpeed)
 	this->particleInitRotationSpeed=particleRotationSpeed;	
 }
 	
+void ParticleSystem::registerListener(ParticleSystemListener *l)
+{
+	// check for previous existence
+	if (std::find(this->listeners.begin(), this->listeners.end(), l) != this->listeners.end())
+		return;
+	
+	// add the new spawner
+	this->listeners.push_back(l);
+}
+	
+void ParticleSystem::unregisterListener(ParticleSystemListener *l)
+{
+	// find the listener in the collection
+	std::vector<ParticleSystemListener *>::iterator i;
+	i = std::find(this->listeners.begin(), this->listeners.end(), l);
+	
+	// delete the found listener
+	if (i != this->listeners.end())
+	{
+		this->listeners.erase(i);
+	}	
+}
+	
 void ParticleSystem::update(f32 dt, math::Vec2 forces)
 //1.Update particle age
 //2.Remove dead particles
@@ -162,6 +214,12 @@ void ParticleSystem::update(f32 dt, math::Vec2 forces)
 			Particle* p=(*it);
 			it=particles.erase(it);
 			this->particlePool.destroy(p);
+			
+			//Last Flying Particle Died
+			//FIXME: It is the better moment ? Or move it after step 4 ?!
+			if (it==particles.begin()) {
+				fireLastFlyingParticleDied();
+			}
 			continue;
 		}
 			
@@ -186,26 +244,31 @@ void ParticleSystem::update(f32 dt, math::Vec2 forces)
 	//4.Add generated particles
 	this->timeAfterLastSpawning+=dt;
 		
-	int particleToSpawnCount=0;
-	while ( this->timeAfterLastSpawning >= this->spawningRate)
+	if (remainingParticleCount != 0)
 	{
-		this->timeAfterLastSpawning-=this->spawningRate;
-		++particleToSpawnCount;
-	}
+		int particleToSpawnCount=0;
+		while ( this->timeAfterLastSpawning >= this->spawningRate)
+		{
+			this->timeAfterLastSpawning-=this->spawningRate;
+			++particleToSpawnCount;
+		}
 		
-	if (remainingParticleCount == UNLIMITED_PARTICLE )
-	{
-		generateParticle(particleToSpawnCount);
-	}
-	else if (particleToSpawnCount < (this->remainingParticleCount) ) 
-	{
-		generateParticle(particleToSpawnCount);
-		this->remainingParticleCount -= particleToSpawnCount;
-	}
-	else
-	{
-		generateParticle(this->remainingParticleCount);
-		this->remainingParticleCount=0;
+		if (remainingParticleCount == UNLIMITED_PARTICLE )
+		{
+			generateParticle(particleToSpawnCount);
+		}
+		else if (particleToSpawnCount < (this->remainingParticleCount) ) 
+		{
+			generateParticle(particleToSpawnCount);
+			this->remainingParticleCount -= particleToSpawnCount;
+		}
+		else
+		{
+			generateParticle(this->remainingParticleCount);
+			this->remainingParticleCount=0;
+			//Warn listener
+			this->fireLastParticleSpawned();
+		}
 	}
 }
 	
@@ -233,6 +296,24 @@ void ParticleSystem::generateParticle(int count)
 		//Add to list
 		particles.push_front(p);
 	}
+}
+	
+void ParticleSystem::fireLastParticleSpawned()
+{
+	//Call listeners : lastParticleSpawned
+	for (std::vector<ParticleSystemListener *>::iterator it = this->listeners.begin(); it != this->listeners.end(); ++it)
+	{
+		(*it)->lastParticleSpawned(this);
+	}	
+}
+	
+void ParticleSystem::fireLastFlyingParticleDied()
+{
+	//Call listeners : lastFlyingParticleDied
+	for (std::vector<ParticleSystemListener *>::iterator it = this->listeners.begin(); it != this->listeners.end(); ++it)
+	{
+		(*it)->lastFlyingParticleDied(this);
+	}		
 }
 	
 } // engine namespace

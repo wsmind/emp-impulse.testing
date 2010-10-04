@@ -56,10 +56,13 @@ int main()
 	
 	math::Vec2 totalForces(0.f,9.8f);
 	
+	float totalTime=0;
+	bool oneTime=0;
 	// Start game loop
 	while (window.IsOpened())
 	{
 		float elapsedTime = window.GetFrameTime();
+		totalTime+=elapsedTime;
 		
 		particleSystem.update(elapsedTime,totalForces);
 		
@@ -72,6 +75,12 @@ int main()
 			{
 				window.Close();
 			}
+		}
+		
+		if ( (totalTime > 6) && (!oneTime))
+		{
+			oneTime=true;
+			//particleSystem.moveAllToAPosition(150,150);
 		}
 		
 		// Clear the screen (fill it with white color)
