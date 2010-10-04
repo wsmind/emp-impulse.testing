@@ -111,3 +111,15 @@ class test_engine(build.Component):
 		env.Program("bin/test/engine-particle", "build/test/engine/particle.cpp")
 
 walker.declareComponent(test_engine())
+
+class test_scene(build.Component):
+	"""Test for the scene package"""
+	
+	def __init__(self):
+		build.Component.__init__(self, "test-scene", ["peel", "sfml", "impulse-math", "impulse-scene"])
+	
+	def appendArtifacts(self, env):
+		env.Program("bin/test/scene-simplewindow", "build/test/scene/simplewindow.cpp")
+
+walker.declareComponent(test_scene())
+
