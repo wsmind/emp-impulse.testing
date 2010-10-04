@@ -96,22 +96,11 @@ class test_math(build.Component):
 
 walker.declareComponent(test_math())
 
-class test_particle(build.Component):
-	"""Tests for the particle system"""
-
-	def __init__(self):
-		build.Component.__init__(self, "test-particle", ["peel", "sfml", "impulse-math" , "impulse-engine"])
-
-	def appendArtifacts(self, env):
-		env.Program("bin/test/particle", "build/test/particle/basic.cpp")
-
-walker.declareComponent(test_particle())
-
 class test_engine(build.Component):
 	"""Test for the engine package"""
 	
 	def __init__(self):
-		build.Component.__init__(self, "test-engine", ["peel", "impulse-engine"])
+		build.Component.__init__(self, "test-engine", ["peel", "sfml", "impulse-math", "impulse-engine"])
 	
 	def appendArtifacts(self, env):
 		env.Program("bin/test/engine-shape", "build/test/engine/shape.cpp")
@@ -119,5 +108,6 @@ class test_engine(build.Component):
 		env.Program("bin/test/engine-animation", "build/test/engine/animation.cpp")
 		env.Program("bin/test/engine-resources", "build/test/engine/resources.cpp")
 		env.Program("bin/test/engine-collisionWorld", "build/test/engine/collisionWorld.cpp")
+		env.Program("bin/test/engine-particle", "build/test/engine/particle.cpp")
 
 walker.declareComponent(test_engine())

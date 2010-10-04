@@ -32,8 +32,6 @@
 #include <list>
 #include <boost/pool/object_pool.hpp>
 
-using namespace math;
-
 namespace engine {
 	
 	/**
@@ -77,7 +75,7 @@ namespace engine {
 		 * \brief particle acceleration, only affect the position
 		 * \param acceleration particle acceleration (in coordinate unit/seconds)
 		 */
-		void setParticleAcceleration(Vec2 acceleration);
+		void setParticleAcceleration(math::Vec2 acceleration);
 		
 		/**
 		 * \brief particle acceleration, only affect the position
@@ -96,7 +94,7 @@ namespace engine {
 		 * \brief particle alpha decay
 		 * \param alphaDecay alpha decay (in RGBA unit/seconds)
 		 */
-		void setParticleAlphaDecay(Vec4 alphaDecay);
+		void setParticleAlphaDecay(math::Vec4 alphaDecay);
 		
 		/**
 		 * \brief particle alpha decay
@@ -117,7 +115,7 @@ namespace engine {
 		 * \brief particle emitter position (new particle birth position)
 		 * \param position particle emitter position (x and y coordinate)
 		 */
-		void setPosition(Vec2 position);
+		void setPosition(math::Vec2 position);
 		
 		/**
 		 * \brief particle emitter position (new particle birth position)
@@ -136,7 +134,7 @@ namespace engine {
 		 * \brief fix the particle initial speed (at birth)
 		 * \param particleSpeed particle initial speed(in coordinate/second)
 		 */
-		void setParticleInitSpeed(Vec2 particleSpeed);	
+		void setParticleInitSpeed(math::Vec2 particleSpeed);	
 		
 		/**
 		 * \brief fix the particle initial speed (at birth)
@@ -162,7 +160,7 @@ namespace engine {
 		 * \brief fix the particle initial acceleration (at birth)
 		 * \param particleAcceleration particle initial acceleration(in coordinate/second)
 		 */
-		void setParticleInitAcceleration(Vec2 particleAcceleration);
+		void setParticleInitAcceleration(math::Vec2 particleAcceleration);
 		
 		/**
 		 * \brief fix the particle initial roation speed (at birth)
@@ -192,7 +190,7 @@ namespace engine {
 		/**
 		 * \brief Draw the particleSystem in the windows
 		 */
-		void draw(sf::RenderWindow& window);
+		void draw(sf::RenderWindow *window);
 		
 	private:
 		//! \brief particle pool to improve performance
@@ -209,29 +207,29 @@ namespace engine {
 		//! \brief particle lifeTime (in seconds)
 		f32 particleLifeTime;
 		//! \brief particle acceleration, only affect the position (in coordinate unit/seconds)
-		Vec2 particleAcceleration;
+		math::Vec2 particleAcceleration;
 		//! \brief particle rotation acceleration (in counterclockwise degre/seconds)
 		f32 ParticleRotationAcceleration;
 		//! \brief particle alpha decay (in RGBA unit/seconds)
-		Vec4 particleAlphaDecay;
+		math::Vec4 particleAlphaDecay;
 		
 		//! \brief particle count that can will be created by the particle system
 		i32 capacity;
 		//! \brief particle count remaining to spawn
 		i32 remainingParticleCount;
 		//! \brief position of the particle emitter
-		Vec2 position;
+		math::Vec2 position;
 		//! \brief spawning rate (in particle/second)
 		f32 spawningRate;
 
 		//! \brief x and y coordinate initial speed of the particle (unit per sec)
-		Vec2 particleInitSpeed;
+		math::Vec2 particleInitSpeed;
 		//! \brief initial orientation of the particle (in counterclockwise degre)
 		f32 particleInitRotation;
 		//! \brief initial orientation speed of the particle (in counterclockwise degre/second)
 		f32 particleInitRotationSpeed;		
 		//! \brief particle initial alpha (at birth)
-		Vec4 particleInitAlpha;
+		math::Vec4 particleInitAlpha;
 		
 		/**
 		 * \brief Generate new particles

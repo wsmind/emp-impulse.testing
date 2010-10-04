@@ -26,72 +26,68 @@
 #include <cmath>
 
 namespace engine {
-	Particle::Particle()
-	{
-		/*this->position.x=0.f;
-		this->position.y=0.f;
-		
-		this->speed.x=0.f;
-		this->speed.y=0.f;
-		
-		this->rotation=0.f;
-		this->rotationSpeed=0.f;
-		
-		this->age=0.f;
-		
-		this->alpha.x=0.f;
-		this->alpha.y=0.f;
-		this->alpha.z=0.f;
-		this->alpha.w=0.f;*/
-	}
+Particle::Particle()
+{
+	this->position.x=0.f;
+	this->position.y=0.f;
 	
-	Particle::Particle(Vec2 position)
-	{
-		this->position=position;
-		
-		/*this->speed.x=0.f;
-		this->speed.y=0.f;
-		
-		this->rotation=0.f;
-		this->rotationSpeed=0.f;
-		
-		this->age=0.f;
-		
-		this->alpha.x=0.f;
-		this->alpha.y=0.f;
-		this->alpha.z=0.f;
-		this->alpha.w=0.f;*/
-	}
+	this->speed.x=0.f;
+	this->speed.y=0.f;
 	
-	Particle::Particle(f32 x, f32 y)
-	{
-		this->position.x=x;
-		this->position.y=y;
+	this->rotation=0.f;
+	this->rotationSpeed=0.f;
 		
-		/*this->speed.x=0.f;
-		this->speed.y=0.f;
+	this->age=0.f;
 		
-		this->rotation=0.f;
-		this->rotationSpeed=0.f;
-		
-		this->age=0.f;
-		
-		this->alpha.x=0.f;
-		this->alpha.y=0.f;
-		this->alpha.z=0.f;
-		this->alpha.w=0.f;*/
-	}
+	this->alpha.x=0.f;
+	this->alpha.y=0.f;
+	this->alpha.z=0.f;
+	this->alpha.w=0.f;
+}
 	
-	void Particle::draw(sf::RenderWindow& window, sf::Sprite& sprite) const
-	{
-		sprite.SetPosition(this->position.x,this->position.y);
-		sprite.SetRotation(this->rotation);
-		window.Draw(sprite);
-	}
+Particle::Particle(math::Vec2 position)
+{
+	this->position=position;
+	
+	this->speed.x=0.f;
+	this->speed.y=0.f;
+	
+	this->rotation=0.f;
+	this->rotationSpeed=0.f;
+		
+	this->age=0.f;
+		
+	this->alpha.x=0.f;
+	this->alpha.y=0.f;
+	this->alpha.z=0.f;
+	this->alpha.w=0.f;
+}
+	
+Particle::Particle(f32 x, f32 y)
+{
+	this->position.x=x;
+	this->position.y=y;
+		
+	this->speed.x=0.f;
+	this->speed.y=0.f;
+	
+	this->rotation=0.f;
+	this->rotationSpeed=0.f;
+		
+	this->age=0.f;
+		
+	this->alpha.x=0.f;
+	this->alpha.y=0.f;
+	this->alpha.z=0.f;
+	this->alpha.w=0.f;
+}
+	
+void Particle::draw(sf::RenderWindow *window, sf::Sprite *sprite) const
+{
+	sprite->SetPosition(this->position.x,this->position.y);
+	sprite->SetRotation(this->rotation);
+	window->Draw(*sprite);
+}
 
-	std::ostream& operator <<(std::ostream& out, const Particle& p)
-	{
-		return out;
-	}
 } // engine namespace
 

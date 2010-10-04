@@ -72,10 +72,10 @@ class boost_integer(build.Component):
 	
 	def appendUsage(self, env):
 		if env["SYSPLATFORM"] == "darwin":
-			if "BOOST_INCLUDE_PATH" not in env:
-				print "You must specify BOOST_INCLUDE_PATH on the mac platform !"
+			if "FINK_PATH" not in env:
+				print "You must specify FINK_PATH on the mac platform !"
 				env.Exit(1)
-			env.AppendUnique(CPPPATH = ["$BOOST_INCLUDE_PATH"])
+			env.AppendUnique(CPPPATH = ["$FINK_PATH"+"/include"])
 
 walker.declareComponent(boost_integer())
 
@@ -109,12 +109,17 @@ class lua(build.Component):
 		build.Component.__init__(self, "lua", ["impulse-dependency-pack"])
 	
 	def appendUsage(self, env):
-		env.AppendUnique(LIBS = ["lua5.1"])
-		
 		if env["CC"] == "cl":
 			env.AppendUnique(LINKFLAGS = ["/NODEFAULTLIB:LIBCMT"])
 		
-		if env["OSNAME"] == "posix":
+		if env["OSNAME"] == "nt":
+			env.AppendUnique(LIBS = ["lua5.1"])
+		elif env["SYSPLATFORM"] == "darwin":
+			env.AppendUnique(LIBS = ["lua"])
+			env.AppendUnique(CPPPATH = ["$FINK_PATH"+"/include"])
+			env.AppendUnique(LIBPATH = ["$FINK_PATH"+"/lib"])
+		else:
+			env.AppendUnique(LIBS = ["lua5.1"])
 			env.AppendUnique(CPPPATH = ["/usr/include/lua5.1"])
 
 walker.declareComponent(lua())

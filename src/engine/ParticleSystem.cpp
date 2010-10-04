@@ -29,213 +29,211 @@
 
 namespace engine {
 	
-	ParticleSystem::ParticleSystem()
+ParticleSystem::ParticleSystem()
+{
+	this->actived=false;
+	this->capacity=UNLIMITED_PARTICLE;
+	this->remainingParticleCount=UNLIMITED_PARTICLE;
+}
+
+bool ParticleSystem::isActive() const
+{
+	return this->actived;
+}
+	
+void ParticleSystem::setActive(bool active)
+{
+	this->actived=active;
+}
+	
+void ParticleSystem::setParticleSprite(sf::Sprite sprite)
+{
+	this->particleSprite=sprite;
+}
+	
+void ParticleSystem::setParticleLifeTime(f32 lifeTime)
+{
+	this->particleLifeTime=lifeTime;	
+}
+	
+void ParticleSystem::setParticleAcceleration(math::Vec2 acceleration)
+{
+	this->particleAcceleration=acceleration;	
+}
+	
+void ParticleSystem::setParticleAcceleration(f32 x, f32 y)
+{
+	this->particleAcceleration.x=x;	
+	this->particleAcceleration.y=y;	
+}
+	
+void ParticleSystem::setParticleRotationAcceleration(f32 rotAcceleration)
+{
+	this->ParticleRotationAcceleration=rotAcceleration;
+}
+	
+void ParticleSystem::setParticleAlphaDecay(math::Vec4 alphaDecay)
+{
+	this->particleAlphaDecay=alphaDecay;
+}
+	
+void ParticleSystem::setParticleAlphaDecay(f32 r, f32 g, f32 b, f32 a)
+{
+	this->particleAlphaDecay.x=r;
+	this->particleAlphaDecay.y=g;
+	this->particleAlphaDecay.z=b;
+	this->particleAlphaDecay.w=a;
+}
+	
+void ParticleSystem::setCapacity(i32 particleCount)
+{
+	this->capacity=particleCount;
+		
+	//unlimited particle spawn
+	if (particleCount == UNLIMITED_PARTICLE)
 	{
-		this->actived=false;
-		this->capacity=UNLIMITED_PARTICLE;
 		this->remainingParticleCount=UNLIMITED_PARTICLE;
+	//limited particle spawn
+	}else {
+		this->remainingParticleCount=particleCount;
 	}
-
-	bool ParticleSystem::isActive() const
-	{
-		return this->actived;
-	}
+}
 	
-	void ParticleSystem::setActive(bool active)
-	{
-		this->actived=active;
-	}
+i32 ParticleSystem::getRemainingParticleCount()
+{
+	return this->remainingParticleCount;
+}
 	
-	void ParticleSystem::setParticleSprite(sf::Sprite sprite)
-	{
-		this->particleSprite=sprite;
-	}
+void ParticleSystem::setPosition(math::Vec2 position)
+{
+	this->position=position;
+}
 	
-	void ParticleSystem::setParticleLifeTime(f32 lifeTime)
-	{
-		this->particleLifeTime=lifeTime;	
-	}
+void ParticleSystem::setPosition(f32 x, f32 y)
+{
+	this->position.x=x;
+	this->position.y=y;
+}
 	
-	void ParticleSystem::setParticleAcceleration(Vec2 acceleration)
-	{
-		this->particleAcceleration=acceleration;	
-	}
+void ParticleSystem::setSpawnRate(f32 rate)
+{
+	this->spawningRate=rate;	
+}
 	
-	void ParticleSystem::setParticleAcceleration(f32 x, f32 y)
-	{
-		this->particleAcceleration.x=x;	
-		this->particleAcceleration.y=y;	
-	}
+void ParticleSystem::setParticleInitSpeed(math::Vec2 particleSpeed)
+{
+	this->particleInitSpeed=particleSpeed;	
+}
 	
-	void ParticleSystem::setParticleRotationAcceleration(f32 rotAcceleration)
-	{
-		this->ParticleRotationAcceleration=rotAcceleration;
-	}
+void ParticleSystem::setParticleInitSpeed(f32 x, f32 y)
+{
+	this->particleInitSpeed.x=x;
+	this->particleInitSpeed.y=y;	
+}
 	
-	void ParticleSystem::setParticleAlphaDecay(Vec4 alphaDecay)
-	{
-		this->particleAlphaDecay=alphaDecay;
-	}
+void ParticleSystem::setParticleInitRotation(f32 rot)
+{
+	this->particleInitRotation=rot;
+}
 	
-	void ParticleSystem::setParticleAlphaDecay(f32 r, f32 g, f32 b, f32 a)
-	{
-		this->particleAlphaDecay.x=r;
-		this->particleAlphaDecay.y=g;
-		this->particleAlphaDecay.z=b;
-		this->particleAlphaDecay.w=a;
-	}
+void ParticleSystem::setParticleInitRotationSpeed(f32 particleRotationSpeed)
+{
+	this->particleInitRotationSpeed=particleRotationSpeed;	
+}
 	
-	void ParticleSystem::setCapacity(i32 particleCount)
+void ParticleSystem::update(f32 dt, math::Vec2 forces)
+//1.Update particle age
+//2.Remove dead particles
+//3.Update preexistent particles speed, position, alpha, rotation, etc
+//4.Add generated particles
+{
+	std::list<Particle *>::iterator it;
+	it=particles.begin();
+	
+	//For each particle
+	while(it != particles.end())
 	{
-		this->capacity=particleCount;
-		
-		//unlimited particle spawn
-		if (particleCount == UNLIMITED_PARTICLE)
+		//1.update particle age
+		(**it).age+=dt;
+			
+		//2.Remove dead particles
+		if ( (**it).age > this->particleLifeTime )
 		{
-			this->remainingParticleCount=UNLIMITED_PARTICLE;
-		//limited particle spawn
-		}else {
-			this->remainingParticleCount=particleCount;
+			Particle* p=(*it);
+			it=particles.erase(it);
+			this->particlePool.destroy(p);
+			continue;
 		}
-
+			
+		//3.Update preexistent particles speed, position, alpha, rotation, etc
+		(**it).speed+= dt * (this->particleAcceleration + forces);
+			
+		(**it).position+= dt * (**it).speed;
+			
+		(**it).rotationSpeed+= dt * this->ParticleRotationAcceleration;
+			
+		(**it).rotation+= dt * (**it).rotationSpeed;
+			
+		(**it).alpha.x+= dt * this->particleAlphaDecay.x;
+		(**it).alpha.y+= dt * this->particleAlphaDecay.y;
+		(**it).alpha.z+= dt * this->particleAlphaDecay.z;
+		(**it).alpha.w+= dt * this->particleAlphaDecay.w;
+			
+		//Next particle
+		++it;
 	}
-	
-	i32 ParticleSystem::getRemainingParticleCount()
-	{
-		return this->remainingParticleCount;
-	}
-	
-	void ParticleSystem::setPosition(Vec2 position)
-	{
-		this->position=position;
-	}
-	
-	void ParticleSystem::setPosition(f32 x, f32 y)
-	{
-		this->position.x=x;
-		this->position.y=y;
-	}
-	
-	void ParticleSystem::setSpawnRate(f32 rate)
-	{
-		this->spawningRate=rate;	
-	}
-	
-	void ParticleSystem::setParticleInitSpeed(Vec2 particleSpeed)
-	{
-		this->particleInitSpeed=particleSpeed;	
-	}
-	
-	void ParticleSystem::setParticleInitSpeed(f32 x, f32 y)
-	{
-		this->particleInitSpeed.x=x;
-		this->particleInitSpeed.y=y;	
-	}
-	
-	void ParticleSystem::setParticleInitRotation(f32 rot)
-	{
-		this->particleInitRotation=rot;
-	}
-	
-	void ParticleSystem::setParticleInitRotationSpeed(f32 particleRotationSpeed)
-	{
-		this->particleInitRotationSpeed=particleRotationSpeed;	
-	}
-	
-	void ParticleSystem::update(f32 dt, math::Vec2 forces)
-	//1.Update particle age
-	//2.Remove dead particles
-	//3.Update preexistent particles speed, position, alpha, rotation, etc
+		
 	//4.Add generated particles
+	this->timeAfterLastSpawning+=dt;
+		
+	int particleToSpawnCount=0;
+	while ( this->timeAfterLastSpawning >= this->spawningRate)
 	{
-		std::list<Particle *>::iterator it;
-		it=particles.begin();
-		
-		//For each particle
-		while(it != particles.end())
-		{
-			//1.update particle age
-			(**it).age+=dt;
-			
-			//2.Remove dead particles
-			if ( (**it).age > this->particleLifeTime )
-			{
-				Particle* p=(*it);
-				it=particles.erase(it);
-				this->particlePool.destroy(p);
-				continue;
-			}
-			
-			//3.Update preexistent particles speed, position, alpha, rotation, etc
-			(**it).speed+= dt * (this->particleAcceleration + forces);
-			
-			(**it).position+= dt * (**it).speed;
-			
-			(**it).rotationSpeed+= dt * this->ParticleRotationAcceleration;
-			
-			(**it).rotation+= dt * (**it).rotationSpeed;
-			
-			(**it).alpha.x+= dt * this->particleAlphaDecay.x;
-			(**it).alpha.y+= dt * this->particleAlphaDecay.y;
-			(**it).alpha.z+= dt * this->particleAlphaDecay.z;
-			(**it).alpha.w+= dt * this->particleAlphaDecay.w;
-			
-			//Next particle
-			++it;
-		}
-		
-		//4.Add generated particles
-		this->timeAfterLastSpawning+=dt;
-		
-		int particleToSpawnCount=0;
-		while ( this->timeAfterLastSpawning >= this->spawningRate)
-		{
-			this->timeAfterLastSpawning-=this->spawningRate;
-			++particleToSpawnCount;
-		}
-		
-		if (remainingParticleCount == UNLIMITED_PARTICLE )
-		{
-			generateParticle(particleToSpawnCount);
-		}
-		else if (particleToSpawnCount < (this->remainingParticleCount) ) 
-		{
-			generateParticle(particleToSpawnCount);
-			this->remainingParticleCount -= particleToSpawnCount;
-		}
-		else
-		{
-			generateParticle(this->remainingParticleCount);
-			this->remainingParticleCount=0;
-		}
-
+		this->timeAfterLastSpawning-=this->spawningRate;
+		++particleToSpawnCount;
 	}
+		
+	if (remainingParticleCount == UNLIMITED_PARTICLE )
+	{
+		generateParticle(particleToSpawnCount);
+	}
+	else if (particleToSpawnCount < (this->remainingParticleCount) ) 
+	{
+		generateParticle(particleToSpawnCount);
+		this->remainingParticleCount -= particleToSpawnCount;
+	}
+	else
+	{
+		generateParticle(this->remainingParticleCount);
+		this->remainingParticleCount=0;
+	}
+}
 	
-	void ParticleSystem::draw(sf::RenderWindow& window)
+void ParticleSystem::draw(sf::RenderWindow *window)
+{
+	std::list<Particle *>::iterator it;
+	for (it=particles.begin(); it != particles.end(); ++it) 
 	{
-		std::list<Particle *>::iterator it;
-		for (it=particles.begin(); it != particles.end(); ++it) 
-		{
-			(**it).draw(window, this->particleSprite);
-		}
+		(**it).draw(window, &this->particleSprite);
 	}
+}
 	
-	void ParticleSystem::generateParticle(int count)
+void ParticleSystem::generateParticle(int count)
+{
+	for(int i=0;i<count;++i)
 	{
-		for(int i=0;i<count;++i)
-		{
-			Particle* p=this->particlePool.construct(this->position);
+		Particle* p=this->particlePool.construct(this->position);
 			
-			//Initialise the particle
-			(*p).speed=this->particleInitSpeed;
-			(*p).rotation=this->particleInitRotation;
-			(*p).rotationSpeed=this->particleInitRotationSpeed;
-			(*p).alpha=this->particleInitAlpha;
+		//Initialise the particle
+		(*p).speed=this->particleInitSpeed;
+		(*p).rotation=this->particleInitRotation;
+		(*p).rotationSpeed=this->particleInitRotationSpeed;
+		(*p).alpha=this->particleInitAlpha;
 			
-			//Add to list
-			particles.push_front(p);
-		}
+		//Add to list
+		particles.push_front(p);
 	}
+}
 	
 } // engine namespace
 
