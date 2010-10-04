@@ -58,6 +58,7 @@ void ResourceManager::releaseImage(sf::Image *image)
 	if (name == "")
 	{
 		std::cerr << "Trying to unload an image not managed by the resource manager" << std::endl;
+		return;
 	}
 	
 	if (this->images.removeReference(name))
