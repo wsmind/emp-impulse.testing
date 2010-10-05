@@ -69,3 +69,18 @@ class impulse_engine(build.Component):
 
 walker.declareComponent(impulse_engine())
 
+class impulse_scene(build.Component):
+	"""Scene abstraction"""
+	
+	def __init__(self):
+		build.Component.__init__(self, "impulse-scene", ["impulse-engine", "sfml"])
+	
+	def appendArtifacts(self, env):
+		env.AppendUnique(CPPDEFINES = ["BUILDING_IMPULSE_SCENE"])
+		env.SharedLibrary("lib/impulse-scene", env.Glob("build/src/scene/*.cpp"))
+	
+	def appendUsage(self, env):
+		env.AppendUnique(LIBS = ["impulse-scene"])
+
+walker.declareComponent(impulse_scene())
+
