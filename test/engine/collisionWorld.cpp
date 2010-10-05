@@ -102,7 +102,7 @@ int main()
 		
 		// Collision between the ground
 		Contact contact;
-		if (groundBox.detectCollision(&heroBox, &contact) > 0)
+		if (groundBox.detectCollision(&heroBox, &contact))
 		{
 			hero.SetOutlineWidth(5.0f);
 			ground.SetOutlineWidth(5.0f);
@@ -117,7 +117,7 @@ int main()
 		}
 		
 		// Collision between the hero and the rock
-		if (rockBox.detectCollision(&heroBox, &contact) > 0)
+		if (rockBox.detectCollision(&heroBox, &contact))
 		{
 			hero.SetOutlineWidth(5.0f);
 			rock.SetOutlineWidth(5.0f);

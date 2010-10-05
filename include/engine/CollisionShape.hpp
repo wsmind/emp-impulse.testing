@@ -45,11 +45,12 @@ class CollisionShape
 		f32 getRotation() const;
 		math::Vec2 getScale() const;
 		
-		u32 detectCollision(CollisionShape *polygon, Contact *contact);
-		bool isInside(math::Vec2 point, math::Vec2 *normal, float *distance);
+		bool detectCollision(CollisionShape *polygon, Contact *contact);
+		//bool isInside(math::Vec2 point, math::Vec2 *normal, float *distance);
 		
 	private:
 		void rebuildTransform();
+		void projectPolygon(math::Vec2 normal, math::Vec2 point, CollisionShape *polygon, f32 *max, f32 *min);
 		
 		std::vector<math::Vec2> points;
 		
