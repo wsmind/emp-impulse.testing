@@ -24,7 +24,6 @@
 #define __PARTICLESYSTEMLISTENER_HPP__
 
 #include <common.hpp>
-#include <iostream>
 #include <engine/Particle.hpp>
 #include <engine/ParticleSystem.hpp>
 
@@ -47,10 +46,10 @@ class ParticleSystemListener
 		*/
 		virtual ~ParticleSystemListener() {}
 		
-		//Usefull ?
+		//FIXME: Usefull ? can be time-consuming & I'm not sure is a good idea to export particles...
 		/*virtual void particleCreated (ParticleSystem *particleSystem, Particle *p){}*/
 	
-		//Usefull ?
+		//FIXME: Usefull ? can be time-consuming & I'm not sure is a good idea to export particles...
 		/*virtual void particleDied (ParticleSystem *particleSystem, Particle *p){}*/
 	
 		/**

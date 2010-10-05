@@ -26,25 +26,17 @@
 #include <cmath>
 
 namespace engine {
+
 Particle::Particle()
 {
-	this->position.x=0.f;
-	this->position.y=0.f;
-	
-	this->speed.x=0.f;
-	this->speed.y=0.f;
-	
-	this->rotation=0.f;
-	this->rotationSpeed=0.f;
-		
-	this->age=0.f;
-		
-	this->alpha.x=0.f;
-	this->alpha.y=0.f;
-	this->alpha.z=0.f;
-	this->alpha.w=0.f;
+	Particle(math::Vec2(0,0));
 }
-	
+
+Particle::Particle(f32 x, f32 y)
+{
+	Particle(math::Vec2(x,y));
+}
+
 Particle::Particle(math::Vec2 position)
 {
 	this->position=position;
@@ -63,29 +55,13 @@ Particle::Particle(math::Vec2 position)
 	this->alpha.w=0.f;
 }
 	
-Particle::Particle(f32 x, f32 y)
-{
-	this->position.x=x;
-	this->position.y=y;
-		
-	this->speed.x=0.f;
-	this->speed.y=0.f;
-	
-	this->rotation=0.f;
-	this->rotationSpeed=0.f;
-		
-	this->age=0.f;
-		
-	this->alpha.x=0.f;
-	this->alpha.y=0.f;
-	this->alpha.z=0.f;
-	this->alpha.w=0.f;
-}
-	
 void Particle::draw(sf::RenderWindow *window, sf::Sprite *sprite) const
 {
 	sprite->SetPosition(this->position.x,this->position.y);
 	sprite->SetRotation(this->rotation);
+	//FIXME : Color OK, but Sprite NOK (getPixel, color modification & setPixel)
+	//The sprite is the same for every particle on the current particle system
+	sprite->SetColor(sf::Color(alpha.x, alpha.y, alpha.z, alpha.w));
 	window->Draw(*sprite);
 }
 

@@ -24,7 +24,6 @@
 #define __PARTICLE_HPP__
 
 #include <common.hpp>
-#include <iostream>
 #include <math/Vec2.hpp>
 #include <math/Vec4.hpp>
 
@@ -60,18 +59,18 @@ class Particle
 		Particle();
 		
 		/**
-		* \brief Construct a particle (position)
-		* \param position x and y coordinate of the new particle
-		*/
-		Particle(math::Vec2 position);
-	
-		/**
 		 * \brief Construct a particle (x, y)
 		 * \param x the x coordinate of the new particle
 		 * \param y the y coordinate of the new particle
 		 */
 		Particle(f32 x, f32 y);
 		
+		/**
+		* \brief Construct a particle (position)
+		* \param position x and y coordinate of the new particle
+		*/
+		Particle(math::Vec2 position);
+
 		/**
 		 * \brief Draw the particle in the windows
 		 */

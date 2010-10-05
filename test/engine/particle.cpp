@@ -22,8 +22,26 @@
 
 #include <SFML/Graphics.hpp>
 #include <engine/ParticleSystem.hpp>
+#include <engine/ParticleSystemListener.hpp>
 
 #include <math/Vec2.hpp>
+
+class psListener: public engine::ParticleSystemListener
+{
+
+	public:
+		psListener(){};
+
+		void lastParticleSpawned (engine::ParticleSystem *particleSystem)
+		{
+			std::cout << "Last Particle Spawned." << std::endl;
+		}
+
+		void lastFlyingParticleDied (engine::ParticleSystem *particleSystem)
+		{
+			std::cout << "Last Flying Particle Died." << std::endl;
+		}
+};
 
 int main()
 {
@@ -41,19 +59,22 @@ int main()
 	sf::Sprite sprite;
 	sprite.SetImage(particleImage);
 	
-	//Create a sprite
+	//Create a particle system
 	engine::ParticleSystem particleSystem;
 	
-	particleSystem.setCapacity(10);
-	particleSystem.setParticleSprite(sprite);
-	particleSystem.setPosition(100,100);
-	particleSystem.setSpawnRate(1.f);
-	particleSystem.setParticleLifeTime(10);
-	particleSystem.setParticleInitSpeed(30,0);
-	particleSystem.setParticleAcceleration(0,0);
-	particleSystem.setParticleAlphaDecay(0,0,0,-20);
-	particleSystem.setActive(true);
+	particleSystem.setEmitterCapacity(10);
+	particleSystem.setParticlesSprite(sprite);
+	particleSystem.setEmitterPosition(100,100);
+	particleSystem.setEmitterSpawnRate(1.f);
+	particleSystem.setParticlesLifeTime(10);
+	particleSystem.setParticlesInitSpeed(30,0);
+	particleSystem.setParticlesAcceleration(0,0);
+	particleSystem.setParticlesAlphaDecay(0,0,0,-20);
+	particleSystem.setEmitterActive(true);
 	
+	psListener psl;
+	particleSystem.registerListener(&psl);
+
 	math::Vec2 totalForces(0.f,9.8f);
 	
 	float totalTime=0;
@@ -81,6 +102,7 @@ int main()
 		{
 			oneTime=true;
 			//particleSystem.moveAllToAPosition(150,150);
+			//particleSystem.translateAll(100,0);
 		}
 		
 		// Clear the screen (fill it with white color)
