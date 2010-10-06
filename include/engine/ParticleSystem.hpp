@@ -38,7 +38,7 @@ namespace engine {
 	
 /**
  * \class ParticleSystem
- * \brief UI particle effects
+ * \brief A particle system is composed by particles created by an emitter and the emitter itself
  * \author Davy LEGGIERI
  *
  */
@@ -46,154 +46,98 @@ class ParticleSystem
 {
 	public:		
 		/**
-		 * \brief Construct a particleSystem, not active and with unlimied particle spawn
+		 * \brief Construct a particleSystem, the emitter is not active and with unlimited particle spawn
 		 */
 		ParticleSystem();
 		
 		/**
-		 * \brief Know if particleSystem is active (try producing particle)
+		 * \brief Know if the particle system emitter is active (try producing particle)
 		 */
-		bool isActive() const;
+		bool isEmitterActive() const;
 		
 		/**
 		 * \brief Active/Inactive particleSystem
 		 * \param active true to activate the particleSystem, false to inactivate it.
 		 */
-		void setActive(bool active);
+		void setEmitterActive(bool active);
 		
 		/**
-		 * \brief sprite applyed to each particle emitted by the particleSystem
+		 * \brief sprite for each particle emitted by the particleSystem (override setParticleColor method effects)
 		 * \param particleSprite particle sprite
 		 */
-		void setParticleSprite(sf::Sprite particleSprite);
-		
+		void setParticlesSprite(sf::Sprite *particleSprite);
+
 		/**
 		 * \brief particle lifetime (count down from birth)
 		 * \param lifeTime particle lifetime
 		 */
-		void setParticleLifeTime(f32 lifeTime);
+		void setParticlesLifeTime(f32 lifeTime);
 		
 		/**
-		 * \brief particle acceleration, only affect the position (not the rotation)
-		 * \param acceleration particle acceleration (in coordinate unit/seconds squared)
+		 * \brief particle rotation friction
+		 * \param rotFriction particle rotation friction (in counterclockwise degre/seconds squared)
 		 */
-		void setParticleAcceleration(math::Vec2 acceleration);
+		void setParticlesRotationFriction(f32 rotFriction);
 		
 		/**
-		 * \brief particle acceleration, only affect the position (not the rotation)
-		 * \param x x coordinate particle acceleration (in coordinate unit/seconds squared)
-		 * \param y y coordinate particle acceleration (in coordinate unit/seconds squared)
-		 */
-		void setParticleAcceleration(f32 x, f32 y);
-		
-		/**
-		 * \brief particle rotation acceleration
-		 * \param rotAcceleration particle rotation acceleration (in counterclockwise degre/seconds squared)
-		 */
-		void setParticleRotationAcceleration(f32 rotAcceleration);
-		
-		/**
-		 * \brief particle alpha decay
+		 * \brief particle color decay
 		 * \param alphaDecay alpha decay (in RGBA unit/seconds)
 		 */
-		void setParticleAlphaDecay(math::Vec4 alphaDecay);
+		void setParticlesColorDecay(math::Vec4 alphaDecay);
 		
 		/**
-		 * \brief particle alpha decay
-		 * \param r red color decay (unit/second)
-		 * \param g green color decay (unit/second)
-		 * \param b blue color decay (unit/second)
-		 * \param a alpha decay (unit/second)
-		 */
-		void setParticleAlphaDecay(f32 r, f32 g, f32 b, f32 a);
-		
-		/**
-		 * \brief particle count that can will be created by the particle system, this method restart the internal particle count
+		 * \brief particle count that can will be created by the particle system emitter (this method reset the internal particle count)
 		 * \param particleCount particle count, -1 for unlimited particle spawn
 		 */
-		void setCapacity(i32 particleCount);
+		void setEmitterCapacity(i32 particleCount);
 		
 		/**
 		 * \brief particle emitter position (new particle birth position)
 		 * \param position particle emitter position (x and y coordinate)
 		 */
-		void setPosition(math::Vec2 position);
-		
-		/**
-		 * \brief particle emitter position (new particle birth position)
-		 * \param x x coordinate
-		 * \param y y coordinate
-		 */
-		void setPosition(f32 x, f32 y);
-	
+		void setEmitterPosition(math::Vec2 position);
+
 		/**
 		 * \brief move the whole particleSytem to a new position (emitter and all particles are moved)
 		 * \param position new position of the particle system emitter
 		 */
 		void moveAllToAPosition(math::Vec2 position);
-	
+
 		/**
-		 * \brief move the whole particleSytem to a new position (emitter and all particles are moved)
-		 * \param x new x coordinate of the particle system emitter
-		 * \param y new y coordinate of the particle system emitter
+		 * \brief translate the whole particleSytem (emitter and all particles are moved)
+		 * \param vector translate vector
 		 */
-		void moveAllToAPosition(f32 x, f32 y);
-		
+		void translateAll(math::Vec2 vector);
+
 		/**
 		 * \brief fix the particle spawn rate
 		 * \param rate particle spawn rate (in particle/second)
 		 */
-		void setSpawnRate(f32 rate);
+		void setEmitterSpawnRate(f32 rate);
 		
 		/**
 		 * \brief fix the particle initial speed (at birth)
-		 * \param particleSpeed particle initial speed(in coordinate/second)
+		 * \param particlesSpeed particles initial speed(in coordinate/second)
 		 */
-		void setParticleInitSpeed(math::Vec2 particleSpeed);	
-		
-		/**
-		 * \brief fix the particle initial speed (at birth)
-		 * \param x x coordinate particle initial speed(in coordinate/second)
-		 * \param y x coordinate particle initial speed(in coordinate/second)
-		 */
-		void setParticleInitSpeed(f32 x, f32 y);	
+		void setParticlesInitSpeed(math::Vec2 particlesSpeed);
 		
 		/**
 		 * \brief fix the particle initial rotation (at birth)
 		 * \param rot x coordinate particle initial speed(in counterclockwise degre)
 		 */
-		void setParticleInitRotation(f32 rot);
+		void setParticlesInitRotation(f32 rot);
 		
 		/**
-		 * \brief fix the particle initial acceleration (at birth)
-		 * \param x x coordinate particle initial acceleration(in coordinate/second)
-		 * \param y y coordinate particle initial acceleration(in coordinate/second)
+		 * \brief fix the particle initial rotation speed (at birth)
+		 * \param particlesRotationSpeed particles initial rotation speed(in coordinate/second)
 		 */
-		void setParticleInitAcceleration(f32 x, f32 y);
-		
-		/**
-		 * \brief fix the particle initial acceleration (at birth)
-		 * \param particleAcceleration particle initial acceleration(in coordinate/second)
-		 */
-		void setParticleInitAcceleration(math::Vec2 particleAcceleration);
-		
-		/**
-		 * \brief fix the particle initial roation speed (at birth)
-		 * \param particleRotationSpeed particle initial rotation speed(in coordinate/second)
-		 */
-		void setParticleInitRotationSpeed(f32 particleRotationSpeed);
-		
-		/**
-		 * \brief fix the particle initial rotation acceleration (at birth)
-		 * \param rotAcceleration particle initial acceleration(in counterclockwise degre/second)
-		 */
-		void setParticleInitRotationAcceleration(f32 rotAcceleration);
+		void setParticlesInitRotationSpeed(f32 particlesRotationSpeed);
 		
 		/**
 		 * \brief get the not spawned yet particle count
 		 * \return particle count remaining to spawn, or -1 if unlimited particle spawn
 		 */
-		i32 getRemainingParticleCount();
+		i32 getEmitterRemainingParticleCount();
 	
 		/**
 		 * \brief get the flying particle count
@@ -218,6 +162,7 @@ class ParticleSystem
 		 * \param dt delta time before last update call
 		 * \param forces forces to apply on each particle
 		 */
+		//FIXEME: And the rotation ? How the rotation will evolve ?
 		void update(f32 dt, math::Vec2 forces);
 		
 		/**
@@ -232,19 +177,17 @@ class ParticleSystem
 		std::list<Particle *> particles;
 		//! \brief true when the particle system is produting particle (active), false otherwise
 		bool actived;
-		//! \brief time elasped after the last particle spawn (in seconds)
+		//! \brief time elapsped after the last particle spawn (in seconds)
 		f32 timeAfterLastSpawning;
 		
 		//! \brief sprite applyed to each particle
-		sf::Sprite particleSprite;
+		sf::Sprite *particleSprite;
 		//! \brief particle lifeTime (in seconds)
 		f32 particleLifeTime;
-		//! \brief particle acceleration, only affect the position (in coordinate unit/seconds squared)
-		math::Vec2 particleAcceleration;
-		//! \brief particle rotation acceleration (in counterclockwise degre/seconds squared)
-		f32 ParticleRotationAcceleration;
-		//! \brief particle alpha decay (in RGBA unit/seconds)
-		math::Vec4 particleAlphaDecay;
+		//! \brief particle rotation friction (in counterclockwise degre/seconds squared)
+		f32 ParticleRotationFriction;
+		//! \brief particle color decay (in RGBA unit/seconds)
+		math::Vec4 particleColorDecay;
 		
 		//! \brief particle count that can will be created by the particle system
 		i32 capacity;
@@ -261,16 +204,17 @@ class ParticleSystem
 		f32 particleInitRotation;
 		//! \brief initial orientation speed of the particle (in counterclockwise degre/second)
 		f32 particleInitRotationSpeed;		
-		//! \brief particle initial alpha (at birth)
-		math::Vec4 particleInitAlpha;
+		//! \brief particle initial color (at birth)
+		math::Vec4 particleInitColor;
 	
+		//! \brief particle systems events listeners
 		std::vector<ParticleSystemListener *> listeners;
 		
 		/**
 		 * \brief Generate new particles
 		 * \param count particle count to generate
 		 */
-		void generateParticle(int count);
+		void generateParticles(int count);
 	
 		/**
 		 * \brief Emit the event lastParticleSpawned for each listener
