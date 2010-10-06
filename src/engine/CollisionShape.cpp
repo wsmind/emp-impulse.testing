@@ -39,10 +39,6 @@ CollisionShape::CollisionShape(std::vector<Vec2> points)
 	this->rebuildTransform();
 }
 
-CollisionShape::~CollisionShape()
-{
-}
-
 void CollisionShape::setPosition(Vec2 newPosition)
 {
 	this->position = newPosition;
@@ -76,23 +72,8 @@ math::Vec2 CollisionShape::getScale() const
 	return this->scale;
 }
 
-bool CollisionShape::detectCollision(CollisionShape *polygon, Contact *contact)
-{
-	/*Vec2 maxNormal;
-	Vec2 maxPoint;
-	float maxDistance = -1.0f;
-	int intersectionCount = 0;
-	
-	Vec2 normal;
-	float distance;
-	Vec2 point;*/
-	
-	/*Mat33 polygonLocalToThisLocal = this->transform.inverse() * polygon->transform;
-	Mat33 normalMatrixThis = this->transform;
-	normalMatrixThis.v[2] = 0.0f;
-	normalMatrixThis.v[5] = 0.0f;*/
-	
-	
+bool CollisionShape::detectCollision(CollisionShape *polygon, Contact *contact = NULL)
+{	
 	f32 maxDistanceThis;
 	f32 minDistanceThis;
 	f32 maxDistancePolygon;
@@ -101,143 +82,75 @@ bool CollisionShape::detectCollision(CollisionShape *polygon, Contact *contact)
 	f32 overlap;
 	f32 minOverlap = INFINITY;
 	
-	// for each edge of this
+	// For each edge of this
 	for ( u32 i = 0; i < this->points.size(); i++)
 	{
-		std::cout << "New edge !" << std::endl;
-		
 		// Compute the edge
-		Vec2 start = this->points[i];
-		Vec2 end = this->points[(i + 1) % this->points.size()];
+		Vec2 start = this->transform * this->points[i];
+		Vec2 end = this->transform * this->points[(i + 1) % this->points.size()];
 		Vec2 edge = end - start;
 		
 		// Compute the normal line
 		Vec2 normal = Vec2(edge.y, -edge.x).normalize();
 		
-		projectPolygon(normal, start, this, &maxDistanceThis, &minDistanceThis);
-		projectPolygon(normal, start, polygon, &maxDistancePolygon, &minDistancePolygon);
-		std::cout << "MaxThis: " << maxDistanceThis << std::endl;
-		std::cout << "MinThis: " << minDistanceThis << std::endl;
-		std::cout << "MaxPolygon: " << maxDistancePolygon << std::endl;
-		std::cout << "MinPolygon: " << minDistancePolygon << std::endl;
+		projectPolygon(normal, start, this, &minDistanceThis, &maxDistanceThis);
+		projectPolygon(normal, start, polygon, &minDistancePolygon, &maxDistancePolygon);
 		
 		// Test if there is collision
 		if ((minDistanceThis > maxDistancePolygon) || (maxDistanceThis < minDistancePolygon))
 			return false;
 		
 		// Compute the overlap
-		if (maxDistancePolygon > minDistanceThis)
-			overlap = maxDistancePolygon - minDistanceThis;
-		else
-			overlap = maxDistanceThis - minDistancePolygon;
+		overlap = -minDistancePolygon;
 		
 		// Find the right edge
 		if (overlap < minOverlap)
 		{
 			minOverlap = overlap;
-			contact->normal = normal;
-			contact->interpenetration = minOverlap;
-		}
-		
-	}
-	
-	// for each edge of polygon
-	for ( u32 i = 0; i < polygon->points.size(); i++)
-	{
-		std::cout << "New edge !" << std::endl;
-		
-		// Compute the edge
-		Vec2 start = polygon->points[i];
-		Vec2 end = polygon->points[(i + 1) % polygon->points.size()];
-		Vec2 edge = end - start;
-		
-		// Compute the normal line
-		Vec2 normal = Vec2(edge.y, -edge.x).normalize();
-		
-		projectPolygon(normal, start, this, &maxDistanceThis, &minDistanceThis);
-		projectPolygon(normal, start, polygon, &maxDistancePolygon, &minDistancePolygon);
-		std::cout << "MaxThis: " << maxDistanceThis << std::endl;
-		std::cout << "MinThis: " << minDistanceThis << std::endl;
-		std::cout << "MaxPolygon: " << maxDistancePolygon << std::endl;
-		std::cout << "MinPolygon: " << minDistancePolygon << std::endl;
-		
-		// Test if there is collision
-		if ((minDistanceThis > maxDistancePolygon) || (maxDistanceThis < minDistancePolygon))
-			return false;
-		
-		// Compute the overlap
-		if (maxDistancePolygon > minDistanceThis)
-			overlap = maxDistancePolygon - minDistanceThis;
-		else
-			overlap = maxDistanceThis - minDistancePolygon;
-		
-		// Find the right edge
-		if (overlap < minOverlap)
-		{
-			minOverlap = overlap;
-			contact->normal = normal;
-			contact->interpenetration = minOverlap;
-		}
-	}
-	
-	
-	// for each point of this
-	/*Mat33 thisLocalToPolygonLocal = polygon->transform.inverse() * this->transform;
-	Mat33 normalMatrixPolygon = polygon->transform;
-	normalMatrixPolygon.v[2] = 0.0f;
-	normalMatrixPolygon.v[5] = 0.0f;*/
-	/*for ( unsigned int i = 0 ; i < this->points.size(); i++)
-	{
-		point = thisLocalToPolygonLocal * this->points[i];
-		if(polygon->isInside(point, &normal, &distance))
-		{
-			intersectionCount++;
-			if (distance > maxDistance)
+			if (contact != NULL)
 			{
-				maxNormal = normalMatrixPolygon * -normal;
-				float norm = maxNormal.norm();
-				maxPoint = polygon->transform * point;
-				maxDistance = distance * norm;
-				maxNormal = maxNormal / norm;
+				contact->normal = normal;
+				contact->interpenetration = minOverlap;
 			}
 		}
-	}*/
+		
+	}
 	
+	// For each edge of polygon
+	for ( u32 i = 0; i < polygon->points.size(); i++)
+	{
+		// Compute the edge
+		Vec2 start = polygon->transform * polygon->points[i];
+		Vec2 end = polygon->transform * polygon->points[(i + 1) % polygon->points.size()];
+		Vec2 edge = end - start;
+		
+		// Compute the normal line
+		Vec2 normal = Vec2(edge.y, -edge.x).normalize();
+		
+		projectPolygon(normal, start, this, &minDistanceThis, &maxDistanceThis);
+		projectPolygon(normal, start, polygon, &minDistancePolygon, &maxDistancePolygon);
+		
+		// Test if there is collision
+		if ((minDistanceThis > maxDistancePolygon) || (maxDistanceThis < minDistancePolygon))
+			return false;
+		
+		// Compute the overlap
+		overlap = -minDistanceThis;
+		
+		// Find the right edge
+		if (overlap < minOverlap)
+		{
+			minOverlap = overlap;
+			if (contact != NULL)
+			{
+				contact->normal = -normal;
+				contact->interpenetration = minOverlap;
+			}
+		}
+	}
 	
 	return true;
 }
-
-/*bool CollisionShape::isInside(Vec2 point, Vec2 *normal, float *distance)
-{
-	*normal = Vec2(0.0f, 0.0f);
-	*distance = INFINITY;
-	
-	for(unsigned int i = 0; i < this->points.size(); i++)
-	{
-		Vec2 start = this->points[i];
-		Vec2 end = this->points[(i + 1) % this->points.size()];
-		
-		Vec2 edge = end - start;
-		Vec2 relPoint = point - start;
-		
-		if (edge.area(relPoint) < 0.0f)
-			return false;
-		
-		// Compute the normal
-		Vec2 n = Vec2(edge.y, -edge.x).normalize();
-		//std::cout << "n: " << n << std::endl;
-		
-		// compute distance between the point and the edge
-		float d = fabs(relPoint.dot(n));
-		//std::cout << "d: " << d << std::endl;
-		if (d < *distance)
-		{
-			*distance = d;
-			*normal = n;
-		}
-	}
-	return true;
-}*/
 
 void CollisionShape::rebuildTransform()
 {
@@ -260,23 +173,23 @@ void CollisionShape::rebuildTransform()
 	this->transform = translation * rotation * scale;
 }
 
-void CollisionShape::projectPolygon(math::Vec2 normal, math::Vec2 point, CollisionShape *polygon, f32 *max, f32 *min)
+void CollisionShape::projectPolygon(math::Vec2 normal, math::Vec2 point, CollisionShape *polygon, f32 *min, f32 *max)
 {	
 	// Initialize max and min
-	*max = -INFINITY;
 	*min = INFINITY;
+	*max = -INFINITY;
 	
 	// Compute projection for each point of polygon
 	for ( u32 i = 0; i < polygon->points.size(); i++)
 	{
-		Vec2 relVector = polygon->points[i] - point;
+		Vec2 relVector = polygon->transform * polygon->points[i] - point;
 		f32 distance = relVector.dot(normal);
-		
-		if (distance > *max)
-			*max = distance;
 		
 		if (distance < *min)
 			*min = distance;
+			
+		if (distance > *max)
+			*max = distance;
 	}
 
 }
