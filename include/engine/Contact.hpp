@@ -35,13 +35,11 @@ namespace engine {
 * \brief The Contact struct defines a contact when a collision occurs.
 *
 * A contact is defined by:
-* \li the point where the collision occurs.
 * \li the normalized normal of the collision.
 * \li the penetration of the polygon into the other one.
 */
 struct Contact
 {
-	math::Vec2 contactPoint;
 	math::Vec2 normal;
 	float interpenetration;
 };

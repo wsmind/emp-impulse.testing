@@ -96,7 +96,7 @@ class CollisionShape
 		* The result normal is oriented from this to polygon.
 		* The contact parameter is not obligatory.
 		*/
-		bool detectCollision(CollisionShape *polygon, Contact *contact);
+		bool detectCollision(CollisionShape *polygon, Contact *contact = NULL);
 		
 	private:
 		/**
