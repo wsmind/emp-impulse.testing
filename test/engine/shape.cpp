@@ -68,7 +68,7 @@ int main()
 		std::cout << "distance: " << distance << std::endl;
 	}*/
 	
-	std::vector<math::Vec2> points1;
+	/*std::vector<math::Vec2> points1;
 	points1.push_back(math::Vec2(0.0f, 0.0f));
 	points1.push_back(math::Vec2(0.0f, -1.0f));
 	points1.push_back(math::Vec2(2.0f, -3.0f));
@@ -93,14 +93,25 @@ int main()
 	points4.push_back(math::Vec2(1.0f, -3.0f));
 	points4.push_back(math::Vec2(1.5f, -1.5f));
 	points4.push_back(math::Vec2(1.0f, -1.5f));
-	CollisionShape shape4(points4);
+	CollisionShape shape4(points4);*/
+	
+	std::vector<math::Vec2> points1;
+	points1.push_back(math::Vec2(4.0f, -1.5f));
+	points1.push_back(math::Vec2(4.0f, 1.5f));
+	points1.push_back(math::Vec2(1.0f, 1.5f));
+	points1.push_back(math::Vec2(1.0f, -1.5f));
+	CollisionShape shape1(points1);
+	
+	std::vector<math::Vec2> points2;
+	points2.push_back(math::Vec2(0.5f, 0.5f));
+	points2.push_back(math::Vec2(3.0f, 3.0f));
+	points2.push_back(math::Vec2(0.5f, 5.5f));
+	CollisionShape shape2(points2);
 	
 	Contact contact;
-	u32 intersectionCount = shape1.detectCollision(&shape4, &contact);
-	if (intersectionCount > 0)
+	bool collision = shape1.detectCollision(&shape2, &contact);
+	if (collision)
 	{
-		std::cout << "Intersection count: " << intersectionCount << std::endl;
-		std::cout << "Contact point: " << contact.contactPoint << std::endl;
 		std::cout << "Normal: " << contact.normal << std::endl;
 		std::cout << "Interpenetration: " << contact.interpenetration << std::endl;
 	}
