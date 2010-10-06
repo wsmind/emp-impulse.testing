@@ -36,56 +36,37 @@ ParticleSystem::ParticleSystem()
 	this->remainingParticleCount=UNLIMITED_PARTICLE;
 }
 
-bool ParticleSystem::isActive() const
+bool ParticleSystem::isEmitterActive() const
 {
 	return this->actived;
 }
 	
-void ParticleSystem::setActive(bool active)
+void ParticleSystem::setEmitterActive(bool active)
 {
 	this->actived=active;
 }
 	
-void ParticleSystem::setParticleSprite(sf::Sprite sprite)
+void ParticleSystem::setParticlesSprite(sf::Sprite *sprite)
 {
 	this->particleSprite=sprite;
 }
 	
-void ParticleSystem::setParticleLifeTime(f32 lifeTime)
+void ParticleSystem::setParticlesLifeTime(f32 lifeTime)
 {
 	this->particleLifeTime=lifeTime;	
 }
 	
-void ParticleSystem::setParticleAcceleration(math::Vec2 acceleration)
+void ParticleSystem::setParticlesRotationFriction(f32 rotFriction)
 {
-	this->particleAcceleration=acceleration;	
+	this->ParticleRotationFriction=rotFriction;
 }
 	
-void ParticleSystem::setParticleAcceleration(f32 x, f32 y)
+void ParticleSystem::setParticlesColorDecay(math::Vec4 colorDecay)
 {
-	this->particleAcceleration.x=x;	
-	this->particleAcceleration.y=y;	
+	this->particleColorDecay=colorDecay;
 }
 	
-void ParticleSystem::setParticleRotationAcceleration(f32 rotAcceleration)
-{
-	this->ParticleRotationAcceleration=rotAcceleration;
-}
-	
-void ParticleSystem::setParticleAlphaDecay(math::Vec4 alphaDecay)
-{
-	this->particleAlphaDecay=alphaDecay;
-}
-	
-void ParticleSystem::setParticleAlphaDecay(f32 r, f32 g, f32 b, f32 a)
-{
-	this->particleAlphaDecay.x=r;
-	this->particleAlphaDecay.y=g;
-	this->particleAlphaDecay.z=b;
-	this->particleAlphaDecay.w=a;
-}
-	
-void ParticleSystem::setCapacity(i32 particleCount)
+void ParticleSystem::setEmitterCapacity(i32 particleCount)
 {
 	this->capacity=particleCount;
 		
@@ -99,7 +80,7 @@ void ParticleSystem::setCapacity(i32 particleCount)
 	}
 }
 	
-i32 ParticleSystem::getRemainingParticleCount()
+i32 ParticleSystem::getEmitterRemainingParticleCount()
 {
 	return this->remainingParticleCount;
 }
@@ -108,24 +89,18 @@ i32 ParticleSystem::getFlyingParticleCount()
 {
 	return this->particles.size();
 }
-	
-void ParticleSystem::setPosition(math::Vec2 position)
+
+void ParticleSystem::setEmitterPosition(math::Vec2 position)
 {
 	this->position=position;
 }
-	
-void ParticleSystem::setPosition(f32 x, f32 y)
-{
-	this->position.x=x;
-	this->position.y=y;
-}
-	
+
 void ParticleSystem::moveAllToAPosition(math::Vec2 position)
 {
-	math::Vec2 deplacement;
-	deplacement=(position - this->position);
-	deplacement.x = position.x - this->position.x;
-	deplacement.y = position.y - this->position.y;
+	math::Vec2 move;
+	move=(position - this->position);
+	move.x = position.x - this->position.x;
+	move.y = position.y - this->position.y;
 	
 	//Change emitter position
 	this->position=position;
@@ -134,38 +109,39 @@ void ParticleSystem::moveAllToAPosition(math::Vec2 position)
 	std::list<Particle *>::iterator it;
 	for (it=particles.begin(); it != particles.end(); ++it) 
 	{
-		(**it).position+=deplacement;
+		(**it).position+=move;
 	}
 }
 
-void ParticleSystem::moveAllToAPosition(f32 x, f32 y)
+void ParticleSystem::translateAll(math::Vec2 vector)
 {
-	math::Vec2 position(x,y);
-	moveAllToAPosition(position);
+	//Change emitter position
+	this->position+=vector;
+
+	//Move each particle
+	std::list<Particle *>::iterator it;
+	for (it=particles.begin(); it != particles.end(); ++it)
+	{
+		(**it).position+=vector;
+	}
 }
 	
-void ParticleSystem::setSpawnRate(f32 rate)
+void ParticleSystem::setEmitterSpawnRate(f32 rate)
 {
 	this->spawningRate=rate;	
 }
 	
-void ParticleSystem::setParticleInitSpeed(math::Vec2 particleSpeed)
+void ParticleSystem::setParticlesInitSpeed(math::Vec2 particlesSpeed)
 {
-	this->particleInitSpeed=particleSpeed;	
+	this->particleInitSpeed=particlesSpeed;
 }
 	
-void ParticleSystem::setParticleInitSpeed(f32 x, f32 y)
-{
-	this->particleInitSpeed.x=x;
-	this->particleInitSpeed.y=y;	
-}
-	
-void ParticleSystem::setParticleInitRotation(f32 rot)
+void ParticleSystem::setParticlesInitRotation(f32 rot)
 {
 	this->particleInitRotation=rot;
 }
 	
-void ParticleSystem::setParticleInitRotationSpeed(f32 particleRotationSpeed)
+void ParticleSystem::setParticlesInitRotationSpeed(f32 particleRotationSpeed)
 {
 	this->particleInitRotationSpeed=particleRotationSpeed;	
 }
@@ -194,9 +170,9 @@ void ParticleSystem::unregisterListener(ParticleSystemListener *l)
 }
 	
 void ParticleSystem::update(f32 dt, math::Vec2 forces)
-//1.Update particle age
+//1.Update particles age
 //2.Remove dead particles
-//3.Update preexistent particles speed, position, alpha, rotation, etc
+//3.Update pre-existent particles speed, position, color, rotation, etc
 //4.Add generated particles
 {
 	std::list<Particle *>::iterator it;
@@ -205,7 +181,7 @@ void ParticleSystem::update(f32 dt, math::Vec2 forces)
 	//For each particle
 	while(it != particles.end())
 	{
-		//1.update particle age
+		//1.update particles age
 		(**it).age+=dt;
 			
 		//2.Remove dead particles
@@ -216,26 +192,24 @@ void ParticleSystem::update(f32 dt, math::Vec2 forces)
 			this->particlePool.destroy(p);
 			
 			//Last Flying Particle Died
-			//FIXME: It is the better moment ? Or move it after step 4 ?!
+			//FIXME: It is the good moment ? Or move it after step 4 ?!
 			if (it==particles.begin()) {
 				fireLastFlyingParticleDied();
 			}
 			continue;
 		}
 			
-		//3.Update preexistent particles speed, position, alpha, rotation, etc
-		(**it).speed+= dt * (this->particleAcceleration + forces);
-			
+		//3.Update pre-existent particles speed, position, color, rotation, etc
+		(**it).speed+= dt * forces;
 		(**it).position+= dt * (**it).speed;
 			
-		(**it).rotationSpeed+= dt * this->ParticleRotationAcceleration;
-			
+		(**it).rotationSpeed+= dt * this->ParticleRotationFriction;
 		(**it).rotation+= dt * (**it).rotationSpeed;
 			
-		(**it).alpha.x+= dt * this->particleAlphaDecay.x;
-		(**it).alpha.y+= dt * this->particleAlphaDecay.y;
-		(**it).alpha.z+= dt * this->particleAlphaDecay.z;
-		(**it).alpha.w+= dt * this->particleAlphaDecay.w;
+		(**it).color.x+= dt * this->particleColorDecay.x;
+		(**it).color.y+= dt * this->particleColorDecay.y;
+		(**it).color.z+= dt * this->particleColorDecay.z;
+		(**it).color.w+= dt * this->particleColorDecay.w;
 			
 		//Next particle
 		++it;
@@ -255,16 +229,16 @@ void ParticleSystem::update(f32 dt, math::Vec2 forces)
 		
 		if (remainingParticleCount == UNLIMITED_PARTICLE )
 		{
-			generateParticle(particleToSpawnCount);
+			generateParticles(particleToSpawnCount);
 		}
 		else if (particleToSpawnCount < (this->remainingParticleCount) ) 
 		{
-			generateParticle(particleToSpawnCount);
+			generateParticles(particleToSpawnCount);
 			this->remainingParticleCount -= particleToSpawnCount;
 		}
 		else
 		{
-			generateParticle(this->remainingParticleCount);
+			generateParticles(this->remainingParticleCount);
 			this->remainingParticleCount=0;
 			//Warn listener
 			this->fireLastParticleSpawned();
@@ -277,21 +251,21 @@ void ParticleSystem::draw(sf::RenderWindow *window)
 	std::list<Particle *>::iterator it;
 	for (it=particles.begin(); it != particles.end(); ++it) 
 	{
-		(**it).draw(window, &this->particleSprite);
+		(**it).draw(window, this->particleSprite);
 	}
 }
 	
-void ParticleSystem::generateParticle(int count)
+void ParticleSystem::generateParticles(int count)
 {
 	for(int i=0;i<count;++i)
 	{
 		Particle* p=this->particlePool.construct(this->position);
 			
-		//Initialise the particle
+		//Initialize the particle
 		(*p).speed=this->particleInitSpeed;
 		(*p).rotation=this->particleInitRotation;
 		(*p).rotationSpeed=this->particleInitRotationSpeed;
-		(*p).alpha=this->particleInitAlpha;
+		(*p).color=this->particleInitColor;
 			
 		//Add to list
 		particles.push_front(p);

@@ -22,8 +22,26 @@
 
 #include <SFML/Graphics.hpp>
 #include <engine/ParticleSystem.hpp>
+#include <engine/ParticleSystemListener.hpp>
 
 #include <math/Vec2.hpp>
+
+class psListener: public engine::ParticleSystemListener
+{
+
+	public:
+		psListener(){};
+
+		void lastParticleSpawned (engine::ParticleSystem *particleSystem)
+		{
+			std::cout << "Last Particle Spawned." << std::endl;
+		}
+
+		void lastFlyingParticleDied (engine::ParticleSystem *particleSystem)
+		{
+			std::cout << "Last Flying Particle Died." << std::endl;
+		}
+};
 
 int main()
 {
@@ -41,23 +59,27 @@ int main()
 	sf::Sprite sprite;
 	sprite.SetImage(particleImage);
 	
-	//Create a sprite
+	//Create a particle system
 	engine::ParticleSystem particleSystem;
 	
-	particleSystem.setCapacity(10);
-	particleSystem.setParticleSprite(sprite);
-	particleSystem.setPosition(100,100);
-	particleSystem.setSpawnRate(1.f);
-	particleSystem.setParticleLifeTime(10);
-	particleSystem.setParticleInitSpeed(30,0);
-	particleSystem.setParticleAcceleration(0,0);
-	particleSystem.setParticleAlphaDecay(0,0,0,-20);
-	particleSystem.setActive(true);
+	particleSystem.setEmitterCapacity(10);
+	particleSystem.setParticlesSprite(&sprite);
+	particleSystem.setEmitterPosition(math::Vec2(100,100));
+	particleSystem.setEmitterSpawnRate(1.f);
+	particleSystem.setParticlesLifeTime(10);
+	particleSystem.setParticlesInitSpeed(math::Vec2(30,0));
+	particleSystem.setParticlesColorDecay(math::Vec4(0,0,0,-20));
+	particleSystem.setEmitterActive(true);
 	
+	psListener psl;
+	particleSystem.registerListener(&psl);
+
 	math::Vec2 totalForces(0.f,9.8f);
 	
 	float totalTime=0;
 	bool oneTime=0;
+	float fps=0.f;
+
 	// Start game loop
 	while (window.IsOpened())
 	{
@@ -77,10 +99,11 @@ int main()
 			}
 		}
 		
-		if ( (totalTime > 6) && (!oneTime))
+		if ( (!oneTime) && (totalTime > 6))
 		{
 			oneTime=true;
 			//particleSystem.moveAllToAPosition(150,150);
+			//particleSystem.translateAll(100,0);
 		}
 		
 		// Clear the screen (fill it with white color)
@@ -90,6 +113,7 @@ int main()
 		
 		// Display window contents on screen
 		window.Display();
+		fps = 1 / elapsedTime;
 	}
 	
 	return EXIT_SUCCESS;
