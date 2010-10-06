@@ -20,64 +20,90 @@
  *                                                                             *
  ******************************************************************************/
 
+#include <iostream>
+#include <cstdio>
+
 namespace engine {
 
 template <class ResourceType>
-void ReferenceCounter<ResourceType>::createResource(std::string name, ResourceType *resource)
+void ReferenceCounter<ResourceType>::addReference(std::string name)
 {
-	// create first reference
-	Descriptor desc;
-	desc.resource = resource;
-	desc.referenceCount = 1;
-	
-	this->descriptors[name] = desc;
-}
-
-template <class ResourceType>
-void ReferenceCounter<ResourceType>::destroyResource(std::string name)
-{
-	typename DescriptorMap::iterator i = this->descriptors.find(name);
-	this->descriptors.erase(i);
-}
-
-template <class ResourceType>
-std::string ReferenceCounter<ResourceType>::findResourceName(ResourceType *resource)
-{
-	typename DescriptorMap::iterator i = this->descriptors.begin();
-	
-	while (i != this->descriptors.end())
+	typename DescriptorMap::iterator it = this->descriptors.find(name);
+	if (it != this->descriptors.end())
 	{
-		if (i->second.resource == resource)
-			return i->first;
-		
-		i++;
+		// increase reference count for existing name
+		++it->second.referenceCount;
 	}
-	
-	return "";
+	else
+	{
+		// create a new descriptor (with counter initialized to 1)
+		Descriptor desc;
+		desc.resource = NULL;
+		desc.referenceCount = 1;
+		
+		this->descriptors[name] = desc;
+	}
 }
 
 template <class ResourceType>
-ResourceType *ReferenceCounter<ResourceType>::addReference(std::string name)
+void ReferenceCounter<ResourceType>::removeReference(std::string name)
 {
-	typename DescriptorMap::iterator i = this->descriptors.find(name);
-	if (i == this->descriptors.end())
-		return NULL;
-	
-	Descriptor &desc = i->second;
-	desc.referenceCount++;
-	
-	return desc.resource;
+	typename DescriptorMap::iterator it = this->descriptors.find(name);
+	if (it != this->descriptors.end())
+	{
+		// decrease reference count for existing name
+		--it->second.referenceCount;
+		
+		// destroy if necesarry
+		if (it->second.referenceCount == 0)
+			this->descriptors.erase(it);
+	}
+	else
+	{
+		// not referenced before
+		std::cerr << "Trying to remove a reference to '" << name << "', which is not currently referenced" << std::endl;
+	}
 }
 
 template <class ResourceType>
-bool ReferenceCounter<ResourceType>::removeReference(std::string name)
+u32 ReferenceCounter<ResourceType>::getReferenceCount(std::string name)
 {
-	typename DescriptorMap::iterator i = this->descriptors.find(name);
+	// if the name can be found, if is currently referenced
+	typename DescriptorMap::iterator it = this->descriptors.find(name);
+	if (it != this->descriptors.end())
+		return it->second.referenceCount;
 	
-	Descriptor &desc = i->second;
-	desc.referenceCount--;
+	// otherwise, it is not
+	return 0;
+}
+
+template <class ResourceType>
+void ReferenceCounter<ResourceType>::storeResourceObject(std::string name, ResourceType *resource)
+{
+	// ignore non-referenced names
+	typename DescriptorMap::iterator it = this->descriptors.find(name);
+	if (it != this->descriptors.end())
+		it->second.resource = resource;
+}
+
+template <class ResourceType>
+ResourceType *ReferenceCounter<ResourceType>::retrieveResourceObject(std::string name)
+{
+	// try to find a referenced name
+	typename DescriptorMap::iterator it = this->descriptors.find(name);
+	if (it != this->descriptors.end())
+		return it->second.resource;
 	
-	return (desc.referenceCount == 0);
+	return NULL;
+}
+
+template <class ResourceType>
+void ReferenceCounter<ResourceType>::printReferencedNames()
+{
+	// referenced names are the only ones stored in the map
+	typename DescriptorMap::iterator it;
+	for (it = this->descriptors.begin(); it != this->descriptors.end(); ++it)
+		printf("%3d %s\n", it->second.referenceCount, it->first.c_str());
 }
 
 } // engine namespace
