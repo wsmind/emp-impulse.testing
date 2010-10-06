@@ -27,16 +27,6 @@
 
 namespace engine {
 
-Particle::Particle()
-{
-	Particle(math::Vec2(0,0));
-}
-
-Particle::Particle(f32 x, f32 y)
-{
-	Particle(math::Vec2(x,y));
-}
-
 Particle::Particle(math::Vec2 position)
 {
 	this->position=position;
@@ -49,10 +39,10 @@ Particle::Particle(math::Vec2 position)
 		
 	this->age=0.f;
 		
-	this->alpha.x=0.f;
-	this->alpha.y=0.f;
-	this->alpha.z=0.f;
-	this->alpha.w=0.f;
+	this->color.x=0.f;
+	this->color.y=0.f;
+	this->color.z=0.f;
+	this->color.w=0.f;
 }
 	
 void Particle::draw(sf::RenderWindow *window, sf::Sprite *sprite) const
@@ -61,7 +51,7 @@ void Particle::draw(sf::RenderWindow *window, sf::Sprite *sprite) const
 	sprite->SetRotation(this->rotation);
 	//FIXME : Color OK, but Sprite NOK (getPixel, color modification & setPixel)
 	//The sprite is the same for every particle on the current particle system
-	sprite->SetColor(sf::Color(alpha.x, alpha.y, alpha.z, alpha.w));
+	sprite->SetColor(sf::Color(color.x, color.y, color.z, color.w));
 	window->Draw(*sprite);
 }
 

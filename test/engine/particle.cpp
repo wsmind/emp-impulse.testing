@@ -63,13 +63,12 @@ int main()
 	engine::ParticleSystem particleSystem;
 	
 	particleSystem.setEmitterCapacity(10);
-	particleSystem.setParticlesSprite(sprite);
-	particleSystem.setEmitterPosition(100,100);
+	particleSystem.setParticlesSprite(&sprite);
+	particleSystem.setEmitterPosition(math::Vec2(100,100));
 	particleSystem.setEmitterSpawnRate(1.f);
 	particleSystem.setParticlesLifeTime(10);
-	particleSystem.setParticlesInitSpeed(30,0);
-	particleSystem.setParticlesAcceleration(0,0);
-	particleSystem.setParticlesAlphaDecay(0,0,0,-20);
+	particleSystem.setParticlesInitSpeed(math::Vec2(30,0));
+	particleSystem.setParticlesColorDecay(math::Vec4(0,0,0,-20));
 	particleSystem.setEmitterActive(true);
 	
 	psListener psl;
@@ -79,6 +78,8 @@ int main()
 	
 	float totalTime=0;
 	bool oneTime=0;
+	float fps=0.f;
+
 	// Start game loop
 	while (window.IsOpened())
 	{
@@ -98,7 +99,7 @@ int main()
 			}
 		}
 		
-		if ( (totalTime > 6) && (!oneTime))
+		if ( (!oneTime) && (totalTime > 6))
 		{
 			oneTime=true;
 			//particleSystem.moveAllToAPosition(150,150);
@@ -112,6 +113,7 @@ int main()
 		
 		// Display window contents on screen
 		window.Display();
+		fps = 1 / elapsedTime;
 	}
 	
 	return EXIT_SUCCESS;
