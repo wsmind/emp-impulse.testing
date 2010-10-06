@@ -23,6 +23,7 @@
 #include <SFML/Graphics.hpp>
 #include <engine/ParticleSystem.hpp>
 #include <engine/ParticleSystemListener.hpp>
+#include <sstream>
 
 #include <math/Vec2.hpp>
 
@@ -55,20 +56,15 @@ int main()
 		std::cout << "Error loading the particle." << std::endl;
 	}
 	
-	//Set the sprite
-	sf::Sprite sprite;
-	sprite.SetImage(particleImage);
-	
 	//Create a particle system
 	engine::ParticleSystem particleSystem;
-	
-	particleSystem.setEmitterCapacity(10);
-	particleSystem.setParticlesSprite(&sprite);
+	particleSystem.setEmitterCapacity(1000);
+	particleSystem.setParticlesImage(&particleImage);
 	particleSystem.setEmitterPosition(math::Vec2(100,100));
-	particleSystem.setEmitterSpawnRate(1.f);
-	particleSystem.setParticlesLifeTime(10);
-	particleSystem.setParticlesInitSpeed(math::Vec2(30,0));
-	particleSystem.setParticlesColorDecay(math::Vec4(0,0,0,-20));
+	particleSystem.setEmitterSpawnRate(3.f);
+	particleSystem.setParticlesLifeTime(12);
+	particleSystem.setParticlesInitSpeed(math::Vec2(30.f,-10.f));
+	particleSystem.setParticlesColorDecay(math::Vec4(0.f,0.f,0.f,-20.f));
 	particleSystem.setEmitterActive(true);
 	
 	psListener psl;
@@ -76,18 +72,37 @@ int main()
 
 	math::Vec2 totalForces(0.f,9.8f);
 	
-	float totalTime=0;
-	bool oneTime=0;
+	sf::String TextFps;
+	TextFps.SetStyle(sf::String::Bold | sf::String::Italic | sf::String::Underlined);
+	TextFps.SetStyle(sf::String::Regular);
+	TextFps.SetColor(sf::Color(128, 0, 0));
+	TextFps.Move(10.f, 0.f);
+	TextFps.SetText("");
+
 	float fps=0.f;
+	float deltaFpsDisplay=0.f;
 
 	// Start game loop
 	while (window.IsOpened())
 	{
 		float elapsedTime = window.GetFrameTime();
-		totalTime+=elapsedTime;
 		
-		particleSystem.update(elapsedTime,totalForces);
-		
+		// Process FPS count
+		fps = 1 / elapsedTime;
+		deltaFpsDisplay+=elapsedTime;
+
+		// Change FPS text ~every second
+		if (deltaFpsDisplay >= 1.f)
+		{
+			fps/=deltaFpsDisplay;
+			std::ostringstream oss;
+			oss << fps << " FPS";
+			TextFps.SetText(oss.str());
+
+			deltaFpsDisplay=0;
+			fps=0;
+		}
+
 		// Process events
 		sf::Event event;
 		while (window.GetEvent(event))
@@ -99,21 +114,19 @@ int main()
 			}
 		}
 		
-		if ( (!oneTime) && (totalTime > 6))
-		{
-			oneTime=true;
-			//particleSystem.moveAllToAPosition(150,150);
-			//particleSystem.translateAll(100,0);
-		}
+		// Update particle system engine
+		particleSystem.update(elapsedTime,totalForces);
 		
 		// Clear the screen (fill it with white color)
 		window.Clear(sf::Color(255, 255, 255));
 		
+		// Draw particles
 		particleSystem.draw(&window);
+		// Draw FPS text
+		window.Draw(TextFps);
 		
 		// Display window contents on screen
 		window.Display();
-		fps = 1 / elapsedTime;
 	}
 	
 	return EXIT_SUCCESS;

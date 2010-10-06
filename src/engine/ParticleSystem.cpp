@@ -21,11 +21,13 @@
  ******************************************************************************/
 
 #include <engine/ParticleSystem.hpp>
+#include <SFML/Graphics.hpp>
 
 #include <ctime>
 #include <cmath>
 
 #define UNLIMITED_PARTICLE -1
+#define UNLIMITED_PARTICLE_LIFE -1.0f
 
 namespace engine {
 	
@@ -34,6 +36,25 @@ ParticleSystem::ParticleSystem()
 	this->actived=false;
 	this->capacity=UNLIMITED_PARTICLE;
 	this->remainingParticleCount=UNLIMITED_PARTICLE;
+	this->timeAfterLastSpawning=0;
+	this->timeBetweenTwoSpawns=1;
+
+	this->particleInitRotation=0;
+	this->particleInitRotationSpeed=0;
+	this->particleInitSpeed=0;
+	this->particleColorDecay=math::Vec4(0.f,0.f,0.f,0.f);
+
+	this->position=math::Vec2();
+	this->ParticleRotationFriction=0;
+	this->particleLifeTime=UNLIMITED_PARTICLE_LIFE;
+
+	this->particleSprite = new sf::Sprite();
+	this->particleSpriteInitColor=math::Vec4(0.f,0.f,0.f,0.f);
+}
+
+ParticleSystem::~ParticleSystem()
+{
+	delete this->particleSprite;
 }
 
 bool ParticleSystem::isEmitterActive() const
@@ -46,9 +67,15 @@ void ParticleSystem::setEmitterActive(bool active)
 	this->actived=active;
 }
 	
-void ParticleSystem::setParticlesSprite(sf::Sprite *sprite)
+void ParticleSystem::setParticlesImage(sf::Image *particleImage)
 {
-	this->particleSprite=sprite;
+	this->particleSprite->SetImage(*particleImage);
+
+	sf::Color color=this->particleSprite->GetColor();
+	this->particleSpriteInitColor.x=color.r;
+	this->particleSpriteInitColor.y=color.g;
+	this->particleSpriteInitColor.z=color.b;
+	this->particleSpriteInitColor.w=color.a;
 }
 	
 void ParticleSystem::setParticlesLifeTime(f32 lifeTime)
@@ -128,7 +155,7 @@ void ParticleSystem::translateAll(math::Vec2 vector)
 	
 void ParticleSystem::setEmitterSpawnRate(f32 rate)
 {
-	this->spawningRate=rate;	
+	this->timeBetweenTwoSpawns=1/rate;
 }
 	
 void ParticleSystem::setParticlesInitSpeed(math::Vec2 particlesSpeed)
@@ -175,41 +202,41 @@ void ParticleSystem::update(f32 dt, math::Vec2 forces)
 //3.Update pre-existent particles speed, position, color, rotation, etc
 //4.Add generated particles
 {
+	bool someParticleDied = false;
 	std::list<Particle *>::iterator it;
 	it=particles.begin();
 	
 	//For each particle
 	while(it != particles.end())
 	{
+		Particle *particle = *it;
+
 		//1.update particles age
-		(**it).age+=dt;
+		particle->age+=dt;
 			
 		//2.Remove dead particles
-		if ( (**it).age > this->particleLifeTime )
+		if ( this->particleLifeTime != UNLIMITED_PARTICLE_LIFE )
 		{
-			Particle* p=(*it);
-			it=particles.erase(it);
-			this->particlePool.destroy(p);
-			
-			//Last Flying Particle Died
-			//FIXME: It is the good moment ? Or move it after step 4 ?!
-			if (it==particles.begin()) {
-				fireLastFlyingParticleDied();
+			if ( (particle->age) > (this->particleLifeTime) )
+			{
+				it=particles.erase(it);
+				this->particlePool.destroy(particle);
+				someParticleDied=true;
+				continue;
 			}
-			continue;
 		}
 			
 		//3.Update pre-existent particles speed, position, color, rotation, etc
-		(**it).speed+= dt * forces;
-		(**it).position+= dt * (**it).speed;
+		particle->speed+= dt * forces;
+		particle->position+= dt * particle->speed;
 			
-		(**it).rotationSpeed+= dt * this->ParticleRotationFriction;
-		(**it).rotation+= dt * (**it).rotationSpeed;
+		particle->rotationSpeed+= dt * this->ParticleRotationFriction;
+		particle->rotation+= dt * particle->rotationSpeed;
 			
-		(**it).color.x+= dt * this->particleColorDecay.x;
-		(**it).color.y+= dt * this->particleColorDecay.y;
-		(**it).color.z+= dt * this->particleColorDecay.z;
-		(**it).color.w+= dt * this->particleColorDecay.w;
+		particle->color.x+= dt * this->particleColorDecay.x;
+		particle->color.y+= dt * this->particleColorDecay.y;
+		particle->color.z+= dt * this->particleColorDecay.z;
+		particle->color.w+= dt * this->particleColorDecay.w;
 			
 		//Next particle
 		++it;
@@ -221,9 +248,9 @@ void ParticleSystem::update(f32 dt, math::Vec2 forces)
 	if (remainingParticleCount != 0)
 	{
 		int particleToSpawnCount=0;
-		while ( this->timeAfterLastSpawning >= this->spawningRate)
+		while ( this->timeAfterLastSpawning >= this->timeBetweenTwoSpawns)
 		{
-			this->timeAfterLastSpawning-=this->spawningRate;
+			this->timeAfterLastSpawning-=this->timeBetweenTwoSpawns;
 			++particleToSpawnCount;
 		}
 		
@@ -244,6 +271,11 @@ void ParticleSystem::update(f32 dt, math::Vec2 forces)
 			this->fireLastParticleSpawned();
 		}
 	}
+
+	//No more Flying Particle
+	if ( someParticleDied && (particles.size() == 0) ) {
+		fireLastFlyingParticleDied();
+	}
 }
 	
 void ParticleSystem::draw(sf::RenderWindow *window)
@@ -251,7 +283,7 @@ void ParticleSystem::draw(sf::RenderWindow *window)
 	std::list<Particle *>::iterator it;
 	for (it=particles.begin(); it != particles.end(); ++it) 
 	{
-		(**it).draw(window, this->particleSprite);
+		(*it)->draw(window, this->particleSprite);
 	}
 }
 	
@@ -262,10 +294,10 @@ void ParticleSystem::generateParticles(int count)
 		Particle* p=this->particlePool.construct(this->position);
 			
 		//Initialize the particle
-		(*p).speed=this->particleInitSpeed;
-		(*p).rotation=this->particleInitRotation;
-		(*p).rotationSpeed=this->particleInitRotationSpeed;
-		(*p).color=this->particleInitColor;
+		p->speed=this->particleInitSpeed;
+		p->rotation=this->particleInitRotation;
+		p->rotationSpeed=this->particleInitRotationSpeed;
+		p->color=particleSpriteInitColor;
 			
 		//Add to list
 		particles.push_front(p);

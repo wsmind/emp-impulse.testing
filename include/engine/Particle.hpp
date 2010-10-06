@@ -27,7 +27,8 @@
 #include <math/Vec2.hpp>
 #include <math/Vec4.hpp>
 
-#include <SFML/Graphics.hpp>
+IMPULSE_FORWARD_DECLARE1(sf, Sprite)
+IMPULSE_FORWARD_DECLARE1(sf, RenderWindow)
 
 namespace engine {
 

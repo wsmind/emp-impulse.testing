@@ -28,11 +28,14 @@
 #include <math/Vec4.hpp>
 #include <engine/Particle.hpp>
 #include <engine/ParticleSystemListener.hpp>
-#include <SFML/Graphics.hpp>
 
 #include <list>
 #include <vector>
 #include <boost/pool/object_pool.hpp>
+
+IMPULSE_FORWARD_DECLARE1(sf, Image)
+IMPULSE_FORWARD_DECLARE1(sf, Sprite)
+IMPULSE_FORWARD_DECLARE1(sf, RenderWindow)
 
 namespace engine {
 	
@@ -46,10 +49,15 @@ class ParticleSystem
 {
 	public:		
 		/**
-		 * \brief Construct a particleSystem, the emitter is not active and with unlimited particle spawn
+		 * \brief Construct a particleSystem, the emitter is not active and with unlimited particle spawn, persitent particle (never dead) and SpawnRate of 1 particle per second
 		 */
 		ParticleSystem();
 		
+		/**
+		 * \brief Destructor
+		 */
+		virtual ~ParticleSystem();
+
 		/**
 		 * \brief Know if the particle system emitter is active (try producing particle)
 		 */
@@ -62,14 +70,14 @@ class ParticleSystem
 		void setEmitterActive(bool active);
 		
 		/**
-		 * \brief sprite for each particle emitted by the particleSystem (override setParticleColor method effects)
-		 * \param particleSprite particle sprite
+		 * \brief image for each particle emitted by the particleSystem (override setParticleColor method effects)
+		 * \param particleImage particle image
 		 */
-		void setParticlesSprite(sf::Sprite *particleSprite);
+		void setParticlesImage(sf::Image *particleImage);
 
 		/**
 		 * \brief particle lifetime (count down from birth)
-		 * \param lifeTime particle lifetime
+		 * \param lifeTime particle lifetime, or -1 for persitent particle (never dead)
 		 */
 		void setParticlesLifeTime(f32 lifeTime);
 		
@@ -81,9 +89,9 @@ class ParticleSystem
 		
 		/**
 		 * \brief particle color decay
-		 * \param alphaDecay alpha decay (in RGBA unit/seconds)
+		 * \param colorDecay color decay (in RGBA unit/seconds)
 		 */
-		void setParticlesColorDecay(math::Vec4 alphaDecay);
+		void setParticlesColorDecay(math::Vec4 colorDecay);
 		
 		/**
 		 * \brief particle count that can will be created by the particle system emitter (this method reset the internal particle count)
@@ -182,6 +190,8 @@ class ParticleSystem
 		
 		//! \brief sprite applyed to each particle
 		sf::Sprite *particleSprite;
+		//! \brief sprite initial color
+		math::Vec4 particleSpriteInitColor;
 		//! \brief particle lifeTime (in seconds)
 		f32 particleLifeTime;
 		//! \brief particle rotation friction (in counterclockwise degre/seconds squared)
@@ -195,8 +205,8 @@ class ParticleSystem
 		i32 remainingParticleCount;
 		//! \brief position of the particle emitter
 		math::Vec2 position;
-		//! \brief spawning rate (in particle/second)
-		f32 spawningRate;
+		//! \brief spawning rate (in second between two particle spawns)
+		f32 timeBetweenTwoSpawns;
 
 		//! \brief x and y coordinate initial speed of the particle (unit per sec)
 		math::Vec2 particleInitSpeed;
@@ -204,8 +214,6 @@ class ParticleSystem
 		f32 particleInitRotation;
 		//! \brief initial orientation speed of the particle (in counterclockwise degre/second)
 		f32 particleInitRotationSpeed;		
-		//! \brief particle initial color (at birth)
-		math::Vec4 particleInitColor;
 	
 		//! \brief particle systems events listeners
 		std::vector<ParticleSystemListener *> listeners;

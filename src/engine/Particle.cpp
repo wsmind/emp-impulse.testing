@@ -24,33 +24,18 @@
 
 #include <ctime>
 #include <cmath>
+#include <SFML/Graphics.hpp>
 
 namespace engine {
 
-Particle::Particle(math::Vec2 position)
+Particle::Particle(math::Vec2 position):position(position),speed(),color(0.f,0.f,0.f,1.f),rotation(0.f),rotationSpeed(0.f),age(0.f)
 {
-	this->position=position;
-	
-	this->speed.x=0.f;
-	this->speed.y=0.f;
-	
-	this->rotation=0.f;
-	this->rotationSpeed=0.f;
-		
-	this->age=0.f;
-		
-	this->color.x=0.f;
-	this->color.y=0.f;
-	this->color.z=0.f;
-	this->color.w=0.f;
 }
 	
 void Particle::draw(sf::RenderWindow *window, sf::Sprite *sprite) const
 {
 	sprite->SetPosition(this->position.x,this->position.y);
 	sprite->SetRotation(this->rotation);
-	//FIXME : Color OK, but Sprite NOK (getPixel, color modification & setPixel)
-	//The sprite is the same for every particle on the current particle system
 	sprite->SetColor(sf::Color(color.x, color.y, color.z, color.w));
 	window->Draw(*sprite);
 }

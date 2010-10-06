@@ -25,12 +25,10 @@
 
 #include <common.hpp>
 #include <engine/Particle.hpp>
-#include <engine/ParticleSystem.hpp>
+
+IMPULSE_FORWARD_DECLARE1(engine, ParticleSystem)
 
 namespace engine {
-	
-//FIXME: the build process to export class def
-class ParticleSystem;
 
 /**
  * \class ParticleSystemListener
@@ -45,12 +43,6 @@ class ParticleSystemListener
 		* \brief Destruct a ParticleSystemListener
 		*/
 		virtual ~ParticleSystemListener() {}
-		
-		//FIXME: Usefull ? can be time-consuming & I'm not sure is a good idea to export particles...
-		/*virtual void particleCreated (ParticleSystem *particleSystem, Particle *p){}*/
-	
-		//FIXME: Usefull ? can be time-consuming & I'm not sure is a good idea to export particles...
-		/*virtual void particleDied (ParticleSystem *particleSystem, Particle *p){}*/
 	
 		/**
 		* \brief Called when the last particle is spawned (getRemainingParticleCount() == 0)
