@@ -55,8 +55,6 @@ int main()
 	shape2.SetOutlineWidth(1.0f);
 	
 	cshape2.setPosition(Vec2(500.0f, 400.0f));
-
-	sf::Shape line;
 	
 	sf::Clock clock;
 	sf::Clock clock2;
@@ -86,18 +84,17 @@ int main()
 			cshape1.setPosition(Vec2(cshape1.getPosition().x, cshape1.getPosition().y + 200.0f * elapsedTime));
 		
 		Contact contact;
+		
 		if (cshape2.detectCollision(&cshape1, &contact))
 		{
 			shape1.SetOutlineWidth(5.0f);
 			shape2.SetOutlineWidth(5.0f);
-			//line = sf::Shape::Line(contact.contactPoint.x, contact.contactPoint.y, contact.contactPoint.x + contact.normal.x * 100.0f, contact.contactPoint.y + contact.normal.y * 100.0f, 10.0f, sf::Color(255, 255, 255), 1.0f);
 			cshape1.setPosition(cshape1.getPosition() + contact.normal * contact.interpenetration); 
 		}
 		else
 		{
 			shape1.SetOutlineWidth(1.0f);
 			shape2.SetOutlineWidth(1.0f);
-			line = sf::Shape::Line(0.0f, 0.0f, 0.0f, 0.0f, 10.0f, sf::Color(255, 255, 255), 1.0f); 
 		}
 		
 		shape1.SetPosition(cshape1.getPosition().x, cshape1.getPosition().y);
@@ -111,7 +108,6 @@ int main()
 		
 		rendy.Draw(shape1);
 		rendy.Draw(shape2);
-		//rendy.Draw(line);
 
 		rendy.Display();
 	}

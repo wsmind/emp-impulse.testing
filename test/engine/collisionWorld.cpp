@@ -73,7 +73,6 @@ int main()
 		rock.AddPoint(rockPoints[i].x, rockPoints[i].y, sf::Color(125, 125, 125), sf::Color(0, 0, 0));
 	rock.SetOutlineWidth(1.0f);
 
-	sf::Shape line;
 	
 	sf::Clock clock;
 	sf::Clock clock2;
@@ -106,14 +105,12 @@ int main()
 		{
 			hero.SetOutlineWidth(5.0f);
 			ground.SetOutlineWidth(5.0f);
-			line = sf::Shape::Line(contact.contactPoint.x, contact.contactPoint.y, contact.contactPoint.x + contact.normal.x * 100.0f, contact.contactPoint.y + contact.normal.y * 100.0f, 10.0f, sf::Color(255, 255, 255), 1.0f);
 			heroBox.setPosition(heroBox.getPosition() + contact.normal * contact.interpenetration); 
 		}
 		else
 		{
 			hero.SetOutlineWidth(1.0f);
-			ground.SetOutlineWidth(1.0f);
-			line = sf::Shape::Line(0.0f, 0.0f, 0.0f, 0.0f, 10.0f, sf::Color(255, 255, 255), 1.0f); 
+			ground.SetOutlineWidth(1.0f); 
 		}
 		
 		// Collision between the hero and the rock
@@ -121,14 +118,12 @@ int main()
 		{
 			hero.SetOutlineWidth(5.0f);
 			rock.SetOutlineWidth(5.0f);
-			line = sf::Shape::Line(contact.contactPoint.x, contact.contactPoint.y, contact.contactPoint.x + contact.normal.x * 100.0f, contact.contactPoint.y + contact.normal.y * 100.0f, 10.0f, sf::Color(255, 255, 255), 1.0f);
 			heroBox.setPosition(heroBox.getPosition() + contact.normal * contact.interpenetration); 
 		}
 		else
 		{
 			hero.SetOutlineWidth(1.0f);
-			rock.SetOutlineWidth(1.0f);
-			line = sf::Shape::Line(0.0f, 0.0f, 0.0f, 0.0f, 10.0f, sf::Color(255, 255, 255), 1.0f); 
+			rock.SetOutlineWidth(1.0f); 
 		}
 		
 		
@@ -147,7 +142,6 @@ int main()
 		rendy.Draw(hero);
 		rendy.Draw(ground);
 		rendy.Draw(rock);
-		rendy.Draw(line);
 
 		rendy.Display();
 	}

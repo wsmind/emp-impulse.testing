@@ -72,7 +72,7 @@ math::Vec2 CollisionShape::getScale() const
 	return this->scale;
 }
 
-bool CollisionShape::detectCollision(CollisionShape *polygon, Contact *contact = NULL)
+bool CollisionShape::detectCollision(CollisionShape *polygon, Contact *contact)
 {	
 	f32 maxDistanceThis;
 	f32 minDistanceThis;
