@@ -26,47 +26,48 @@
 
 namespace engine {
 
-sf::Image *ResourceManager::loadImage(std::string filename)
+sf::Image *ResourceManager::loadImage(std::string name)
 {
-	// try to find an existing objet
-	sf::Image *image = this->images.addReference(filename);
+	// record the new reference
+	this->images.addReference(name);
 	
 	// load if necessary
-	if (!image)
+	if (this->images.getReferenceCount(name) == 1)
 	{
-		// create new object
-		image = new sf::Image;
-		
-		// try to load it
-		if (!image->LoadFromFile(filename))
+		// try to load
+		sf::Image *image = new sf::Image;
+		if (!image->LoadFromFile(name))
 		{
-			std::cerr << "Loading of resource '" << filename << "' failed!" << std::endl;
+			std::cerr << "Loading of image '" << name << "' failed!" << std::endl;
 			delete image;
-			return NULL;
+			image = NULL;
 		}
 		
-		// store it in the reference counter
-		this->images.createResource(filename, image);
+		// storage
+		this->images.storeResourceObject(name, image);
 	}
 	
-	return image;
+	return this->images.retrieveResourceObject(name);;
 }
 
-void ResourceManager::releaseImage(sf::Image *image)
+void ResourceManager::releaseImage(std::string name)
 {
-	std::string name = this->images.findResourceName(image);
-	if (name == "")
+	// destroy is necessary
+	if (this->images.getReferenceCount(name) == 1)
 	{
-		std::cerr << "Trying to unload an image not managed by the resource manager" << std::endl;
-		return;
-	}
-	
-	if (this->images.removeReference(name))
-	{
-		// actual object destruction
-		this->images.destroyResource(name);
+		sf::Image *image = this->images.retrieveResourceObject(name);
 		delete image;
 	}
+	
+	// reference removal
+	this->images.removeReference(name);
+}
+
+void ResourceManager::printLoadedResources()
+{
+	std::cout << "== Images ==" << std::endl;
+	this->images.printReferencedNames();
+	std::cout << std::endl;
 }
 
 } // engine namespace

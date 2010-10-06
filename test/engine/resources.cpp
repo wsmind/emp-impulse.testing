@@ -29,6 +29,7 @@ int main()
 {
 	ResourceManager *rm = new ResourceManager;
 	
+	// normal use
 	sf::Image *image = rm->loadImage("water.png");
 	sf::Image *image2 = rm->loadImage("water.png");
 	CHECK(image == image2);
@@ -36,9 +37,25 @@ int main()
 	sf::Image *image3 = rm->loadImage("wave.png");
 	CHECK(image != image3);
 	
-	rm->releaseImage(image);
-	rm->releaseImage(image2);
-	rm->releaseImage(image3);
+	rm->releaseImage("water.png");
+	rm->releaseImage("water.png");
+	rm->releaseImage("wave.png");
+	
+	// wrong file
+	sf::Image *image4 = rm->loadImage("doesnotexist.png"); // will print a warning
+	CHECK(image4 == NULL);
+	rm->releaseImage("doesnotexist.png");
+	
+	// double release
+	rm->releaseImage("neverloaded.png"); // will print another warning
+	
+	// summary of non-released resources
+	rm->loadImage("water.png");
+	rm->loadImage("water.png");
+	rm->loadImage("wave.png");
+	
+	std::cout << "Resources still in use at the end:" << std::endl;
+	rm->printLoadedResources();
 	
 	delete rm;
 	
