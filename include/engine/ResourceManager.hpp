@@ -43,7 +43,7 @@ namespace engine {
  *
  * Note that for reference counting, the resource manager does not make
  * a special case for resources that failed to load. That means that if you
- * call one of the load() methods and NULL, is returned, you still have to
+ * call one of the load() methods and NULL is returned, you still have to
  * make a corresponding release() or the name will remain referenced.
  */
 class IMPULSE_ENGINE_EXPORT ResourceManager
@@ -60,7 +60,9 @@ class IMPULSE_ENGINE_EXPORT ResourceManager
 		 */
 		void releaseImage(std::string name);
 		
-		// loaded resources summary (for checking purposes)
+		/*
+		 * \brief Loaded resources summary (for checking purposes)
+		 */
 		void printLoadedResources();
 	
 	private:
