@@ -50,18 +50,19 @@ class CollisionShape
 		* \param points list of vertices.
 		*/
 		CollisionShape(std::vector<math::Vec2> points);
-		~CollisionShape();
 		
 		/**
 		* \brief Sets a new position.
 		* \param newPosition new position.
 		*/
 		void setPosition(math::Vec2 newPosition);
+		
 		/**
 		* \brief Sets a new rotation.
 		* \param newRotation new rotation.
 		*/
 		void setRotation(float newRotation);
+		
 		/**
 		* \brief Sets a new scale.
 		* \param newScale new scale.
@@ -73,19 +74,29 @@ class CollisionShape
 		* \return current position.
 		*/
 		math::Vec2 getPosition() const;
+		
 		/**
 		* \brief Gets the current rotation.
 		* \return current rotation.
 		*/
 		f32 getRotation() const;
+		
 		/**
 		* \brief Gets the current scale.
 		* \return current scale.
 		*/
 		math::Vec2 getScale() const;
 		
+		/**
+		* \brief Test a collision against another shape.
+		* \param polygon second polygon.
+		* \param contact contact data of the collision.
+		* \return true if there is collision.
+		*
+		* The result normal is oriented from this to polygon.
+		* The contact parameter is not obligatory.
+		*/
 		bool detectCollision(CollisionShape *polygon, Contact *contact);
-		//bool isInside(math::Vec2 point, math::Vec2 *normal, float *distance);
 		
 	private:
 		/**
@@ -101,7 +112,7 @@ class CollisionShape
 		* \param[out] max max of the projection result.
 		* \param[out] min min of the projection result.
 		*/
-		void projectPolygon(math::Vec2 normal, math::Vec2 point, CollisionShape *polygon, f32 *max, f32 *min);
+		void projectPolygon(math::Vec2 normal, math::Vec2 point, CollisionShape *polygon, f32 *min, f32 *max);
 		
 		/**
 		* \brief Points list.

@@ -36,7 +36,7 @@ namespace engine {
 *
 * A contact is defined by:
 * \li the point where the collision occurs.
-* \li the normal of the collision.
+* \li the normalized normal of the collision.
 * \li the penetration of the polygon into the other one.
 */
 struct Contact
