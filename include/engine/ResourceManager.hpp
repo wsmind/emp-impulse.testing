@@ -36,14 +36,32 @@ namespace engine {
 /**
  * \class ResourceManager
  * \author Remi Papillie
+ *
+ * Non generic implementation of resource management. For each managed object
+ * types, you can use the loadXXX() and releaseXXX() methods (where XXX is the
+ * type) to respectively ask for and release a resource.
+ *
+ * Note that for reference counting, the resource manager does not make
+ * a special case for resources that failed to load. That means that if you
+ * call one of the load() methods and NULL, is returned, you still have to
+ * make a corresponding release() or the name will remain referenced.
  */
 class IMPULSE_ENGINE_EXPORT ResourceManager
 {
 	public:
-		// TODO: other resources types (duplicate these two methods, and add
-		// other reference counters)
-		sf::Image *loadImage(std::string filename);
-		void releaseImage(sf::Image *image);
+		/**
+		 * \brief Ask for an image resource
+		 * \return the loaded image object, or NULL if loading failed
+		 */
+		sf::Image *loadImage(std::string name);
+		
+		/**
+		 * \brief Release a previously loaded image
+		 */
+		void releaseImage(std::string name);
+		
+		// loaded resources summary (for checking purposes)
+		void printLoadedResources();
 	
 	private:
 		ReferenceCounter<sf::Image> images;

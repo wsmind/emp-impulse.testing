@@ -30,25 +30,70 @@
 namespace engine {
 
 /**
- * \class ResourceManager
+ * \class ReferenceCounter
  * \author Remi Papillie
+ *
+ * Stores resource names along with a reference counter. A pointer to a resource
+ * object can be provided for referenced names, too.
  */
 template <class ResourceType>
 class ReferenceCounter
 {
 	public:
-		void createResource(std::string name, ResourceType *resource);
-		void destroyResource(std::string name);
-		std::string findResourceName(ResourceType *resource); // return "" if not found
+		/**
+		 * \brief Add a reference to the given resource name
+		 */
+		void addReference(std::string name);
 		
-		ResourceType *addReference(std::string name); // return NULL if not known
-		bool removeReference(std::string name); // return true if must be destroyed (don't check resource existence)
+		/**
+		 * \brief Remove a reference to the given name
+		 *
+		 * Removing a reference to a name not referenced prints a warning on
+		 * stderr, and does nothing.
+		 */
+		void removeReference(std::string name);
+		
+		/**
+		 * \brief Read the reference counter of the given resource
+		 *
+		 * If a name to an unknown (i.e never referenced) resource is provided,
+		 * the returned value will be 0. Each call to addReference() will
+		 * increase this value, and removeReference() will decrement it.
+		 */
+		u32 getReferenceCount(std::string name);
+		
+		/**
+		 * \brief Store an object pointer along with the reference counter
+		 *
+		 * Note that only resources with at least one reference can store
+		 * an object pointer. If the reference counter goes down to zero,
+		 * this pointer will be definitely lost.
+		 *
+		 * Nothing is done if the given name is not referenced.
+		 */
+		void storeResourceObject(std::string name, ResourceType *resource);
+		
+		/**
+		 * \brief Query an object previously stored
+		 * \return the stored object, or NULL if the name is not referenced
+		 *
+		 * \see storeResourceObject()
+		 *
+		 * If a name has just been referenced for the first time, its initial
+		 * stored pointer is NULL.
+		 */
+		ResourceType *retrieveResourceObject(std::string name);
+		
+		/**
+		 * \brief Print referenced names on stdout
+		 */
+		void printReferencedNames();
 		
 	private:
 		struct Descriptor
 		{
 			ResourceType *resource;
-			int referenceCount;
+			u32 referenceCount;
 		};
 		
 		typedef std::map<std::string, Descriptor> DescriptorMap;
