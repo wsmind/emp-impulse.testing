@@ -46,7 +46,7 @@ void ParticleSystem::setEmitterActive(bool active)
 	this->actived=active;
 }
 	
-void ParticleSystem::setParticlesSprite(sf::Sprite sprite)
+void ParticleSystem::setParticlesSprite(sf::Sprite *sprite)
 {
 	this->particleSprite=sprite;
 }
@@ -56,33 +56,14 @@ void ParticleSystem::setParticlesLifeTime(f32 lifeTime)
 	this->particleLifeTime=lifeTime;	
 }
 	
-void ParticleSystem::setParticlesAcceleration(math::Vec2 acceleration)
-{
-	this->particleAcceleration=acceleration;	
-}
-	
-void ParticleSystem::setParticlesAcceleration(f32 x, f32 y)
-{
-	this->particleAcceleration.x=x;	
-	this->particleAcceleration.y=y;	
-}
-	
 void ParticleSystem::setParticlesRotationFriction(f32 rotFriction)
 {
 	this->ParticleRotationFriction=rotFriction;
 }
 	
-void ParticleSystem::setParticlesAlphaDecay(math::Vec4 alphaDecay)
+void ParticleSystem::setParticlesColorDecay(math::Vec4 colorDecay)
 {
-	this->particleAlphaDecay=alphaDecay;
-}
-	
-void ParticleSystem::setParticlesAlphaDecay(f32 r, f32 g, f32 b, f32 a)
-{
-	this->particleAlphaDecay.x=r;
-	this->particleAlphaDecay.y=g;
-	this->particleAlphaDecay.z=b;
-	this->particleAlphaDecay.w=a;
+	this->particleColorDecay=colorDecay;
 }
 	
 void ParticleSystem::setEmitterCapacity(i32 particleCount)
@@ -109,29 +90,17 @@ i32 ParticleSystem::getFlyingParticleCount()
 	return this->particles.size();
 }
 
-void ParticleSystem::setEmitterPosition(f32 x, f32 y)
-{
-	this->position.x=x;
-	this->position.y=y;
-}
-
 void ParticleSystem::setEmitterPosition(math::Vec2 position)
 {
 	this->position=position;
 }
-	
-void ParticleSystem::moveAllToAPosition(f32 x, f32 y)
-{
-	math::Vec2 position(x,y);
-	moveAllToAPosition(position);
-}
 
 void ParticleSystem::moveAllToAPosition(math::Vec2 position)
 {
-	math::Vec2 deplacement;
-	deplacement=(position - this->position);
-	deplacement.x = position.x - this->position.x;
-	deplacement.y = position.y - this->position.y;
+	math::Vec2 move;
+	move=(position - this->position);
+	move.x = position.x - this->position.x;
+	move.y = position.y - this->position.y;
 	
 	//Change emitter position
 	this->position=position;
@@ -140,14 +109,8 @@ void ParticleSystem::moveAllToAPosition(math::Vec2 position)
 	std::list<Particle *>::iterator it;
 	for (it=particles.begin(); it != particles.end(); ++it) 
 	{
-		(**it).position+=deplacement;
+		(**it).position+=move;
 	}
-}
-
-void ParticleSystem::translateAll(f32 x, f32 y)
-{
-	math::Vec2 vector(x,y);
-	translateAll(vector);
 }
 
 void ParticleSystem::translateAll(math::Vec2 vector)
@@ -171,12 +134,6 @@ void ParticleSystem::setEmitterSpawnRate(f32 rate)
 void ParticleSystem::setParticlesInitSpeed(math::Vec2 particlesSpeed)
 {
 	this->particleInitSpeed=particlesSpeed;
-}
-	
-void ParticleSystem::setParticlesInitSpeed(f32 x, f32 y)
-{
-	this->particleInitSpeed.x=x;
-	this->particleInitSpeed.y=y;	
 }
 	
 void ParticleSystem::setParticlesInitRotation(f32 rot)
@@ -215,7 +172,7 @@ void ParticleSystem::unregisterListener(ParticleSystemListener *l)
 void ParticleSystem::update(f32 dt, math::Vec2 forces)
 //1.Update particles age
 //2.Remove dead particles
-//3.Update pre-existent particles speed, position, alpha, rotation, etc
+//3.Update pre-existent particles speed, position, color, rotation, etc
 //4.Add generated particles
 {
 	std::list<Particle *>::iterator it;
@@ -242,17 +199,17 @@ void ParticleSystem::update(f32 dt, math::Vec2 forces)
 			continue;
 		}
 			
-		//3.Update pre-existent particles speed, position, alpha, rotation, etc
-		(**it).speed+= dt * (this->particleAcceleration + forces);
+		//3.Update pre-existent particles speed, position, color, rotation, etc
+		(**it).speed+= dt * forces;
 		(**it).position+= dt * (**it).speed;
 			
 		(**it).rotationSpeed+= dt * this->ParticleRotationFriction;
 		(**it).rotation+= dt * (**it).rotationSpeed;
 			
-		(**it).alpha.x+= dt * this->particleAlphaDecay.x;
-		(**it).alpha.y+= dt * this->particleAlphaDecay.y;
-		(**it).alpha.z+= dt * this->particleAlphaDecay.z;
-		(**it).alpha.w+= dt * this->particleAlphaDecay.w;
+		(**it).color.x+= dt * this->particleColorDecay.x;
+		(**it).color.y+= dt * this->particleColorDecay.y;
+		(**it).color.z+= dt * this->particleColorDecay.z;
+		(**it).color.w+= dt * this->particleColorDecay.w;
 			
 		//Next particle
 		++it;
@@ -294,7 +251,7 @@ void ParticleSystem::draw(sf::RenderWindow *window)
 	std::list<Particle *>::iterator it;
 	for (it=particles.begin(); it != particles.end(); ++it) 
 	{
-		(**it).draw(window, &this->particleSprite);
+		(**it).draw(window, this->particleSprite);
 	}
 }
 	
@@ -308,7 +265,7 @@ void ParticleSystem::generateParticles(int count)
 		(*p).speed=this->particleInitSpeed;
 		(*p).rotation=this->particleInitRotation;
 		(*p).rotationSpeed=this->particleInitRotationSpeed;
-		(*p).alpha=this->particleInitAlpha;
+		(*p).color=this->particleInitColor;
 			
 		//Add to list
 		particles.push_front(p);

@@ -29,9 +29,9 @@
 
 namespace engine {
 	
-//FIXME: the build process to export class def	
+//FIXME: the build process to export class def
 class ParticleSystem;
-	
+
 /**
  * \class ParticleSystemListener
  * \brief Describe some event we can listen 
