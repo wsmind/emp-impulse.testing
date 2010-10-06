@@ -60,7 +60,7 @@ class IMPULSE_ENGINE_EXPORT ResourceManager
 		 */
 		void releaseImage(std::string name);
 		
-		/*
+		/**
 		 * \brief Loaded resources summary (for checking purposes)
 		 */
 		void printLoadedResources();
