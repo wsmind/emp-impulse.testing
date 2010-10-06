@@ -31,32 +31,110 @@
 
 namespace engine {
 
+/**
+* \class CollisionShape
+* \author Elen Le Par
+*
+* \brief The CollisionShape class defines a polygon convex.
+*
+* The polygon is defined by the list of his vertices in clockwise order.
+*
+* A polygon can detect the collision with another polygon and compute the data
+* of the collision.
+*/
 class CollisionShape
 {
 	public:
+		/**
+		* \brief Constructs a CollisionShape.
+		* \param points list of vertices.
+		*/
 		CollisionShape(std::vector<math::Vec2> points);
-		~CollisionShape();
 		
+		/**
+		* \brief Sets a new position.
+		* \param newPosition new position.
+		*/
 		void setPosition(math::Vec2 newPosition);
+		
+		/**
+		* \brief Sets a new rotation.
+		* \param newRotation new rotation.
+		*/
 		void setRotation(float newRotation);
+		
+		/**
+		* \brief Sets a new scale.
+		* \param newScale new scale.
+		*/
 		void setScale(math::Vec2 newScale);
 		
+		/**
+		* \brief Gets the current position.
+		* \return current position.
+		*/
 		math::Vec2 getPosition() const;
+		
+		/**
+		* \brief Gets the current rotation.
+		* \return current rotation.
+		*/
 		f32 getRotation() const;
+		
+		/**
+		* \brief Gets the current scale.
+		* \return current scale.
+		*/
 		math::Vec2 getScale() const;
 		
-		u32 detectCollision(CollisionShape *polygon, Contact *contact);
-		bool isInside(math::Vec2 point, math::Vec2 *normal, float *distance);
+		/**
+		* \brief Test a collision against another shape.
+		* \param polygon second polygon.
+		* \param contact contact data of the collision.
+		* \return true if there is collision.
+		*
+		* The result normal is oriented from this to polygon.
+		* The contact parameter is not obligatory.
+		*/
+		bool detectCollision(CollisionShape *polygon, Contact *contact);
 		
 	private:
+		/**
+		* \brief Computes the transformation matrix.
+		*/
 		void rebuildTransform();
 		
+		/**
+		* \brief Projects each point of a polygon on a normal.
+		* \param normal normal.
+		* \param point point of normal.
+		* \param polygon polygon which will be projected.
+		* \param[out] max max of the projection result.
+		* \param[out] min min of the projection result.
+		*/
+		void projectPolygon(math::Vec2 normal, math::Vec2 point, CollisionShape *polygon, f32 *min, f32 *max);
+		
+		/**
+		* \brief Points list.
+		*/
 		std::vector<math::Vec2> points;
 		
+		/**
+		* \brief Position of the polygon.
+		*/
 		math::Vec2 position;
+		/**
+		* \brief Rotation of the polygon.
+		*/
 		float rotation;
+		/**
+		* \brief Scale of the polygon.
+		*/
 		math::Vec2 scale;
 		
+		/**
+		* \brief Transformation matrix.
+		*/
 		math::Mat33 transform;
 };
 
