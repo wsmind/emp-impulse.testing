@@ -27,7 +27,8 @@
 #include <vector>
 #include <math/Vec2.hpp>
 #include <math/Mat33.hpp>
-#include <engine/Contact.hpp>
+
+IMPULSE_FORWARD_DECLARE1(engine, Contact)
 
 namespace engine {
 
@@ -41,6 +42,9 @@ namespace engine {
 *
 * A polygon can detect the collision with another polygon and compute the data
 * of the collision.
+*
+* The detection collision algorithm used is explained here:
+*  http://www.codeproject.com/KB/GDI-plus/PolygonCollision.aspx
 */
 class CollisionShape
 {
@@ -59,7 +63,7 @@ class CollisionShape
 		
 		/**
 		* \brief Sets a new rotation.
-		* \param newRotation new rotation.
+		* \param newRotation new rotation in degree.
 		*/
 		void setRotation(float newRotation);
 		
@@ -105,14 +109,13 @@ class CollisionShape
 		void rebuildTransform();
 		
 		/**
-		* \brief Projects each point of a polygon on a normal.
-		* \param normal normal.
-		* \param point point of normal.
-		* \param polygon polygon which will be projected.
+		* \brief Projects each point of this on a normal.
+		* \param line line on which the this will be projected.
+		* \param point point on the line.
 		* \param[out] max max of the projection result.
 		* \param[out] min min of the projection result.
 		*/
-		void projectPolygon(math::Vec2 normal, math::Vec2 point, CollisionShape *polygon, f32 *min, f32 *max);
+		void projectPolygon(math::Vec2 line, math::Vec2 point, f32 *min, f32 *max);
 		
 		/**
 		* \brief Points list.
@@ -124,7 +127,7 @@ class CollisionShape
 		*/
 		math::Vec2 position;
 		/**
-		* \brief Rotation of the polygon.
+		* \brief Rotation of the polygon in degree.
 		*/
 		float rotation;
 		/**

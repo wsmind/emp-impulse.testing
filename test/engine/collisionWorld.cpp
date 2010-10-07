@@ -22,6 +22,7 @@
 
 #include <engine/CollisionShape.hpp>
 #include <SFML/Graphics.hpp>
+#include <engine/Contact.hpp>
 
 using namespace engine;
 using namespace math;
@@ -73,13 +74,9 @@ int main()
 		rock.AddPoint(rockPoints[i].x, rockPoints[i].y, sf::Color(125, 125, 125), sf::Color(0, 0, 0));
 	rock.SetOutlineWidth(1.0f);
 
-	
-	sf::Clock clock;
-	sf::Clock clock2;
 	while (rendy.IsOpened())
 	{
-		float elapsedTime = clock2.GetElapsedTime();
-		clock2.Reset();
+		float elapsedTime = rendy.GetFrameTime();
 		
 		// Process events
 		sf::Event event;

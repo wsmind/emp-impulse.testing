@@ -22,6 +22,7 @@
 
 #include <engine/CollisionShape.hpp>
 #include <SFML/Graphics.hpp>
+#include <engine/Contact.hpp>
 
 using namespace engine;
 using namespace math;
