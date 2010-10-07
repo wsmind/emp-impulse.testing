@@ -22,7 +22,7 @@
 
 #include <engine/CollisionShape.hpp>
 #include <cmath>
-#include <iostream>
+#include <engine/Contact.hpp>
 
 using namespace math;
 
@@ -93,8 +93,8 @@ bool CollisionShape::detectCollision(CollisionShape *polygon, Contact *contact)
 		// Compute the normal line
 		Vec2 normal = Vec2(edge.y, -edge.x).normalize();
 		
-		projectPolygon(normal, start, this, &minDistanceThis, &maxDistanceThis);
-		projectPolygon(normal, start, polygon, &minDistancePolygon, &maxDistancePolygon);
+		this->projectPolygon(normal, start, &minDistanceThis, &maxDistanceThis);
+		polygon->projectPolygon(normal, start, &minDistancePolygon, &maxDistancePolygon);
 		
 		// Test if there is collision
 		if ((minDistanceThis > maxDistancePolygon) || (maxDistanceThis < minDistancePolygon))
@@ -127,8 +127,8 @@ bool CollisionShape::detectCollision(CollisionShape *polygon, Contact *contact)
 		// Compute the normal line
 		Vec2 normal = Vec2(edge.y, -edge.x).normalize();
 		
-		projectPolygon(normal, start, this, &minDistanceThis, &maxDistanceThis);
-		projectPolygon(normal, start, polygon, &minDistancePolygon, &maxDistancePolygon);
+		this->projectPolygon(normal, start, &minDistanceThis, &maxDistanceThis);
+		polygon->projectPolygon(normal, start, &minDistancePolygon, &maxDistancePolygon);
 		
 		// Test if there is collision
 		if ((minDistanceThis > maxDistancePolygon) || (maxDistanceThis < minDistancePolygon))
@@ -173,17 +173,17 @@ void CollisionShape::rebuildTransform()
 	this->transform = translation * rotation * scale;
 }
 
-void CollisionShape::projectPolygon(math::Vec2 normal, math::Vec2 point, CollisionShape *polygon, f32 *min, f32 *max)
+void CollisionShape::projectPolygon(math::Vec2 line, math::Vec2 point, f32 *min, f32 *max)
 {	
 	// Initialize max and min
 	*min = INFINITY;
 	*max = -INFINITY;
 	
 	// Compute projection for each point of polygon
-	for ( u32 i = 0; i < polygon->points.size(); i++)
+	for ( u32 i = 0; i < this->points.size(); i++)
 	{
-		Vec2 relVector = polygon->transform * polygon->points[i] - point;
-		f32 distance = relVector.dot(normal);
+		Vec2 relVector = this->transform * this->points[i] - point;
+		f32 distance = relVector.dot(line);
 		
 		if (distance < *min)
 			*min = distance;

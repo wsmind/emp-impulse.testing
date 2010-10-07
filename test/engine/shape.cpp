@@ -23,6 +23,7 @@
 #include <engine/CollisionShape.hpp>
 #include <iostream>
 #include <peel.hpp>
+#include <engine/Contact.hpp>
 
 using namespace engine;
 
