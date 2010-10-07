@@ -110,12 +110,12 @@ class CollisionShape
 		
 		/**
 		* \brief Projects each point of this on a normal.
-		* \param line line on which the this will be projected.
-		* \param point point on the line.
+		* \param direction direction on which this will be projected.
+		* \param point point of the line on which the polygon is being projected.
 		* \param[out] max max of the projection result.
 		* \param[out] min min of the projection result.
 		*/
-		void projectPolygon(math::Vec2 line, math::Vec2 point, f32 *min, f32 *max);
+		void projectPolygon(math::Vec2 direction, math::Vec2 point, f32 *min, f32 *max);
 		
 		/**
 		* \brief Points list.

@@ -173,7 +173,7 @@ void CollisionShape::rebuildTransform()
 	this->transform = translation * rotation * scale;
 }
 
-void CollisionShape::projectPolygon(math::Vec2 line, math::Vec2 point, f32 *min, f32 *max)
+void CollisionShape::projectPolygon(math::Vec2 direction, math::Vec2 point, f32 *min, f32 *max)
 {	
 	// Initialize max and min
 	*min = INFINITY;
@@ -183,7 +183,7 @@ void CollisionShape::projectPolygon(math::Vec2 line, math::Vec2 point, f32 *min,
 	for ( u32 i = 0; i < this->points.size(); i++)
 	{
 		Vec2 relVector = this->transform * this->points[i] - point;
-		f32 distance = relVector.dot(line);
+		f32 distance = relVector.dot(direction);
 		
 		if (distance < *min)
 			*min = distance;
