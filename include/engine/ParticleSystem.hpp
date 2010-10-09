@@ -27,7 +27,6 @@
 #include <math/Vec2.hpp>
 #include <math/Vec4.hpp>
 #include <engine/Particle.hpp>
-#include <engine/ParticleSystemListener.hpp>
 
 #include <list>
 #include <vector>
@@ -77,7 +76,7 @@ class ParticleSystem
 
 		/**
 		 * \brief particle lifetime (count down from birth)
-		 * \param lifeTime particle lifetime, or -1 for persitent particle (never dead)
+		 * \param lifeTime particle lifetime, or 0 for persistent particle (never dead)
 		 */
 		void setParticlesLifeTime(f32 lifeTime);
 		
@@ -95,9 +94,9 @@ class ParticleSystem
 		
 		/**
 		 * \brief particle count that can will be created by the particle system emitter (this method reset the internal particle count)
-		 * \param particleCount particle count, -1 for unlimited particle spawn
+		 * \param particleCount particle count, 0 for unlimited particle spawn
 		 */
-		void setEmitterCapacity(i32 particleCount);
+		void setEmitterCapacity(u32 particleCount);
 		
 		/**
 		 * \brief particle emitter position (new particle birth position)
@@ -109,7 +108,7 @@ class ParticleSystem
 		 * \brief move the whole particleSytem to a new position (emitter and all particles are moved)
 		 * \param position new position of the particle system emitter
 		 */
-		void moveAllToAPosition(math::Vec2 position);
+		void moveEmitterAndWholeSystem(math::Vec2 position);
 
 		/**
 		 * \brief translate the whole particleSytem (emitter and all particles are moved)
@@ -145,25 +144,13 @@ class ParticleSystem
 		 * \brief get the not spawned yet particle count
 		 * \return particle count remaining to spawn, or -1 if unlimited particle spawn
 		 */
-		i32 getEmitterRemainingParticleCount();
+		u32 getEmitterRemainingParticleCount();
 	
 		/**
 		 * \brief get the flying particle count
 		 * \return particle count of flying particle
 		 */
-		i32 getFlyingParticleCount();
-	
-		/**
-		 * \brief register a listener to the system particle events
-		 * \return listener listener called on events
-		 */
-		void registerListener(ParticleSystemListener *listener);
-	
-		/**
-		 * \brief unregister a listener to the system particle events
-		 * \return listener listener to remove 
-		 */
-		void unregisterListener(ParticleSystemListener *listener);
+		u32 getFlyingParticleCount();
 		
 		/**
 		 * \brief Update the particleSystem
@@ -195,14 +182,14 @@ class ParticleSystem
 		//! \brief particle lifeTime (in seconds)
 		f32 particleLifeTime;
 		//! \brief particle rotation friction (in counterclockwise degre/seconds squared)
-		f32 ParticleRotationFriction;
+		f32 particleRotationFriction;
 		//! \brief particle color decay (in RGBA unit/seconds)
 		math::Vec4 particleColorDecay;
 		
 		//! \brief particle count that can will be created by the particle system
-		i32 capacity;
+		u32 capacity;
 		//! \brief particle count remaining to spawn
-		i32 remainingParticleCount;
+		u32 remainingParticleCount;
 		//! \brief position of the particle emitter
 		math::Vec2 position;
 		//! \brief spawning rate (in second between two particle spawns)
@@ -214,9 +201,6 @@ class ParticleSystem
 		f32 particleInitRotation;
 		//! \brief initial orientation speed of the particle (in counterclockwise degre/second)
 		f32 particleInitRotationSpeed;		
-	
-		//! \brief particle systems events listeners
-		std::vector<ParticleSystemListener *> listeners;
 		
 		/**
 		 * \brief Generate new particles

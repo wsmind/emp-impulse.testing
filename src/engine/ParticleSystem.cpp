@@ -26,16 +26,16 @@
 #include <ctime>
 #include <cmath>
 
-#define UNLIMITED_PARTICLE -1
-#define UNLIMITED_PARTICLE_LIFE -1.0f
+#define UNLIMITED_CAPACITY 0
+#define UNLIMITED_PARTICLE_LIFE 0.f
 
 namespace engine {
 	
 ParticleSystem::ParticleSystem()
 {
 	this->actived=false;
-	this->capacity=UNLIMITED_PARTICLE;
-	this->remainingParticleCount=UNLIMITED_PARTICLE;
+	this->capacity=UNLIMITED_CAPACITY;
+	this->remainingParticleCount=UNLIMITED_CAPACITY;
 	this->timeAfterLastSpawning=0;
 	this->timeBetweenTwoSpawns=1;
 
@@ -45,7 +45,7 @@ ParticleSystem::ParticleSystem()
 	this->particleColorDecay=math::Vec4(0.f,0.f,0.f,0.f);
 
 	this->position=math::Vec2();
-	this->ParticleRotationFriction=0;
+	this->particleRotationFriction=0;
 	this->particleLifeTime=UNLIMITED_PARTICLE_LIFE;
 
 	this->particleSprite = new sf::Sprite();
@@ -85,7 +85,7 @@ void ParticleSystem::setParticlesLifeTime(f32 lifeTime)
 	
 void ParticleSystem::setParticlesRotationFriction(f32 rotFriction)
 {
-	this->ParticleRotationFriction=rotFriction;
+	this->particleRotationFriction=rotFriction;
 }
 	
 void ParticleSystem::setParticlesColorDecay(math::Vec4 colorDecay)
@@ -93,26 +93,19 @@ void ParticleSystem::setParticlesColorDecay(math::Vec4 colorDecay)
 	this->particleColorDecay=colorDecay;
 }
 	
-void ParticleSystem::setEmitterCapacity(i32 particleCount)
+void ParticleSystem::setEmitterCapacity(u32 particleCount)
 {
 	this->capacity=particleCount;
-		
-	//unlimited particle spawn
-	if (particleCount == UNLIMITED_PARTICLE)
-	{
-		this->remainingParticleCount=UNLIMITED_PARTICLE;
-	//limited particle spawn
-	}else {
-		this->remainingParticleCount=particleCount;
-	}
+	//Reset the internal number of remaining particle
+	this->remainingParticleCount=particleCount;
 }
 	
-i32 ParticleSystem::getEmitterRemainingParticleCount()
+u32 ParticleSystem::getEmitterRemainingParticleCount()
 {
 	return this->remainingParticleCount;
 }
 	
-i32 ParticleSystem::getFlyingParticleCount()
+u32 ParticleSystem::getFlyingParticleCount()
 {
 	return this->particles.size();
 }
@@ -122,10 +115,9 @@ void ParticleSystem::setEmitterPosition(math::Vec2 position)
 	this->position=position;
 }
 
-void ParticleSystem::moveAllToAPosition(math::Vec2 position)
+void ParticleSystem::moveEmitterAndWholeSystem(math::Vec2 position)
 {
-	math::Vec2 move;
-	move=(position - this->position);
+	math::Vec2 move(position - this->position);
 	move.x = position.x - this->position.x;
 	move.y = position.y - this->position.y;
 	
@@ -173,36 +165,12 @@ void ParticleSystem::setParticlesInitRotationSpeed(f32 particleRotationSpeed)
 	this->particleInitRotationSpeed=particleRotationSpeed;	
 }
 	
-void ParticleSystem::registerListener(ParticleSystemListener *l)
-{
-	// check for previous existence
-	if (std::find(this->listeners.begin(), this->listeners.end(), l) != this->listeners.end())
-		return;
-	
-	// add the new spawner
-	this->listeners.push_back(l);
-}
-	
-void ParticleSystem::unregisterListener(ParticleSystemListener *l)
-{
-	// find the listener in the collection
-	std::vector<ParticleSystemListener *>::iterator i;
-	i = std::find(this->listeners.begin(), this->listeners.end(), l);
-	
-	// delete the found listener
-	if (i != this->listeners.end())
-	{
-		this->listeners.erase(i);
-	}	
-}
-	
 void ParticleSystem::update(f32 dt, math::Vec2 forces)
 //1.Update particles age
 //2.Remove dead particles
 //3.Update pre-existent particles speed, position, color, rotation, etc
 //4.Add generated particles
 {
-	bool someParticleDied = false;
 	std::list<Particle *>::iterator it;
 	it=particles.begin();
 	
@@ -221,7 +189,7 @@ void ParticleSystem::update(f32 dt, math::Vec2 forces)
 			{
 				it=particles.erase(it);
 				this->particlePool.destroy(particle);
-				someParticleDied=true;
+
 				continue;
 			}
 		}
@@ -230,7 +198,7 @@ void ParticleSystem::update(f32 dt, math::Vec2 forces)
 		particle->speed+= dt * forces;
 		particle->position+= dt * particle->speed;
 			
-		particle->rotationSpeed+= dt * this->ParticleRotationFriction;
+		particle->rotationSpeed+= dt * this->particleRotationFriction;
 		particle->rotation+= dt * particle->rotationSpeed;
 			
 		particle->color.x+= dt * this->particleColorDecay.x;
@@ -245,7 +213,7 @@ void ParticleSystem::update(f32 dt, math::Vec2 forces)
 	//4.Add generated particles
 	this->timeAfterLastSpawning+=dt;
 		
-	if (remainingParticleCount != 0)
+	if ( (this->capacity == UNLIMITED_CAPACITY) || (this->remainingParticleCount != 0) )
 	{
 		int particleToSpawnCount=0;
 		while ( this->timeAfterLastSpawning >= this->timeBetweenTwoSpawns)
@@ -254,7 +222,7 @@ void ParticleSystem::update(f32 dt, math::Vec2 forces)
 			++particleToSpawnCount;
 		}
 		
-		if (remainingParticleCount == UNLIMITED_PARTICLE )
+		if ( this->capacity == UNLIMITED_CAPACITY )
 		{
 			generateParticles(particleToSpawnCount);
 		}
@@ -267,14 +235,7 @@ void ParticleSystem::update(f32 dt, math::Vec2 forces)
 		{
 			generateParticles(this->remainingParticleCount);
 			this->remainingParticleCount=0;
-			//Warn listener
-			this->fireLastParticleSpawned();
 		}
-	}
-
-	//No more Flying Particle
-	if ( someParticleDied && (particles.size() == 0) ) {
-		fireLastFlyingParticleDied();
 	}
 }
 	
@@ -303,24 +264,6 @@ void ParticleSystem::generateParticles(int count)
 		particles.push_front(p);
 	}
 }
-	
-void ParticleSystem::fireLastParticleSpawned()
-{
-	//Call listeners : lastParticleSpawned
-	for (std::vector<ParticleSystemListener *>::iterator it = this->listeners.begin(); it != this->listeners.end(); ++it)
-	{
-		(*it)->lastParticleSpawned(this);
-	}	
-}
-	
-void ParticleSystem::fireLastFlyingParticleDied()
-{
-	//Call listeners : lastFlyingParticleDied
-	for (std::vector<ParticleSystemListener *>::iterator it = this->listeners.begin(); it != this->listeners.end(); ++it)
-	{
-		(*it)->lastFlyingParticleDied(this);
-	}		
-}
-	
+
 } // engine namespace
 
