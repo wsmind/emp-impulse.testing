@@ -22,27 +22,9 @@
 
 #include <SFML/Graphics.hpp>
 #include <engine/ParticleSystem.hpp>
-#include <engine/ParticleSystemListener.hpp>
 #include <sstream>
 
 #include <math/Vec2.hpp>
-
-class psListener: public engine::ParticleSystemListener
-{
-
-	public:
-		psListener(){};
-
-		void lastParticleSpawned (engine::ParticleSystem *particleSystem)
-		{
-			std::cout << "Last Particle Spawned." << std::endl;
-		}
-
-		void lastFlyingParticleDied (engine::ParticleSystem *particleSystem)
-		{
-			std::cout << "Last Flying Particle Died." << std::endl;
-		}
-};
 
 int main()
 {
@@ -66,16 +48,12 @@ int main()
 	particleSystem.setParticlesInitSpeed(math::Vec2(30.f,-10.f));
 	particleSystem.setParticlesColorDecay(math::Vec4(0.f,0.f,0.f,-20.f));
 	particleSystem.setEmitterActive(true);
-	
-	psListener psl;
-	particleSystem.registerListener(&psl);
 
 	math::Vec2 totalForces(0.f,9.8f);
 	
 	sf::String TextFps;
-	TextFps.SetStyle(sf::String::Bold | sf::String::Italic | sf::String::Underlined);
 	TextFps.SetStyle(sf::String::Regular);
-	TextFps.SetColor(sf::Color(128, 0, 0));
+	TextFps.SetColor(sf::Color(255, 0, 0));
 	TextFps.Move(10.f, 0.f);
 	TextFps.SetText("");
 
@@ -88,7 +66,7 @@ int main()
 		float elapsedTime = window.GetFrameTime();
 		
 		// Process FPS count
-		fps = 1 / elapsedTime;
+		fps++;
 		deltaFpsDisplay+=elapsedTime;
 
 		// Change FPS text ~every second
