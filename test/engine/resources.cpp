@@ -27,7 +27,9 @@ using namespace engine;
 
 int main()
 {
-	ResourceManager *rm = new ResourceManager;
+	//images
+	ResourceManager::createInstance();
+	ResourceManager *rm = ResourceManager::getInstance();
 	
 	// normal use
 	sf::Image *image = rm->loadImage("water.png");
@@ -57,7 +59,41 @@ int main()
 	std::cout << "Resources still in use at the end:" << std::endl;
 	rm->printLoadedResources();
 	
-	delete rm;
+	ResourceManager::destroyInstance();
+	
+	// animationDatas
+	ResourceManager::createInstance();
+	ResourceManager *rm2 = ResourceManager::getInstance();
+	
+	// normal use
+	AnimationData *animationData = rm2->loadAnimationData("resources/bounce.data");
+	AnimationData *animationData2 = rm2->loadAnimationData("resources/bounce.data");
+	CHECK(animationData == animationData2);
+	
+	AnimationData *animationData3 = rm2->loadAnimationData("resources/bounce2.data");
+	CHECK(animationData != animationData3);
+	
+	rm2->releaseAnimationData("resources/bounce.data");
+	rm2->releaseAnimationData("resources/bounce.data");
+	rm2->releaseAnimationData("resources/bounce2.data");
+	
+	// wrong file
+	AnimationData *animationData4 = rm2->loadAnimationData("doesnotexist.data");// will print a warning
+	CHECK(animationData4 == NULL);
+	rm2->releaseAnimationData("doesnotexist.data");
+	
+	// double release
+	rm2->releaseAnimationData("neverloaded.data"); // will print another warning
+	
+	// summary of non-released resources
+	rm2->loadAnimationData("resources/bounce.data");
+	rm2->loadAnimationData("resources/bounce.data");
+	rm2->loadAnimationData("resources/bounce2.data");
+	
+	std::cout << "Resources still in use at the end:" << std::endl;
+	rm2->printLoadedResources();
+
+	ResourceManager::destroyInstance();
 	
 	return 0;
 }
