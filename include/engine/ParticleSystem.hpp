@@ -206,7 +206,7 @@ class ParticleSystem
 		 * \brief Generate new particles
 		 * \param count particle count to generate
 		 */
-		void generateParticles(int count);
+		void generateParticles(u32 count);
 	
 		/**
 		 * \brief Emit the event lastParticleSpawned for each listener

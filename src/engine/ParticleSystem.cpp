@@ -215,7 +215,7 @@ void ParticleSystem::update(f32 dt, math::Vec2 forces)
 		
 	if ( (this->capacity == UNLIMITED_CAPACITY) || (this->remainingParticleCount != 0) )
 	{
-		int particleToSpawnCount=0;
+		u32 particleToSpawnCount=0;
 		while ( this->timeAfterLastSpawning >= this->timeBetweenTwoSpawns)
 		{
 			this->timeAfterLastSpawning-=this->timeBetweenTwoSpawns;
@@ -248,9 +248,9 @@ void ParticleSystem::draw(sf::RenderWindow *window)
 	}
 }
 	
-void ParticleSystem::generateParticles(int count)
+void ParticleSystem::generateParticles(u32 count)
 {
-	for(int i=0;i<count;++i)
+	for(u32 i=0;i<count;++i)
 	{
 		Particle* p=this->particlePool.construct(this->position);
 			
