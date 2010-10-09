@@ -27,6 +27,7 @@ using namespace engine;
 
 int main()
 {
+	//images
 	ResourceManager *rm = new ResourceManager;
 	
 	// normal use
@@ -58,6 +59,39 @@ int main()
 	rm->printLoadedResources();
 	
 	delete rm;
+	
+	// animationDatas
+	ResourceManager *rm2 = new ResourceManager;
+	
+	// normal use
+	AnimationData *animationData = rm2->loadAnimationData("resources/bounce.data");
+	AnimationData *animationData2 = rm2->loadAnimationData("resources/bounce.data");
+	CHECK(animationData == animationData2);
+	
+	AnimationData *animationData3 = rm2->loadAnimationData("resources/bounce2.data");
+	CHECK(animationData != animationData3);
+	
+	rm2->releaseAnimationData("resources/bounce.data");
+	rm2->releaseAnimationData("resources/bounce.data");
+	rm2->releaseAnimationData("resources/bounce2.data");
+	
+	// wrong file
+	AnimationData *animationData4 = rm2->loadAnimationData("doesnotexist.data");// will print a warning
+	CHECK(animationData4 == NULL);
+	rm->releaseAnimationData("doesnotexist.data");
+	
+	// double release
+	rm->releaseAnimationData("neverloaded.data"); // will print another warning
+	
+	// summary of non-released resources
+	rm2->loadAnimationData("resources/bounce.data");
+	rm2->loadAnimationData("resources/bounce.data");
+	rm2->loadAnimationData("resources/bounce2.data");
+	
+	std::cout << "Resources still in use at the end:" << std::endl;
+	rm->printLoadedResources();
+
+	delete rm2;
 	
 	return 0;
 }
