@@ -47,18 +47,22 @@ namespace engine {
  * a special case for resources that failed to load. That means that if you
  * call one of the load() methods and NULL is returned, you still have to
  * make a corresponding release() or the name will remain referenced.
+ *
+ * The resourceManager is a singleton, to create it you have to call
+ * createInstance() and to delete it you call destroyInstance().
+ * To get it there is getInstance which return NULL if no instance exists
  */
 class IMPULSE_ENGINE_EXPORT ResourceManager
 {
 	public:
 	
 		/**
-		* \brief Ask for the creation of the ResourceManager
+		* \brief Request the creation of the ResourceManager
 		*/
 		static void createInstance();
 		
 		/**
-		* \brief Ask for the deletion of the ResourceManager
+		* \brief Request the deletion of the ResourceManager
 		*/
 		static void destroyInstance();
 		
@@ -99,10 +103,11 @@ class IMPULSE_ENGINE_EXPORT ResourceManager
 		
 	private:
 		static ResourceManager *resourceManager;
-		ResourceManager(){};
-		~ResourceManager(){};
 		ReferenceCounter<sf::Image> images;
 		ReferenceCounter<AnimationData> animationDatas;
+		
+		ResourceManager(){};
+		~ResourceManager(){};
 };
 
 } // engine namespace

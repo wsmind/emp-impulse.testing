@@ -40,18 +40,13 @@ void ResourceManager::createInstance()
 
 void ResourceManager::destroyInstance()
 {
-	// if the instance exists, destroy it
-	if (resourceManager != NULL)
-	{
 		delete resourceManager;
 		resourceManager = NULL;
-	}
 }
 
 ResourceManager *ResourceManager::getInstance()
 {
 	return resourceManager;
-
 }
 
 sf::Image *ResourceManager::loadImage(std::string name)
