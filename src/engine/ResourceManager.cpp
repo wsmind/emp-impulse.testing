@@ -23,6 +23,7 @@
 #include <engine/ResourceManager.hpp>
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include <engine/AnimationData.hpp>
 
 namespace engine {
 
@@ -64,10 +65,56 @@ void ResourceManager::releaseImage(std::string name)
 }
 
 void ResourceManager::printLoadedResources()
-{
+{	
+	// print images
 	std::cout << "== Images ==" << std::endl;
 	this->images.printReferencedNames();
 	std::cout << std::endl;
+	
+	// print animationDatas
+	std::cout << "== AnimationDatas ==" << std::endl;
+	this->animationDatas.printReferencedNames();
+	std::cout << std::endl;
 }
+
+AnimationData *ResourceManager::loadAnimationData(std::string name)
+{
+	// record the new reference
+	this->animationDatas.addReference(name);
+	
+	// load if necessary
+	if (this->animationDatas.getReferenceCount(name) == 1)
+	{
+		// try to load
+		AnimationData *animationData = new AnimationData;
+		if (!animationData->load(name))
+		{
+			std::cerr << "Loading of animationData '" << name << "' failed!" << std::endl;
+			delete animationData;
+			animationData = NULL;
+		}
+		
+		// storage
+		this->animationDatas.storeResourceObject(name, animationData);
+	}
+	
+	return this->animationDatas.retrieveResourceObject(name);;
+}
+
+void ResourceManager::releaseAnimationData(std::string name)
+{
+	// destroy is necessary
+	if (this->animationDatas.getReferenceCount(name) == 1)
+	{
+		AnimationData *animationData = this->animationDatas.retrieveResourceObject(name);
+		delete animationData;
+	}
+	
+	// reference removal
+	this->animationDatas.removeReference(name);
+	
+}
+
+
 
 } // engine namespace

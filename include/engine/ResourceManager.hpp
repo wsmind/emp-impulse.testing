@@ -30,12 +30,14 @@
 #include <engine/ReferenceCounter.hpp>
 
 IMPULSE_FORWARD_DECLARE1(sf, Image)
+IMPULSE_FORWARD_DECLARE1(engine, AnimationData)
 
 namespace engine {
 
 /**
  * \class ResourceManager
  * \author Remi Papillie
+ * \author Maxime Viry
  *
  * Non generic implementation of resource management. For each managed object
  * types, you can use the loadXXX() and releaseXXX() methods (where XXX is the
@@ -61,12 +63,25 @@ class IMPULSE_ENGINE_EXPORT ResourceManager
 		void releaseImage(std::string name);
 		
 		/**
+		* \brief Ask for an animationData ressource
+		* \return the loaded animationData object, or NULL if loading failed
+		*/
+		AnimationData *loadAnimationData(std::string name);
+		
+		/**
+		* \brief Release a previously loaded image
+		*/
+		void releaseAnimationData(std::string name);	
+		
+		/**
 		 * \brief Loaded resources summary (for checking purposes)
 		 */
 		void printLoadedResources();
-	
+		
+		
 	private:
 		ReferenceCounter<sf::Image> images;
+		ReferenceCounter<AnimationData> animationDatas;
 };
 
 } // engine namespace
