@@ -51,6 +51,23 @@ namespace engine {
 class IMPULSE_ENGINE_EXPORT ResourceManager
 {
 	public:
+	
+		/**
+		* \brief Ask for the creation of the ResourceManager
+		*/
+		static void createInstance();
+		
+		/**
+		* \brief Ask for the deletion of the ResourceManager
+		*/
+		static void destroyInstance();
+		
+		/**
+		* \return the existing resourceManager, or NULL if no instance
+		* exist
+		*/
+		static ResourceManager *getInstance();
+		
 		/**
 		 * \brief Ask for an image resource
 		 * \return the loaded image object, or NULL if loading failed
@@ -64,7 +81,8 @@ class IMPULSE_ENGINE_EXPORT ResourceManager
 		
 		/**
 		* \brief Ask for an animationData ressource
-		* \return the loaded animationData object, or NULL if loading failed
+		* \return the loaded animationData object, or NULL if loading 
+		* failed
 		*/
 		AnimationData *loadAnimationData(std::string name);
 		
@@ -80,6 +98,9 @@ class IMPULSE_ENGINE_EXPORT ResourceManager
 		
 		
 	private:
+		static ResourceManager *resourceManager;
+		ResourceManager(){};
+		~ResourceManager(){};
 		ReferenceCounter<sf::Image> images;
 		ReferenceCounter<AnimationData> animationDatas;
 };
