@@ -105,7 +105,7 @@ class ParticleSystem
 		void setEmitterPosition(math::Vec2 position);
 
 		/**
-		 * \brief move the whole particleSytem to a new position (emitter and all particles are moved)
+		 * \brief move the emitter and the whole particleSytem to a new position (emitter and all particles are moved)
 		 * \param position new position of the particle system emitter
 		 */
 		void moveEmitterAndWholeSystem(math::Vec2 position);
