@@ -157,7 +157,7 @@ class AnimationState
 		/**
 		 * \brief Current rectangle;
 		 */
-		u32 rectIndex;
+		AnimationRect rect;
 
 		/**
 		 * \brief Current animation time.

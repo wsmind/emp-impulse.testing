@@ -22,14 +22,40 @@
 
 #include <engine/AnimationSequence.hpp>
 #include <engine/AnimationRect.hpp>
+#include <engine/DataFile.hpp>
 
 namespace engine {
 
-AnimationSequence::AnimationSequence(u32 rectCount, f32 frameDuration) : rectCount(rectCount), frameDuration(frameDuration)
+AnimationSequence::AnimationSequence(DataFile *file)
 {
+	this->frameDuration = file->readF32();
+
+	this->rectCount = file->readU32();
+
 	this->rects = new AnimationRect[this->rectCount];
 	
 	this->totalDuration = this->frameDuration * this->rectCount;
+	
+	for (u32 j = 0; j < this->rectCount; ++j)
+	{
+		AnimationRect *rect = &this->rects[j];
+		
+		rect->left = file->readU32();
+		rect->top = file->readU32();
+		rect->right = file->readU32();
+		rect->bottom = file->readU32();
+		rect->xOffset = file->readU32();
+		rect->yOffset = file->readU32();
+	}
+
+	u32 eventCount = file->readU32();
+
+	for (u32 j = 0; j < eventCount; ++j)
+	{
+		f32 time = file->readF32();
+		std::string event = file->readString();
+		this->events.insert(std::pair<f32, std::string>(time, event));
+	}
 }
 
 AnimationSequence::~AnimationSequence()
@@ -37,49 +63,30 @@ AnimationSequence::~AnimationSequence()
 	delete [] this->rects;
 }
 
-void AnimationSequence::setRect(u32 index, const AnimationRect *rect)
+f32 AnimationSequence::extractInformations(f32 startTime, f32 duration, AnimationRect *rect, std::queue<std::string> *events) const
 {
-	if (index < this->rectCount)
-	{
-		this->rects[index] = *rect;
-	}
-}
-
-const AnimationRect *AnimationSequence::getRect(u32 index) const
-{
-	if (index < this->rectCount)
-	{
-		return &this->rects[index];
-	}
-	return NULL;
-}
-
-void AnimationSequence::addEvent(f32 time, const std::string & event)
-{
-	this->events.insert(std::pair<f32, std::string>(time, event));
-}
-
-void AnimationSequence::update(f32 elapsedTime, f32 *time, u32 *rectIndex, std::queue<std::string> *events) const
-{
-	f32 baseTime = *time;
-	*time += elapsedTime;
+	f32 baseTime = startTime;
+	f32 time = startTime + duration;
 	
-	while (*time >= this->totalDuration)
+	while (time >= this->totalDuration)
 	{
 		for (EventMap::const_iterator it = this->events.lower_bound(baseTime); it != this->events.upper_bound(this->totalDuration); ++it)
 		{
 			events->push(it->second);
 		}
-		*time -= this->totalDuration;
+		time -= this->totalDuration;
 		baseTime = 0;
 	}
 
-	for (EventMap::const_iterator it = this->events.lower_bound(baseTime); it != this->events.lower_bound(*time); ++it)
+	for (EventMap::const_iterator it = this->events.lower_bound(baseTime); it != this->events.lower_bound(time); ++it)
 	{
 		events->push(it->second);
 	}
 
-	*rectIndex = *time / this->frameDuration;
+	u32 rectIndex = time / this->frameDuration;
+	*rect = this->rects[rectIndex];
+	
+	return time;
 }
 
 } // engine namespace
