@@ -26,14 +26,20 @@
 
 namespace engine {
 
-AnimationState::AnimationState(AnimationData *data) : data(data)
+AnimationState::AnimationState(AnimationData *data) : data(data), currentSequence(NULL)
 {
 }
 
 void AnimationState::setCurrentSequence(std::string sequence)
 {
+	this->currentSequenceName = sequence;
 	this->currentSequence = data->getSequence(sequence);
 	this->time = 0;
+}
+
+std::string AnimationState::getCurrentSequence()
+{
+	return this->currentSequenceName;
 }
 
 void AnimationState::update(f32 elapsedTime)
@@ -43,7 +49,7 @@ void AnimationState::update(f32 elapsedTime)
 		return;
 	}
 
-	this->currentSequence->update(elapsedTime, &this->time, &this->rectIndex, &this->events);
+	this->time = this->currentSequence->extractInformations(this->time, elapsedTime, &this->rect, &this->events);
 }
 
 const AnimationRect *AnimationState::getRect() const
@@ -53,7 +59,7 @@ const AnimationRect *AnimationState::getRect() const
 		return NULL;
 	}
 	
-	return this->currentSequence->getRect(this->rectIndex);
+	return &this->rect;
 }
 
 bool AnimationState::hasEvent(std::string *event)

@@ -93,6 +93,12 @@ class AnimationState
 		void setCurrentSequence(std::string sequence);
 
 		/**
+		 * \brief Gets current sequence.
+		 * \return current sequence.
+		 */
+		std::string getCurrentSequence();
+
+		/**
 		 * \brief Updates the state.
 		 * \param elapsedTime elapsed time since last call, in second.
 		 *
@@ -144,9 +150,14 @@ class AnimationState
 		const AnimationSequence *currentSequence;
 
 		/**
+		 * \brief Current sequence name.
+		 */
+		std::string currentSequenceName;
+		
+		/**
 		 * \brief Current rectangle;
 		 */
-		u32 rectIndex;
+		AnimationRect rect;
 
 		/**
 		 * \brief Current animation time.

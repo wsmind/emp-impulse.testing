@@ -44,35 +44,7 @@ bool AnimationData::load(const std::string & filename)
 	{
 		std::string name = file.readString();
 
-		f32 frameDuration = file.readF32();
-
-		u32 rectCount = file.readU32();
-
-		AnimationSequence *sequence = new AnimationSequence(rectCount, frameDuration);
-
-		for (u32 j = 0; j < rectCount; ++j)
-		{
-			u32 left = file.readU32();
-			u32 top = file.readU32();
-			u32 right = file.readU32();
-			u32 bottom = file.readU32();
-			u32 xOffset = file.readU32();
-			u32 yOffset = file.readU32();
-			
-			AnimationRect rect(left, top, right, bottom, xOffset, yOffset);
-			sequence->setRect(j, &rect);
-		}
-
-		u32 eventCount = file.readU32();
-
-		for (u32 j = 0; j < eventCount; ++j)
-		{
-			f32 time = file.readF32();
-			std::string event = file.readString();
-			sequence->addEvent(time, event);
-		}
-
-		this->sequences[name] = sequence;
+		this->sequences[name] = new AnimationSequence(&file);
 	}
 
 	return true;

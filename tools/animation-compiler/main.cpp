@@ -323,6 +323,12 @@ int main(int argc, char **argv)
 		std::string file(argv[arg]);
 		std::cout << "Processing file '" << file << "'." << std::endl;
 		
+		size_t lastDir = file.find_last_of("/\\");
+		std::string dir = file.substr(0, lastDir) + "/";
+		std::string filename = file.substr(lastDir + 1);
+		size_t lastDot = filename.rfind('.');
+		std::string base = filename.substr(0, lastDot);
+		
 		luaL_dofile(L, argv[arg]);
 		
 		lua_getglobal(L, "rate");
@@ -402,7 +408,7 @@ int main(int argc, char **argv)
 					}
 					else
 					{
-						std::string file(lua_tostring(L, -1));
+						std::string file = dir + lua_tostring(L, -1);
 						if (!loadImage(sequence, file))
 						{
 							std::cout << "Error: unable to load image '" << file << "'." << std::endl;
@@ -415,11 +421,16 @@ int main(int argc, char **argv)
 			}
 			else if (lua_isstring(L, -1))
 			{
-				std::string path(lua_tostring(L, -1));
+				std::string path = dir + lua_tostring(L, -1);
 				lua_pop(L, 1);
 				if (path.find('%') != std::string::npos)
 				{
-					int index = 1;
+					int index;
+					
+					// Retrieve first index
+					lua_getfield(L, -1, "index");
+					index = lua_tonumber(L, -1);
+					lua_pop(L, 1);
 					
 					for (;;++index)
 					{
@@ -522,13 +533,14 @@ int main(int argc, char **argv)
 				pasteImage(*it);
 			}
 			
-			if (!sfImage.SaveToFile(file + ".png"))
+			std::cout << "Saving animation image..." << std::endl;
+			if (!sfImage.SaveToFile(dir + base + ".png"))
 			{
-				std::cerr << "Error: unable to save resulting image." << std::endl;
+				std::cerr << "Error: unable to save resulting image in '" << dir + base + ".png" << "'." << std::endl;
 			}
 			
 			// Generates animation data
-			std::ofstream data((file + ".data").c_str(), std::ios_base::in | std::ios::binary);
+			std::ofstream data((dir + base + ".data").c_str(), std::ios_base::out | std::ios::binary);
 			if (data.is_open())
 			{
 				writeUInt(data, sequences.size());
@@ -562,7 +574,7 @@ int main(int argc, char **argv)
 			}
 			else
 			{
-				std::cerr << "Error: unable to save animation data." << std::endl;
+				std::cerr << "Error: unable to save animation data in '" << (dir + base + ".data").c_str() << "'." << std::endl;
 			}
 			
 			for (std::list<Image*>::iterator it = images.begin(); it != images.end(); ++it)
