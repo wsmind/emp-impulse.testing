@@ -31,7 +31,7 @@ int main()
 {
 	sf::Image image;
 
-	if (!image.LoadFromFile("resources/bounce.png"))
+	if (!image.LoadFromFile("resources/hero.png"))
 	{
 		std::cerr << "Unable to load animation image." << std::endl;
 		return EXIT_FAILURE;
@@ -41,7 +41,7 @@ int main()
 
 	engine::AnimationData data;
 
-	if (!data.load("resources/bounce.data"))
+	if (!data.load("resources/hero.data"))
 	{
 		std::cerr << "Unable to load animation data." << std::endl;
 		return EXIT_FAILURE;
@@ -49,14 +49,17 @@ int main()
 
 	engine::AnimationState state(&data);
 
-	state.setCurrentSequence("bounce");
+	state.setCurrentSequence("idle_left");
 
 	sf::RenderWindow window(sf::VideoMode(800, 600, 32), "Animation system");
 	window.SetFramerateLimit(60);
 
-	int x = 800 / 2;
-	int y = 600 / 2;
-
+	f32 x = 800 / 2;
+	f32 y = 600 / 2;
+	f32 scale = 0.2f;
+	
+	sprite.SetScale(scale, scale);
+	
 	while (window.IsOpened())
 	{
 		float elapsedTime = window.GetFrameTime();
@@ -78,17 +81,30 @@ int main()
 			{
 				window.Close();
 			}
+			
+			if (event.Type == sf::Event::KeyPressed && event.Key.Code == sf::Key::Left && state.getCurrentSequence() != "walk_left")
+			{
+				state.setCurrentSequence("walk_left");
+			}
+			
+			if (event.Type == sf::Event::KeyReleased && event.Key.Code == sf::Key::Left)
+			{
+				state.setCurrentSequence("idle_left");
+			}
 		}
 
 		// Clear the screen (fill it with black color)
 		window.Clear(sf::Color(255, 255, 255));
 
 		const engine::AnimationRect *rect = state.getRect();
-		sprite.SetSubRect(sf::IntRect(rect->getLeft(), rect->getTop(), rect->getRight(), rect->getBottom()));
-		sprite.SetPosition(x - rect->getXOffset(), y - rect->getYOffset());
-
-		window.Draw(sprite);
-
+		if (rect)
+		{
+			sprite.SetSubRect(sf::IntRect(rect->left, rect->top, rect->right, rect->bottom));
+			sprite.SetPosition(x - rect->xOffset * scale, y - rect->yOffset * scale);
+	
+			window.Draw(sprite);
+		}
+		
 		// Display window contents on screen
 		window.Display();
 	}
