@@ -26,7 +26,7 @@ namespace engine {
 
 bool DataFile::load(const std::string & filename)
 {
-	this->file.open(filename.c_str(), std::ios_base::out | std::ios::binary);
+	this->file.open(filename.c_str(), std::ios_base::in | std::ios::binary);
 	return this->file.good();
 }
 
