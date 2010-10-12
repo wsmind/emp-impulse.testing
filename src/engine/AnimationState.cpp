@@ -49,7 +49,7 @@ void AnimationState::update(f32 elapsedTime)
 		return;
 	}
 
-	this->currentSequence->update(elapsedTime, &this->time, &this->rectIndex, &this->events);
+	this->time = this->currentSequence->extractInformations(this->time, elapsedTime, &this->rect, &this->events);
 }
 
 const AnimationRect *AnimationState::getRect() const
@@ -59,7 +59,7 @@ const AnimationRect *AnimationState::getRect() const
 		return NULL;
 	}
 	
-	return this->currentSequence->getRect(this->rectIndex);
+	return &this->rect;
 }
 
 bool AnimationState::hasEvent(std::string *event)

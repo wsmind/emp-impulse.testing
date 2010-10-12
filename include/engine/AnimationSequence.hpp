@@ -29,6 +29,7 @@
 #include <string>
 
 IMPULSE_FORWARD_DECLARE1(engine, AnimationRect)
+IMPULSE_FORWARD_DECLARE1(engine, DataFile)
 
 namespace engine {
 
@@ -44,7 +45,9 @@ namespace engine {
  *
  * A sequence also defines a list of events, each of them associated with a
  * time. These times do not need to be a multiple of the frame duration. They
- * have to be in range [0, totalDuration] to be handled.
+ * have to be in range [0, totalDuration] to be handled. For convenience, one
+ * can declare events at time totalDuration: they occur at the same time that
+ * events at time 0, except for the first play.
  */
 class AnimationSequence
 {
@@ -54,7 +57,7 @@ class AnimationSequence
 		 * \brief Constructs an animation sequence.
 		 * 
 		 */
-		AnimationSequence(u32 rectCount, f32 frameDuration);
+		AnimationSequence(DataFile *file);
 
 		/**
 		 * \brief Destructs the animation sequence.
@@ -62,34 +65,26 @@ class AnimationSequence
 		~AnimationSequence();
 		
 		/**
-		 * \brief Sets a rectangle.
-		 * \param index rectangle index.
-		 * \param rect rectangle.
+		 * \brief Extracts informations from the sequence.
+		 * \param startTime start of the time interval.
+		 * \param duration length of the time interval.
+		 * \param[out] rect rectangle at time \a startTime + \a duration.
+		 * \param[out] events events which occur during time interval
+		 * [\a startTime, \a startTime + \a duration[.
+		 * \return \a startTime + \a duration, wrapped if necessary.
+		 * 
+		 * This function extracts informations from the sequence for the time
+		 * interval [\a startTime, \a startTime + \a duration[. It gives back:
+		 * \li the rectangle at time \a startTime + \a duration.
+		 * \li the events which occur during time interval [\a startTime,
+		 * \a startTime + \a duration[.
+		 * 
+		 * This function does not clear \a events.
+		 * 
+		 * This class only provides informations: no state is kept with this
+		 * function.
 		 */
-		void setRect(u32 index, const AnimationRect *rect);
-
-		/**
-		 * \brief Gets a rectangle.
-		 * \param index rectangle index.
-		 * \returns rectangle.
-		 */
-		const AnimationRect *getRect(u32 index) const;
-		
-		/**
-		 * \brief Adds an event to the sequence.
-		 * \param time occurence time.
-		 * \param event event.
-		 */
-		void addEvent(f32 time, const std::string & event);
-
-		/**
-		 * \brief Updates animation state.
-		 * \param elapsedTime elapsed time since last call.
-		 * \param[in,out] time playing time.
-		 * \param[out] rectIndex rectangle index.
-		 * \param events event queue.
-		 */
-		void update(f32 elapsedTime, f32 *time, u32 *rectIndex, std::queue<std::string> *events) const;
+		f32 extractInformations(f32 startTime, f32 duration, AnimationRect *rect, std::queue<std::string> *events) const;
 		
 	private:
 
