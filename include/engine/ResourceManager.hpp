@@ -59,7 +59,7 @@ class IMPULSE_ENGINE_EXPORT ResourceManager
 		/**
 		* \brief Request the creation of the ResourceManager
 		*/
-		static void createInstance();
+		static void createInstance(std::string basePath = ".");
 		
 		/**
 		* \brief Request the deletion of the ResourceManager
@@ -100,14 +100,19 @@ class IMPULSE_ENGINE_EXPORT ResourceManager
 		 */
 		void printLoadedResources();
 		
-		
 	private:
+		/// unique instance
 		static ResourceManager *resourceManager;
+		
+		// managed resource types
 		ReferenceCounter<sf::Image> images;
 		ReferenceCounter<AnimationData> animationDatas;
 		
-		ResourceManager(){};
-		~ResourceManager(){};
+		/// base resource path, with trailing slash
+		std::string basePath;
+		
+		ResourceManager(std::string basePath);
+		~ResourceManager();
 };
 
 } // engine namespace

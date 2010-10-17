@@ -33,7 +33,7 @@ int main()
 	
 	// Load the sprite image from a file
 	sf::Image particleImage;
-	if (!particleImage.LoadFromFile("particle.png"))
+	if (!particleImage.LoadFromFile("../test-data/particle.png"))
 	{
 		std::cout << "Error loading the particle." << std::endl;
 	}
@@ -43,10 +43,10 @@ int main()
 	particleSystem.setEmitterCapacity(1000);
 	particleSystem.setParticlesImage(&particleImage);
 	particleSystem.setEmitterPosition(math::Vec2(100,100));
-	particleSystem.setEmitterSpawnRate(3.f);
+	particleSystem.setEmitterSpawnRate(5.f);
 	particleSystem.setParticlesLifeTime(12);
-	particleSystem.setParticlesInitSpeed(math::Vec2(30.f,-10.f));
-	particleSystem.setParticlesColorDecay(math::Vec4(0.f,0.f,0.f,-20.f));
+	particleSystem.setParticlesInitSpeed(math::Vec2(40.f,-10.f));
+	particleSystem.setParticlesColorDecay(math::Vec4(0.f,0.f,0.f,-25.f));
 	particleSystem.setEmitterActive(true);
 
 	math::Vec2 totalForces(0.f,9.8f);
@@ -95,8 +95,8 @@ int main()
 		// Update particle system engine
 		particleSystem.update(elapsedTime,totalForces);
 		
-		// Clear the screen (fill it with white color)
-		window.Clear(sf::Color(255, 255, 255));
+		// Clear the screen (fill it with black color)
+		window.Clear(sf::Color(0, 0, 0));
 		
 		// Draw particles
 		particleSystem.draw(&window);

@@ -29,12 +29,12 @@ namespace engine {
 
 ResourceManager *ResourceManager::resourceManager = NULL;
 
-void ResourceManager::createInstance()
+void ResourceManager::createInstance(std::string basePath)
 {
 	// if the instance does not exist, create it
 	if ( resourceManager == NULL )
 	{
-		resourceManager = new ResourceManager;
+		resourceManager = new ResourceManager(basePath);
 	}
 }
 
@@ -59,7 +59,7 @@ sf::Image *ResourceManager::loadImage(std::string name)
 	{
 		// try to load
 		sf::Image *image = new sf::Image;
-		if (!image->LoadFromFile(name))
+		if (!image->LoadFromFile(this->basePath + name))
 		{
 			std::cerr << "Loading of image '" << name << "' failed!" << std::endl;
 			delete image;
@@ -109,7 +109,7 @@ AnimationData *ResourceManager::loadAnimationData(std::string name)
 	{
 		// try to load
 		AnimationData *animationData = new AnimationData;
-		if (!animationData->load(name))
+		if (!animationData->load(this->basePath + name))
 		{
 			std::cerr << "Loading of animationData '" << name << "' failed!" << std::endl;
 			delete animationData;
@@ -137,6 +137,18 @@ void ResourceManager::releaseAnimationData(std::string name)
 	
 }
 
+ResourceManager::ResourceManager(std::string basePath)
+{
+	// add trailing slash if necessary
+	char last = basePath[basePath.length() - 1];
+	if ((last != '/') && (last != '\\'))
+		basePath += '/';
+	
+	this->basePath = basePath;
+}
 
+ResourceManager::~ResourceManager()
+{
+}
 
 } // engine namespace

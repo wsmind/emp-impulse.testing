@@ -31,7 +31,7 @@ int main()
 {
 	sf::Image image;
 
-	if (!image.LoadFromFile("resources/hero.png"))
+	if (!image.LoadFromFile("../test-data/bounce.png"))
 	{
 		std::cerr << "Unable to load animation image." << std::endl;
 		return EXIT_FAILURE;
@@ -41,7 +41,7 @@ int main()
 
 	engine::AnimationData data;
 
-	if (!data.load("resources/hero.data"))
+	if (!data.load("../test-data/bounce.anim"))
 	{
 		std::cerr << "Unable to load animation data." << std::endl;
 		return EXIT_FAILURE;
@@ -49,7 +49,7 @@ int main()
 
 	engine::AnimationState state(&data);
 
-	state.setCurrentSequence("idle_left");
+	state.setCurrentSequence("bounce");
 
 	sf::RenderWindow window(sf::VideoMode(800, 600, 32), "Animation system");
 	window.SetFramerateLimit(60);
@@ -89,7 +89,7 @@ int main()
 			
 			if (event.Type == sf::Event::KeyReleased && event.Key.Code == sf::Key::Left)
 			{
-				state.setCurrentSequence("idle_left");
+				state.setCurrentSequence("bounce");
 			}
 		}
 
