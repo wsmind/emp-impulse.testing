@@ -22,6 +22,7 @@
 
 #include <engine/CollisionShape.hpp>
 #include <cmath>
+#include <cfloat>
 #include <engine/Contact.hpp>
 
 using namespace math;
