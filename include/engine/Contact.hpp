@@ -38,7 +38,7 @@ namespace engine {
 * \li the normalized normal of the collision.
 * \li the penetration of the polygon into the other one.
 */
-struct Contact
+struct IMPULSE_ENGINE_EXPORT Contact
 {
 	math::Vec2 normal;
 	float interpenetration;

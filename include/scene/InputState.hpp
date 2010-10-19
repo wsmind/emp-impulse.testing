@@ -39,7 +39,7 @@ namespace scene {
  * Currently, this class only exposes raw game input, but it could evolve to
  * handle input state changes (i.e key pressed, released, etc.)
  */
-class InputState
+class IMPULSE_SCENE_EXPORT InputState
 {
 	public:
 		bool left;

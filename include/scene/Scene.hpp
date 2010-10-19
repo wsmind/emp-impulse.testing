@@ -44,7 +44,7 @@ namespace scene {
  * Thus, the interface exposed by the Scene class and other classes from the
  * same package relates directly to gameplay needs.
  */
-class Scene
+class IMPULSE_SCENE_EXPORT Scene
 {
 	public:
 		/**

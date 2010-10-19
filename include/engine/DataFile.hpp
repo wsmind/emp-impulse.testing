@@ -38,7 +38,7 @@ namespace engine {
  * 
  * This class reads endianness-independant, type-friendly data from a file. 
  */
-class DataFile
+class IMPULSE_ENGINE_EXPORT DataFile
 {
 	public:
 		

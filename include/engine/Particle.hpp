@@ -38,7 +38,7 @@ namespace engine {
  * \author Davy LEGGIERI
  *
  */
-class Particle
+class IMPULSE_ENGINE_EXPORT Particle
 {
 	public:
 		//! \brief x and y coordinate of the particle

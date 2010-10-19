@@ -44,7 +44,7 @@ namespace engine {
  * \author Davy LEGGIERI
  *
  */
-class ParticleSystem
+class IMPULSE_ENGINE_EXPORT ParticleSystem
 {
 	public:		
 		/**

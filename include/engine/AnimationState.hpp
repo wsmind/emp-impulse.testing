@@ -73,7 +73,7 @@ namespace engine {
  * }
  * \endcode
  */
-class AnimationState
+class IMPULSE_ENGINE_EXPORT AnimationState
 {
 	public:
 		

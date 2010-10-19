@@ -45,7 +45,7 @@ namespace engine {
  * released with unload(). Do not use an uninitialized object to create
  * AnimationState objects.
  */
-class AnimationData
+class IMPULSE_ENGINE_EXPORT AnimationData
 {
 	public:
 

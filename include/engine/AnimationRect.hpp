@@ -38,7 +38,7 @@ namespace engine {
  * animation image.
  * \li an offset, for the sprite to stay in place.
  */
-struct AnimationRect
+struct IMPULSE_ENGINE_EXPORT AnimationRect
 {
 	/**
 	 * \brief Left coordinate of the rectangle.
