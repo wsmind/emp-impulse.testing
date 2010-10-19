@@ -49,7 +49,7 @@ namespace engine {
  * can declare events at time totalDuration: they occur at the same time that
  * events at time 0, except for the first play.
  */
-class AnimationSequence
+class IMPULSE_ENGINE_EXPORT AnimationSequence
 {
 	public:
 

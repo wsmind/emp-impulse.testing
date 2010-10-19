@@ -54,4 +54,9 @@
 #	define IMPULSE_API_EXPORT
 #endif
 
+// using math constants with vc++
+#ifdef IMPULSE_COMPILER_MSVC
+#	define _USE_MATH_DEFINES
+#endif
+
 #endif // __PLATFORM_HPP__

@@ -80,7 +80,7 @@ bool CollisionShape::detectCollision(CollisionShape *polygon, Contact *contact)
 	f32 minDistancePolygon;
 	
 	f32 overlap;
-	f32 minOverlap = INFINITY;
+	f32 minOverlap = FLT_MAX;
 	
 	// For each edge of this
 	for ( u32 i = 0; i < this->points.size(); i++)
@@ -176,8 +176,8 @@ void CollisionShape::rebuildTransform()
 void CollisionShape::projectPolygon(math::Vec2 direction, math::Vec2 point, f32 *min, f32 *max)
 {	
 	// Initialize max and min
-	*min = INFINITY;
-	*max = -INFINITY;
+	*min = FLT_MAX;
+	*max = -FLT_MAX;
 	
 	// Compute projection for each point of polygon
 	for ( u32 i = 0; i < this->points.size(); i++)

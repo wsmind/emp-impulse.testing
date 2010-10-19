@@ -46,7 +46,7 @@ namespace engine {
 * The detection collision algorithm used is explained here:
 *  http://www.codeproject.com/KB/GDI-plus/PolygonCollision.aspx
 */
-class CollisionShape
+class IMPULSE_ENGINE_EXPORT CollisionShape
 {
 	public:
 		/**
